@@ -1,0 +1,64 @@
+delim           [\t\r\n]
+ws              {delim}+
+digit           [0-9]
+number          {digit}+
+character       [A-Za-z]
+decimal         [.]
+identifier      {character}({character}|{number})*
+%{
+#ifdef PRINT
+#define TOKEN(t) printf("Token: " #t "\n");
+#else
+#define TOKEN(t) return (t);
+#endif
+%}
+%%
+{ws} ;
+":"  TOKEN(COLON)
+"."  TOKEN(DOT)
+"<"  TOKEN(LESSTHAN)
+">"  TOKEN(MORETHAN)
+"+"  TOKEN(PLUS)
+"-"  TOKEN(MINUS)
+";"  TOKEN(SEMICOLON)
+","  TOKEN(COMMA)
+"->" TOKEN(POINTER)
+"(" TOKEN(BRA)
+")" TOKEN(KET)
+"<=" TOKEN(LESSOREQUAL)
+">=" TOKEN(MOREOREQUAL)
+"<>" TOKEN(SHEVRONS)
+"'" TOKEN(CHARACTERCONST)
+"*" TOKEN(TIMES)
+"/" TOKEN(DIVIDE)
+"=" TOKEN(EQUALS)
+ENDP TOKEN(ENDPROGRAM)
+DECLARATIONS TOKEN(DECLARATIONS)
+CODE TOKEN(CODE)
+OF TOKEN(OF)
+TYPE TOKEN(TYPE)
+IF TOKEN(IF)
+THEN TOKEN(THEN)
+ENDIF TOKEN(ENDIF)
+ELSE TOKEN(ELSE)
+DO TOKEN(DO)
+WHILE TOKEN(WHILE)
+ENDDO TOKEN(ENDDO)
+FOR TOKEN(FOR)
+IS TOKEN (IS)
+BY TOKEN(BY)
+TO TOKEN(TO)
+ENDFOR TOKEN(ENDFOR)
+ENDWHILE TOKEN(ENDWHILE)
+WRITE TOKEN(WRITE)
+NEWLINE TOKEN(NEWLINE)
+READ TOKEN(READ)
+NOT TOKEN(NOT)
+AND TOKEN(AND)
+OR TOKEN(OR)
+REAL  TOKEN(REAL)
+CHARACTER  TOKEN(CHARACTER)
+INTEGER TOKEN (INTEGER)
+{number} TOKEN(NUMBER)
+{identifier} TOKEN(IDENTIFIER)
+%%

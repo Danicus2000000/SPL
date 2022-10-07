@@ -1,0 +1,3 @@
+flex spl.l
+gcc -o spl.exe -DPRINT lex.yy.c -lfl
+spl.exe <a.spl
