@@ -1,10 +1,10 @@
-delim           [\t\r\n]
-ws              {delim}+
-digit           [0-9]
-number          {digit}+
-character       [A-Za-z]
-decimal         [.]
-identifier      {character}({character}|{number})*
+delim [\t\r\n" "]
+ws {delim}+
+digit [0-9]
+number {digit}+
+character [A-Za-z]
+decimal [.]
+identifier {character}({character}|{number})*
 %{
 #ifdef PRINT
 #define TOKEN(t) printf("Token: " #t "\n");
@@ -28,7 +28,7 @@ identifier      {character}({character}|{number})*
 "<=" TOKEN(LESSOREQUAL)
 ">=" TOKEN(MOREOREQUAL)
 "<>" TOKEN(SHEVRONS)
-"'" TOKEN(CHARACTERCONST)
+"'" TOKEN(APOSTROPHE)
 "*" TOKEN(TIMES)
 "/" TOKEN(DIVIDE)
 "=" TOKEN(EQUALS)
@@ -56,8 +56,9 @@ READ TOKEN(READ)
 NOT TOKEN(NOT)
 AND TOKEN(AND)
 OR TOKEN(OR)
-REAL  TOKEN(REAL)
-CHARACTER  TOKEN(CHARACTER)
+REAL TOKEN(REAL)
+{character} TOKEN(LETTER)
+CHARACTER TOKEN(CHARACTER)
 INTEGER TOKEN (INTEGER)
 {number} TOKEN(NUMBER)
 {identifier} TOKEN(IDENTIFIER)

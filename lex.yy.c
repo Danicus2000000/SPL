@@ -282,24 +282,24 @@ static void yy_fatal_error YY_PROTO(( yyconst char msg[] ));
 	*yy_cp = '\0'; \
 	yy_c_buf_p = yy_cp;
 
-#define YY_NUM_RULES 49
-#define YY_END_OF_BUFFER 50
+#define YY_NUM_RULES 50
+#define YY_END_OF_BUFFER 51
 static yyconst short int yy_accept[126] =
     {   0,
-        0,    0,   50,   49,    1,   16,   11,   12,   17,    6,
-        9,    7,    3,   18,   47,    2,    8,    4,   19,    5,
-       48,   48,   48,   48,   48,   48,   48,   48,   48,   48,
-       48,   48,   48,    1,   10,   47,   13,   15,   14,   48,
-       48,   48,   34,   48,   48,   48,   29,   48,   48,   48,
-       25,   48,   33,   48,   48,   23,   43,   48,   48,   35,
-       48,   48,   48,   42,   48,   48,   48,   48,   48,   32,
-       48,   48,   41,   48,   48,   48,   48,   48,   48,   22,
-       48,   28,   48,   48,   48,   20,   48,   48,   48,   40,
-       44,   26,   24,   48,   48,   48,   48,   31,   48,   27,
+        0,    0,   51,   50,    1,   16,   11,   12,   17,    6,
+        9,    7,    3,   18,   48,    2,    8,    4,   19,    5,
+       45,   45,   45,   45,   45,   45,   45,   45,   45,   45,
+       45,   45,   45,    1,   10,   48,   13,   15,   14,   49,
+       49,   49,   34,   49,   49,   49,   29,   49,   49,   49,
+       25,   49,   33,   49,   49,   23,   43,   49,   49,   35,
+       49,   49,   49,   42,   49,   49,   49,   49,   49,   32,
+       49,   49,   41,   49,   49,   49,   49,   49,   49,   22,
+       49,   28,   49,   49,   49,   20,   49,   49,   49,   40,
+       44,   26,   24,   49,   49,   49,   49,   31,   49,   27,
 
-       48,   48,   48,   30,   38,   48,   48,   36,   48,   48,
-       48,   48,   48,   48,   46,   39,   48,   48,   37,   45,
-       48,   48,   48,   21,    0
+       49,   49,   49,   30,   38,   49,   49,   36,   49,   49,
+       49,   49,   49,   49,   47,   39,   49,   49,   37,   46,
+       49,   49,   49,   21,    0
     } ;
 
 static yyconst int yy_ec[256] =
@@ -307,7 +307,7 @@ static yyconst int yy_ec[256] =
         1,    1,    1,    1,    1,    1,    1,    1,    2,    2,
         1,    1,    2,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    1,    1,    1,    1,    1,    1,    3,    4,
+        1,    2,    1,    2,    1,    1,    1,    1,    3,    4,
         5,    6,    7,    8,    9,   10,   11,   12,   12,   12,
        12,   12,   12,   12,   12,   12,   12,   13,   14,   15,
        16,   17,    1,    1,   18,   19,   20,   21,   22,   23,
@@ -777,7 +777,7 @@ TOKEN(SHEVRONS)
 case 16:
 YY_RULE_SETUP
 #line 31 "spl.l"
-TOKEN(CHARACTERCONST)
+TOKEN(APOSTROPHE)
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
@@ -922,29 +922,34 @@ TOKEN(REAL)
 case 45:
 YY_RULE_SETUP
 #line 60 "spl.l"
-TOKEN(CHARACTER)
+TOKEN(LETTER)
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
 #line 61 "spl.l"
-TOKEN (INTEGER)
+TOKEN(CHARACTER)
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
 #line 62 "spl.l"
-TOKEN(NUMBER)
+TOKEN (INTEGER)
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
 #line 63 "spl.l"
-TOKEN(IDENTIFIER)
+TOKEN(NUMBER)
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
 #line 64 "spl.l"
+TOKEN(IDENTIFIER)
+	YY_BREAK
+case 50:
+YY_RULE_SETUP
+#line 65 "spl.l"
 ECHO;
 	YY_BREAK
-#line 948 "lex.yy.c"
+#line 953 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1830,5 +1835,5 @@ int main()
 	return 0;
 	}
 #endif
-#line 64 "spl.l"
+#line 65 "spl.l"
 
