@@ -1,11 +1,11 @@
 delim [\t\r\n" "]
 ws {delim}+
+identifier {letter}({letter}|{number})*
 digit [0-9]
 number {digit}+
 letter [A-Za-z]
 character "'"{letter}"'"
 decimal [.]
-identifier {letter}({letter}|{number})*
 %{
 #ifdef PRINT
 #define TOKEN(t) printf("Token: " #t "\n");
