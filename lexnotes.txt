@@ -1,3 +1,16 @@
+Lex Test:
 flex spl.l
 gcc -o spl.exe -DPRINT lex.yy.c -lfl
-spl.exe <a.spl
+spl.exe < (spl_example_file)
+
+Yacc Test:
+bison spl.y --verbose --debug
+gcc -o spl.exe spl.c spl.tab.c -lfl 
+spl.exe < (spl_example_file)
+
+Full Compile:
+flex spl.l
+bison spl.y
+gcc -o spl.exe spl.c spl.tab.c -lfl 
+spl.exe < (spl_example_file)
+
