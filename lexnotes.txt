@@ -4,7 +4,7 @@ gcc -o spl.exe -DPRINT lex.yy.c -lfl
 spl.exe < (spl_example_file)
 
 Yacc Test:
-bison spl.y --verbose --debug
+bison spl.y --debug
 gcc -o spl.exe spl.c spl.tab.c -lfl 
 spl.exe < (spl_example_file)
 

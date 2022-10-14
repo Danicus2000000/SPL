@@ -9,9 +9,9 @@ program : IDENTIFIER COLON block ENDPROGRAM IDENTIFIER DOT
 	;
 block : DECLARATIONS declaration_block CODE statement_list | CODE statement_list
 	;
-declaration_block : identifiers OF TYPE type SEMICOLON | declaration_block identifiers OF TYPE type SEMICOLON
+declaration_block : identifier_list OF TYPE type SEMICOLON | declaration_block identifier_list OF TYPE type SEMICOLON
 	;
-identifiers : IDENTIFIER | identifiers COMMA identifiers
+identifier_list : IDENTIFIER | IDENTIFIER COMMA identifier_list
 	;
 real : NUMBER DOT NUMBER | MINUS NUMBER DOT NUMBER
 	;
@@ -35,7 +35,7 @@ output_list : value | output_list COMMA value
 	;
 read_statement : READ BRA IDENTIFIER KET
 	;
-conditional : expression comparator expression | NOT conditional | conditional AND conditional | conditional OR conditional 
+conditional : expression comparator expression | NOT conditional | expression comparator expression AND conditional | expression comparator expression OR conditional 
 	;
 comparator : EQUALS | SHEVRONS | LESSTHAN | MORETHAN | LESSOREQUAL | MOREOREQUAL
 	;
