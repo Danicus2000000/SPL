@@ -70,17 +70,81 @@
 /* Line 189 of yacc.c  */
 #line 1 "spl.y"
 
+/* declare some standard headers to be used to import declarations
+   and libraries into the parser. */
+
+#include <stdio.h>
+#include <stdlib.h>
+
+/* make forward declarations to avoid compiler warnings */
+int yylex (void);
+void yyerror (char *);
 int yydebug = 1;
-void yyerror(char *s);
-int yylex(void);
+
+/* 
+   Some constants.
+*/
+
+  /* These constants are used later in the code */
+#define SYMTABSIZE     50
+#define IDLENGTH       15
+#define NOTHING        -1
+#define INDENTOFFSET    2
+
+  enum ParseTreeNodeType { PROGRAM, BLOCK } ;  
+                          /* Add more types here, as more nodes
+                                           added to tree */
+
+#ifndef TRUE
+#define TRUE 1
+#endif
+
+#ifndef FALSE
+#define FALSE 0
+#endif
+
+#ifndef NULL
+#define NULL 0
+#endif
+
+/* ------------- parse tree definition --------------------------- */
+
+struct treeNode {
+    int  item;
+    int  nodeIdentifier;
+    struct treeNode *first;
+    struct treeNode *second;
+    struct treeNode *third;
+  };
+
+typedef  struct treeNode TREE_NODE;
+typedef  TREE_NODE        *TERNARY_TREE;
+
+/* ------------- forward declarations --------------------------- */
+
+TERNARY_TREE create_node(int,int,TERNARY_TREE,TERNARY_TREE,TERNARY_TREE);
+
+/* ------------- symbol table definition --------------------------- */
+
+struct symTabNode {
+    char identifier[IDLENGTH];
+};
+
+typedef  struct symTabNode SYMTABNODE;
+typedef  SYMTABNODE        *SYMTABNODEPTR;
+
+SYMTABNODEPTR  symTab[SYMTABSIZE]; 
+
+int currentSymTabSize = 0;
+
 
 
 /* Line 189 of yacc.c  */
-#line 80 "spl.tab.c"
+#line 144 "spl.tab.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
-# define YYDEBUG 1
+# define YYDEBUG 0
 #endif
 
 /* Enabling verbose error messages.  */
@@ -157,7 +221,20 @@ int yylex(void);
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+typedef union YYSTYPE
+{
+
+/* Line 214 of yacc.c  */
+#line 81 "spl.y"
+
+    int iVal;
+    TERNARY_TREE  tVal;
+
+
+
+/* Line 214 of yacc.c  */
+#line 237 "spl.tab.c"
+} YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -168,7 +245,7 @@ typedef int YYSTYPE;
 
 
 /* Line 264 of yacc.c  */
-#line 172 "spl.tab.c"
+#line 249 "spl.tab.c"
 
 #ifdef short
 # undef short
@@ -479,12 +556,12 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,     8,     8,    10,    10,    12,    12,    14,    14,    16,
-      16,    18,    18,    20,    20,    20,    20,    20,    20,    20,
-      22,    24,    24,    26,    28,    30,    32,    32,    34,    34,
-      36,    38,    38,    38,    38,    40,    40,    40,    40,    40,
-      40,    42,    42,    42,    44,    44,    44,    46,    46,    46,
-      48,    48,    50,    50,    50,    52,    52,    52
+       0,    87,    87,    89,    89,    91,    91,    93,    93,    95,
+      95,    97,    97,    99,    99,    99,    99,    99,    99,    99,
+     101,   103,   103,   105,   107,   109,   111,   111,   113,   113,
+     115,   117,   117,   117,   117,   119,   119,   119,   119,   119,
+     119,   121,   121,   121,   123,   123,   123,   125,   125,   125,
+     127,   127,   129,   129,   129,   131,   131,   131
 };
 #endif
 
@@ -1470,7 +1547,7 @@ yyreduce:
       
 
 /* Line 1455 of yacc.c  */
-#line 1474 "spl.tab.c"
+#line 1551 "spl.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1682,6 +1759,6 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 53 "spl.y"
+#line 132 "spl.y"
 
 #include "lex.yy.c"

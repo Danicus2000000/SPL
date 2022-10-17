@@ -1,8 +1,86 @@
 %{
+/* declare some standard headers to be used to import declarations
+   and libraries into the parser. */
+
+#include <stdio.h>
+#include <stdlib.h>
+
+/* make forward declarations to avoid compiler warnings */
+int yylex (void);
+void yyerror (char *);
 int yydebug = 1;
-void yyerror(char *s);
-int yylex(void);
+
+/* 
+   Some constants.
+*/
+
+  /* These constants are used later in the code */
+#define SYMTABSIZE     50
+#define IDLENGTH       15
+#define NOTHING        -1
+#define INDENTOFFSET    2
+
+  enum ParseTreeNodeType { PROGRAM, BLOCK } ;  
+                          /* Add more types here, as more nodes
+                                           added to tree */
+
+#ifndef TRUE
+#define TRUE 1
+#endif
+
+#ifndef FALSE
+#define FALSE 0
+#endif
+
+#ifndef NULL
+#define NULL 0
+#endif
+
+/* ------------- parse tree definition --------------------------- */
+
+struct treeNode {
+    int  item;
+    int  nodeIdentifier;
+    struct treeNode *first;
+    struct treeNode *second;
+  };
+
+typedef  struct treeNode TREE_NODE;
+typedef  TREE_NODE        *BINARY_TREE;
+
+/* ------------- forward declarations --------------------------- */
+
+BINARY_TREE create_node(int,int,BINARY_TREE,BINARY_TREE);
+
+/* ------------- symbol table definition --------------------------- */
+
+struct symTabNode {
+    char identifier[IDLENGTH];
+};
+
+typedef  struct symTabNode SYMTABNODE;
+typedef  SYMTABNODE        *SYMTABNODEPTR;
+
+SYMTABNODEPTR  symTab[SYMTABSIZE]; 
+
+int currentSymTabSize = 0;
+
 %}
+
+/****************/
+/* Start symbol */
+/****************/
+
+%start  program
+
+/**********************/
+/* Action value types */
+/**********************/
+
+%union {
+    int iVal;
+    BINARY_TREE tVal;
+}
 %token COLON DOT LESSTHAN MORETHAN PLUS MINUS SEMICOLON COMMA POINTER BRA KET LESSOREQUAL MOREOREQUAL SHEVRONS APOSTROPHE TIMES DIVIDE EQUALS ENDPROGRAM DECLARATIONS CODE OF TYPE IF THEN ENDIF ELSE DO WHILE ENDDO FOR IS BY TO ENDFOR ENDWHILE WRITE NEWLINE READ NOT AND OR REAL CHARACTER CHARACTERTYPE INTEGERTYPE NUMBER IDENTIFIER
 %%
 program : IDENTIFIER COLON block ENDPROGRAM IDENTIFIER DOT
