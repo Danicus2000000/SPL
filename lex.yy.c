@@ -460,10 +460,19 @@ char *yytext;
 #line 10 "spl.l"
 #ifdef PRINT
 #define TOKEN(t) printf("Token: " #t "\n");
+#define NUMBER_TOKEN(t) printf("NUMBER %d Token: " #t "\n",atoi(yytext));
+#define IDENTIFIER_TOKEN(t) printf("IDENTIFIER %s Token: " #t "\n",yytext);
+#define TOKEN(t) printf("Token: " #t "\n");
 #else
 #define TOKEN(t) return (t);
+#define NUMBER_TOKEN(t) yylval.iVal=atoi(yytext); return(t);
+#define IDENTIFIER_TOKEN(t) yylval.iVal=installId(yytext); return (t);
 #endif
-#line 467 "lex.yy.c"
+#include <string.h>
+extern SYMTABNODEPTR symTab[SYMTABSIZE];
+extern int currentSymTabSize;
+int installId(char *);
+#line 476 "lex.yy.c"
 
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -614,9 +623,9 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
 
-#line 16 "spl.l"
+#line 25 "spl.l"
 
-#line 620 "lex.yy.c"
+#line 629 "lex.yy.c"
 
 	if ( yy_init )
 		{
@@ -701,255 +710,255 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 17 "spl.l"
+#line 26 "spl.l"
 ;
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 18 "spl.l"
+#line 27 "spl.l"
 TOKEN(COLON)
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 19 "spl.l"
+#line 28 "spl.l"
 TOKEN(DOT)
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 20 "spl.l"
+#line 29 "spl.l"
 TOKEN(LESSTHAN)
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 21 "spl.l"
+#line 30 "spl.l"
 TOKEN(MORETHAN)
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 22 "spl.l"
+#line 31 "spl.l"
 TOKEN(PLUS)
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 23 "spl.l"
+#line 32 "spl.l"
 TOKEN(MINUS)
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 24 "spl.l"
+#line 33 "spl.l"
 TOKEN(SEMICOLON)
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 25 "spl.l"
+#line 34 "spl.l"
 TOKEN(COMMA)
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 26 "spl.l"
+#line 35 "spl.l"
 TOKEN(POINTER)
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 27 "spl.l"
+#line 36 "spl.l"
 TOKEN(BRA)
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 28 "spl.l"
+#line 37 "spl.l"
 TOKEN(KET)
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 29 "spl.l"
+#line 38 "spl.l"
 TOKEN(LESSOREQUAL)
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 30 "spl.l"
+#line 39 "spl.l"
 TOKEN(MOREOREQUAL)
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 31 "spl.l"
+#line 40 "spl.l"
 TOKEN(SHEVRONS)
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 32 "spl.l"
+#line 41 "spl.l"
 TOKEN(APOSTROPHE)
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 33 "spl.l"
+#line 42 "spl.l"
 TOKEN(TIMES)
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 34 "spl.l"
+#line 43 "spl.l"
 TOKEN(DIVIDE)
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 35 "spl.l"
+#line 44 "spl.l"
 TOKEN(EQUALS)
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 36 "spl.l"
+#line 45 "spl.l"
 TOKEN(ENDPROGRAM)
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 37 "spl.l"
+#line 46 "spl.l"
 TOKEN(DECLARATIONS)
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 38 "spl.l"
+#line 47 "spl.l"
 TOKEN(CODE)
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 39 "spl.l"
+#line 48 "spl.l"
 TOKEN(OF)
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 40 "spl.l"
-TOKEN(TYPE)
+#line 49 "spl.l"
+TOKEN(TYPEVAR)
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 41 "spl.l"
+#line 50 "spl.l"
 TOKEN(IF)
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 42 "spl.l"
+#line 51 "spl.l"
 TOKEN(THEN)
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 43 "spl.l"
+#line 52 "spl.l"
 TOKEN(ENDIF)
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 44 "spl.l"
+#line 53 "spl.l"
 TOKEN(ELSE)
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 45 "spl.l"
+#line 54 "spl.l"
 TOKEN(DO)
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 46 "spl.l"
+#line 55 "spl.l"
 TOKEN(WHILE)
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 47 "spl.l"
+#line 56 "spl.l"
 TOKEN(ENDDO)
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 48 "spl.l"
+#line 57 "spl.l"
 TOKEN(FOR)
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 49 "spl.l"
+#line 58 "spl.l"
 TOKEN (IS)
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 50 "spl.l"
+#line 59 "spl.l"
 TOKEN(BY)
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 51 "spl.l"
+#line 60 "spl.l"
 TOKEN(TO)
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 52 "spl.l"
+#line 61 "spl.l"
 TOKEN(ENDFOR)
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 53 "spl.l"
+#line 62 "spl.l"
 TOKEN(ENDWHILE)
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 54 "spl.l"
+#line 63 "spl.l"
 TOKEN(WRITE)
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 55 "spl.l"
+#line 64 "spl.l"
 TOKEN(NEWLINE)
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 56 "spl.l"
+#line 65 "spl.l"
 TOKEN(READ)
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 57 "spl.l"
+#line 66 "spl.l"
 TOKEN(NOT)
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 58 "spl.l"
+#line 67 "spl.l"
 TOKEN(AND)
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 59 "spl.l"
+#line 68 "spl.l"
 TOKEN(OR)
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 60 "spl.l"
-TOKEN(REAL)
+#line 69 "spl.l"
+TOKEN(REALTYPE)
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 61 "spl.l"
+#line 70 "spl.l"
 TOKEN(CHARACTER)
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 62 "spl.l"
+#line 71 "spl.l"
 TOKEN(CHARACTERTYPE)
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 63 "spl.l"
+#line 72 "spl.l"
 TOKEN (INTEGERTYPE)
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 64 "spl.l"
+#line 73 "spl.l"
 TOKEN(NUMBER)
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 65 "spl.l"
+#line 74 "spl.l"
 TOKEN(IDENTIFIER)
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 66 "spl.l"
+#line 75 "spl.l"
 ECHO;
 	YY_BREAK
-#line 953 "lex.yy.c"
+#line 962 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1835,5 +1844,68 @@ int main()
 	return 0;
 	}
 #endif
-#line 66 "spl.l"
+#line 75 "spl.l"
 
+#ifndef PRINT
+/* Here is the code for the library of symbol table routines */
+
+/* code for a simple symbol table, which is an array of pointers to
+   structs, each of which contains an identifier.
+*/
+
+
+SYMTABNODEPTR newSymTabNode()
+{
+    return ((SYMTABNODEPTR)malloc(sizeof(SYMTABNODE)));
+}
+
+int lookup(char *s)
+{
+    extern SYMTABNODEPTR symTab[SYMTABSIZE];
+    extern int currentSymTabSize;
+    int i;
+
+    for(i=0; i<currentSymTabSize; i++)
+    {
+        if(strncmp(s,symTab[i]->identifier,IDLENGTH) == 0)
+        {
+            return (i);
+        }
+    }
+    return (-1);    
+}
+
+/* Look up an identifier in the symbol table, if its there return
+   its index.  If its not there, put it in the end position,
+   as long as the table isn't full, and return its index.
+*/
+
+int installId(char *id) 
+{
+    extern SYMTABNODEPTR symTab[SYMTABSIZE]; 
+    extern int currentSymTabSize;
+    int index;
+
+    index = lookup(id);
+    if (index >= 0)
+    {
+        return (index);
+    }
+    else 
+       if (currentSymTabSize >= SYMTABSIZE) 
+          /* SYMTAB is full */
+          return (NOTHING) ;
+    else
+    {
+       symTab[currentSymTabSize] = newSymTabNode();
+	   if (symTab[currentSymTabSize] == NULL) { 
+	      fprintf(stderr, "installId:Out of memory: %s %d\n", id, (int)sizeof(SYMTABNODEPTR)); 
+		  return(NOTHING);
+		  }
+       /* Recommended code for preventing buffer overrun on bounded strings */
+       strncpy(symTab[currentSymTabSize]->identifier,id,IDLENGTH);
+       symTab[currentSymTabSize]->identifier[IDLENGTH-1] = '\0';
+       return(currentSymTabSize++);
+    }
+}
+#endif

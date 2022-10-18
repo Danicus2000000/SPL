@@ -5,7 +5,7 @@ spl.exe < (spl_example_file)
 
 Yacc Test:
 bison spl.y --debug
-gcc -o spl.exe spl.c spl.tab.c -lfl 
+gcc -o spl.exe spl.c spl.tab.c -lfl -DDEBUG
 spl.exe < (spl_example_file)
 
 Full Compile:

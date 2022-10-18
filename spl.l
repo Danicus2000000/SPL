@@ -9,9 +9,18 @@ identifier {letter}({letter}|{number})*
 %{
 #ifdef PRINT
 #define TOKEN(t) printf("Token: " #t "\n");
+#define NUMBER_TOKEN(t) printf("NUMBER %d Token: " #t "\n",atoi(yytext));
+#define IDENTIFIER_TOKEN(t) printf("IDENTIFIER %s Token: " #t "\n",yytext);
+#define TOKEN(t) printf("Token: " #t "\n");
 #else
 #define TOKEN(t) return (t);
+#define NUMBER_TOKEN(t) yylval.iVal=atoi(yytext); return(t);
+#define IDENTIFIER_TOKEN(t) yylval.iVal=installId(yytext); return (t);
 #endif
+#include <string.h>
+extern SYMTABNODEPTR symTab[SYMTABSIZE];
+extern int currentSymTabSize;
+int installId(char *);
 %}
 %%
 {ws} ;
@@ -37,7 +46,7 @@ ENDP TOKEN(ENDPROGRAM)
 DECLARATIONS TOKEN(DECLARATIONS)
 CODE TOKEN(CODE)
 OF TOKEN(OF)
-TYPE TOKEN(TYPE)
+TYPE TOKEN(TYPEVAR)
 IF TOKEN(IF)
 THEN TOKEN(THEN)
 ENDIF TOKEN(ENDIF)
@@ -57,10 +66,73 @@ READ TOKEN(READ)
 NOT TOKEN(NOT)
 AND TOKEN(AND)
 OR TOKEN(OR)
-REAL TOKEN(REAL)
+REAL TOKEN(REALTYPE)
 {character} TOKEN(CHARACTER)
 CHARACTER TOKEN(CHARACTERTYPE)
 INTEGER TOKEN (INTEGERTYPE)
 {number} TOKEN(NUMBER)
 {identifier} TOKEN(IDENTIFIER)
 %%
+#ifndef PRINT
+/* Here is the code for the library of symbol table routines */
+
+/* code for a simple symbol table, which is an array of pointers to
+   structs, each of which contains an identifier.
+*/
+
+
+SYMTABNODEPTR newSymTabNode()
+{
+    return ((SYMTABNODEPTR)malloc(sizeof(SYMTABNODE)));
+}
+
+int lookup(char *s)
+{
+    extern SYMTABNODEPTR symTab[SYMTABSIZE];
+    extern int currentSymTabSize;
+    int i;
+
+    for(i=0; i<currentSymTabSize; i++)
+    {
+        if(strncmp(s,symTab[i]->identifier,IDLENGTH) == 0)
+        {
+            return (i);
+        }
+    }
+    return (-1);    
+}
+
+/* Look up an identifier in the symbol table, if its there return
+   its index.  If its not there, put it in the end position,
+   as long as the table isn't full, and return its index.
+*/
+
+int installId(char *id) 
+{
+    extern SYMTABNODEPTR symTab[SYMTABSIZE]; 
+    extern int currentSymTabSize;
+    int index;
+
+    index = lookup(id);
+    if (index >= 0)
+    {
+        return (index);
+    }
+    else 
+       if (currentSymTabSize >= SYMTABSIZE) 
+          /* SYMTAB is full */
+          return (NOTHING) ;
+    else
+    {
+       symTab[currentSymTabSize] = newSymTabNode();
+	   if (symTab[currentSymTabSize] == NULL) { 
+	      fprintf(stderr, "installId:Out of memory: %s %d\n", id, (int)sizeof(SYMTABNODEPTR)); 
+		  return(NOTHING);
+		  }
+       /* Recommended code for preventing buffer overrun on bounded strings */
+       strncpy(symTab[currentSymTabSize]->identifier,id,IDLENGTH);
+       symTab[currentSymTabSize]->identifier[IDLENGTH-1] = '\0';
+       return(currentSymTabSize++);
+    }
+}
+#endif
