@@ -242,7 +242,7 @@ comparator : EQUALS
 		}
 | SHEVRONS
 		{
-			$$=create_node(SHEVRONS,COMPARATOR,NULL,NULL,NULL);
+			$$=create_node(EQUALS,COMPARATOR,NULL,NULL,NULL);
 		}
 | LESSTHAN
 		{
