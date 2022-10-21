@@ -19,7 +19,15 @@ int yydebug = 1;
 #define NOTHING        -1
 #define INDENTOFFSET    2
 
-  enum ParseTreeNodeType { PROGRAM, BLOCK, DECLARATION_BLOCK, IDENTIFIER_LIST, REAL, STATEMENT_LIST, STATEMENT, ASSIGNMENT_STATEMENT, IF_STATEMENT, DO_STATEMENT, FOR_STATEMENT, WHILE_STATEMENT, WRITE_STATEMENT, OUTPUT_LIST, READ_STATEMENT, CONDITIONAL, COMPARATOR, EXPRESSION, TERM, VALUE, CONSTANT, NUMBER_CONSTANT, TYPE, POSITIVE_REAL, NEGATIVE_REAL, DEFAULT_CONDITIONAL, DEFAULT_EXPRESSION, EXPRESSION_PLUS, EXPRESSION_MINUS, DEFAULT_TERM, TIMES_TERM, DIVIDE_TERM, NORMAL_NUMBER, NEGATIVE_NUMBER, REAL_NUMBER, REAL_TYPE } ;
+  enum ParseTreeNodeType { PROGRAM, BLOCK, DECLARATION_BLOCK, IDENTIFIER_LIST, REAL, STATEMENT_LIST, STATEMENT,
+  ASSIGNMENT_STATEMENT, IF_STATEMENT, DO_STATEMENT, FOR_STATEMENT, WHILE_STATEMENT, WRITE_STATEMENT, OUTPUT_LIST, READ_STATEMENT, CONDITIONAL, COMPARATOR,
+  EXPRESSION, TERM, VALUE, CONSTANT, NUMBER_CONSTANT, TYPE, POSITIVE_REAL, NEGATIVE_REAL, DEFAULT_CONDITIONAL, DEFAULT_EXPRESSION, EXPRESSION_PLUS, EXPRESSION_MINUS,
+  DEFAULT_TERM, TIMES_TERM, DIVIDE_TERM, NORMAL_NUMBER, NEGATIVE_NUMBER, REAL_NUMBER, REAL_TYPE };
+  
+  const char ParseTreeValues[36][21]={"PROGRAM", "BLOCK", "DECLARATION_BLOCK", "IDENTIFIER_LIST", "REAL", "STATEMENT_LIST", "STATEMENT",
+  "ASSIGNMENT_STATEMENT", "IF_STATEMENT", "DO_STATEMENT", "FOR_STATEMENT", "WHILE_STATEMENT", "WRITE_STATEMENT", "OUTPUT_LIST", "READ_STATEMENT", "CONDITIONAL", "COMPARATOR",
+  "EXPRESSION", "TERM", "VALUE", "CONSTANT", "NUMBER_CONSTANT", "TYPE", "POSITIVE_REAL", "NEGATIVE_REAL", "DEFAULT_CONDITIONAL", "DEFAULT_EXPRESSION", "EXPRESSION_PLUS", "EXPRESSION_MINUS",
+  "DEFAULT_TERM", "TIMES_TERM", "DIVIDE_TERM", "NORMAL_NUMBER", "NEGATIVE_NUMBER", "REAL_NUMBER", "REAL_TYPE"};
 
 #ifndef TRUE
 #define TRUE 1
@@ -80,9 +88,15 @@ int currentSymTabSize = 0;
     int iVal;
     TERNARY_TREE tVal;
 }
-%token COLON DOT LESSTHAN MORETHAN PLUS MINUS SEMICOLON COMMA POINTER BRA KET LESSOREQUAL MOREOREQUAL SHEVRONS APOSTROPHE TIMES DIVIDE EQUALS ENDPROGRAM DECLARATIONS CODE OF TYPEVAR IF THEN ENDIF ELSE DO WHILE ENDDO FOR IS BY TO ENDFOR ENDWHILE WRITE NEWLINE READ NOT AND OR REALTYPE CHARACTER CHARACTERTYPE INTEGERTYPE
+%token COLON DOT LESSTHAN MORETHAN PLUS MINUS SEMICOLON COMMA POINTER BRA KET LESSOREQUAL MOREOREQUAL
+	SHEVRONS APOSTROPHE TIMES DIVIDE EQUALS ENDPROGRAM DECLARATIONS CODE OF TYPEVAR IF THEN ENDIF ELSE DO WHILE ENDDO
+	FOR IS BY TO ENDFOR ENDWHILE WRITE NEWLINE READ NOT AND OR REALTYPE CHARACTER CHARACTERTYPE INTEGERTYPE
+
 %token<iVal> IDENTIFIER NUMBER
-%type<tVal> program block declaration_block identifier_list real statement_list statement assignment_statement if_statement do_statement for_statement while_statement write_statement output_list read_statement conditional comparator expression term value constant number_constant type
+
+%type<tVal> program block declaration_block identifier_list real statement_list statement assignment_statement
+	if_statement do_statement for_statement while_statement write_statement
+	output_list read_statement conditional comparator expression term value constant number_constant type
 %%
 program : IDENTIFIER COLON block ENDPROGRAM IDENTIFIER DOT
 			{
@@ -361,12 +375,12 @@ void PrintTree(TERNARY_TREE t)
    printf("Item: Nothing");
    }
    else{
-      printf("Item: %d", t->item);
+      printf("Item: %s", ParseTreeValues[t->item]);
    }
-   printf(" nodeIdentifier: %d", t->nodeIdentifier);
+   printf(" nodeIdentifier: %s",ParseTreeValues[t->nodeIdentifier]);
    if(t->first!=NULL)
    {
-		printf(" firstChildID: %d",t->first->nodeIdentifier);
+		printf(" firstChildID: %s",ParseTreeValues[t->first->nodeIdentifier]);
    }
    else
    {
@@ -374,7 +388,7 @@ void PrintTree(TERNARY_TREE t)
    }
    if(t->second!=NULL)
    {
-		printf(" secondChildID: %d",t->second->nodeIdentifier);
+		printf(" secondChildID: %s",ParseTreeValues[t->second->nodeIdentifier]);
    }
    else
    {
@@ -382,7 +396,7 @@ void PrintTree(TERNARY_TREE t)
    }
       if(t->third!=NULL)
    {
-		printf(" thirdChildID: %d\n",t->third->nodeIdentifier);
+		printf(" thirdChildID: %s\n",ParseTreeValues[t->third->nodeIdentifier]);
    }
    else
    {
