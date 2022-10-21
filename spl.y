@@ -375,38 +375,23 @@ void PrintTree(TERNARY_TREE t,int pindent)
    {
 		printf("	");
    }
-   if(t->item==-1)
-   {
-   printf("Item:Nothing");
+   if(t->item!=-1){
+      printf("Item_Name:%s", ParseTreeValues[t->item]);
    }
-   else{
-      printf("Item:%s", ParseTreeValues[t->item]);
-   }
-   printf(" nodeIdentifier:%s",ParseTreeValues[t->nodeIdentifier]);
+   printf(" nodeID:%s",ParseTreeValues[t->nodeIdentifier]);
    if(t->first!=NULL)
    {
-		printf(" firstChildID:%s",ParseTreeValues[t->first->nodeIdentifier]);
-   }
-   else
-   {
-		printf(" firstChildID:NULL");
+		printf(" First_Child:%s",ParseTreeValues[t->first->nodeIdentifier]);
    }
    if(t->second!=NULL)
    {
-		printf(" secondChildID:%s",ParseTreeValues[t->second->nodeIdentifier]);
-   }
-   else
-   {
-		printf(" secondChildID:NULL");
+		printf(" Second_Child:%s",ParseTreeValues[t->second->nodeIdentifier]);
    }
       if(t->third!=NULL)
    {
-		printf(" thirdChildID:%s\n",ParseTreeValues[t->third->nodeIdentifier]);
+		printf(" Third_Child:%s",ParseTreeValues[t->third->nodeIdentifier]);
    }
-   else
-   {
-		printf(" thirdChildID:NULL\n");
-   }
+   printf("\n");
    pindent++;
    PrintTree(t->first,pindent);
    PrintTree(t->second,pindent);
