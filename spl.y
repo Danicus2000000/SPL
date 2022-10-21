@@ -28,6 +28,7 @@ int yydebug = 1;
   "ASSIGNMENT_STATEMENT", "IF_STATEMENT", "DO_STATEMENT", "FOR_STATEMENT", "WHILE_STATEMENT", "WRITE_STATEMENT", "OUTPUT_LIST", "READ_STATEMENT", "CONDITIONAL", "COMPARATOR",
   "EXPRESSION", "TERM", "VALUE", "CONSTANT", "NUMBER_CONSTANT", "TYPE", "POSITIVE_REAL", "NEGATIVE_REAL", "DEFAULT_CONDITIONAL", "DEFAULT_EXPRESSION", "EXPRESSION_PLUS", "EXPRESSION_MINUS",
   "DEFAULT_TERM", "TIMES_TERM", "DIVIDE_TERM", "NORMAL_NUMBER", "NEGATIVE_NUMBER", "REAL_NUMBER", "REAL_TYPE"};
+  int indent=0;
 
 #ifndef TRUE
 #define TRUE 1
@@ -57,7 +58,7 @@ typedef  TREE_NODE        *TERNARY_TREE;
 /* ------------- forward declarations --------------------------- */
 
 TERNARY_TREE create_node(int,int,TERNARY_TREE,TERNARY_TREE,TERNARY_TREE);
-void PrintTree(TERNARY_TREE );
+void PrintTree(TERNARY_TREE,int);
 
 /* ------------- symbol table definition --------------------------- */
 
@@ -103,7 +104,7 @@ program : IDENTIFIER COLON block ENDPROGRAM IDENTIFIER DOT
 				TERNARY_TREE ParseTree;
 				ParseTree= create_node(NOTHING,PROGRAM,$3,NULL,NULL);
 				#ifdef DEBUG
-				PrintTree(ParseTree);
+				PrintTree(ParseTree,indent);
 				#endif
 			}
 	;
@@ -367,43 +368,48 @@ TERNARY_TREE create_node(int ival, int case_identifier, TERNARY_TREE p1,
     return (t);
 }
 
-void PrintTree(TERNARY_TREE t)
+void PrintTree(TERNARY_TREE t,int pindent)
 {
    if (t == NULL) return;
+   for(int i=0;i<pindent; i++)
+   {
+		printf("	");
+   }
    if(t->item==-1)
    {
-   printf("Item: Nothing");
+   printf("Item:Nothing");
    }
    else{
-      printf("Item: %s", ParseTreeValues[t->item]);
+      printf("Item:%s", ParseTreeValues[t->item]);
    }
-   printf(" nodeIdentifier: %s",ParseTreeValues[t->nodeIdentifier]);
+   printf(" nodeIdentifier:%s",ParseTreeValues[t->nodeIdentifier]);
    if(t->first!=NULL)
    {
-		printf(" firstChildID: %s",ParseTreeValues[t->first->nodeIdentifier]);
+		printf(" firstChildID:%s",ParseTreeValues[t->first->nodeIdentifier]);
    }
    else
    {
-		printf(" firstChildID: NULL");
+		printf(" firstChildID:NULL");
    }
    if(t->second!=NULL)
    {
-		printf(" secondChildID: %s",ParseTreeValues[t->second->nodeIdentifier]);
+		printf(" secondChildID:%s",ParseTreeValues[t->second->nodeIdentifier]);
    }
    else
    {
-		printf(" secondChildID: NULL");
+		printf(" secondChildID:NULL");
    }
       if(t->third!=NULL)
    {
-		printf(" thirdChildID: %s\n",ParseTreeValues[t->third->nodeIdentifier]);
+		printf(" thirdChildID:%s\n",ParseTreeValues[t->third->nodeIdentifier]);
    }
    else
    {
-		printf(" thirdChildID: NULL\n");
+		printf(" thirdChildID:NULL\n");
    }
-   PrintTree(t->first);
-   PrintTree(t->second);
-   PrintTree(t->third);
+   pindent++;
+   PrintTree(t->first,pindent);
+   PrintTree(t->second,pindent);
+   PrintTree(t->third,pindent);
 }
 #include "lex.yy.c"
