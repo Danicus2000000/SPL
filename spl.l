@@ -72,6 +72,7 @@ CHARACTER TOKEN(CHARACTERTYPE)
 INTEGER TOKEN (INTEGERTYPE)
 {number} TOKEN(NUMBER)
 {identifier} TOKEN(IDENTIFIER)
+. printf("Error: Unexpected symbol in lexical analyser: %s (%d)\n",yytext,yytext[0]);
 %%
 #ifndef PRINT
 /* Here is the code for the library of symbol table routines */

@@ -60,7 +60,7 @@ TERNARY_TREE create_node(int,int,TERNARY_TREE,TERNARY_TREE,TERNARY_TREE);
 #ifdef DEBUG
 void PrintTree(TERNARY_TREE,int);
 #endif
-void GenerateCode(TERNARY_TREE,int);
+void GenerateCode(TERNARY_TREE);
 /* ------------- symbol table definition --------------------------- */
 
 struct symTabNode {
@@ -109,7 +109,7 @@ program : IDENTIFIER COLON block ENDPROGRAM IDENTIFIER DOT
 					#ifdef DEBUG
 					PrintTree(ParseTree,0);
 					#endif
-					GenerateCode(ParseTree,0);
+					GenerateCode(ParseTree);
 				}
 				else
 				{
@@ -137,11 +137,11 @@ declaration_block : identifier_list OF TYPEVAR type SEMICOLON
 	;
 identifier_list : IDENTIFIER
 				{
-					$$=create_node(NOTHING,IDENTIFIER_LIST,NULL,NULL,NULL);
+					$$=create_node($1,IDENTIFIER_LIST,NULL,NULL,NULL);
 				}
-				| IDENTIFIER COMMA identifier_list
+				| identifier_list COMMA IDENTIFIER
 				{
-					$$=create_node(NOTHING,IDENTIFIER_LIST,$3,NULL,NULL);
+					$$=create_node($3,IDENTIFIER_LIST,$1,NULL,NULL);
 				}
 	;
 real : NUMBER DOT NUMBER
@@ -193,7 +193,7 @@ statement : assignment_statement
 	;
 assignment_statement : expression POINTER IDENTIFIER
 		{
-			$$=create_node(NOTHING,ASSIGNMENT_STATEMENT,$1,NULL,NULL);
+			$$=create_node($3,ASSIGNMENT_STATEMENT,$1,NULL,NULL);
 		}
 	;
 if_statement : IF conditional THEN statement_list ENDIF
@@ -212,7 +212,7 @@ do_statement : DO statement_list WHILE conditional ENDDO
 	;
 for_statement : FOR IDENTIFIER IS expression BY expression TO expression DO statement_list ENDFOR
 		{
-			$$=create_node(NOTHING,FOR_STATEMENT,create_node(NOTHING,FOR_STATEMENT,$4,$6,$8),$10,NULL);
+			$$=create_node(NOTHING,FOR_STATEMENT,create_node($2,FOR_STATEMENT,$4,$6,$8),$10,NULL);
 		}
 	;
 while_statement : WHILE conditional DO statement_list ENDWHILE
@@ -240,7 +240,7 @@ output_list : value
 	;
 read_statement : READ BRA IDENTIFIER KET
 		{
-			$$=create_node(NOTHING,READ_STATEMENT,NULL,NULL,NULL);
+			$$=create_node($3,READ_STATEMENT,NULL,NULL,NULL);
 		}
 	;
 conditional : expression comparator expression
@@ -313,7 +313,7 @@ term : value
 	;
 value : IDENTIFIER
 		{
-			$$=create_node(NOTHING,VALUE,NULL,NULL,NULL);
+			$$=create_node($1,VALUE,NULL,NULL,NULL);
 		}
 | constant
 		{
@@ -395,60 +395,118 @@ void PrintTree(TERNARY_TREE t,int pIndent)
    PrintTree(t->third,pIndent);
 }
 #endif
-void GenerateCode(TERNARY_TREE t,int pIndent)
+void GenerateCode(TERNARY_TREE t)
 {
 	if(t==NULL) return;
 	switch(t->nodeIdentifier)
 	{
 		case(PROGRAM):
+			printf("int main(void) {\n");
+			GenerateCode(t->first);
+			printf("}\n");
 			return;
 		case(BLOCK):
+			GenerateCode(t->first);
+			printf(";\n");
+			GenerateCode(t->second);
 			return;
 		case(DECLARATION_BLOCK):
+			GenerateCode(t->first);
+			printf("OF TYPE");
+			GenerateCode(t->second);
+			printf(";");
 			return;
 		case(IDENTIFIER_LIST):
+			GenerateCode(t->first);
 			return;
 		case(REAL):
+			GenerateCode(t->first);
 			return;
 		case(STATEMENT_LIST):
+			GenerateCode(t->first);
 			return;
 		case(STATEMENT):
+			GenerateCode(t->first);
 			return;
 		case(ASSIGNMENT_STATEMENT):
+			if(t->item>=0 && t->item<SYMTABSIZE)
+			{
+				printf("%s", symTab[t->item]->identifier);
+			}
+			else
+			{
+				printf("UnknownIdentifier: %d",t->item);
+			}
+			printf(" = ");
+			GenerateCode(t->first);
 			return;
 		case(IF_STATEMENT):
+			printf("if (");
+			GenerateCode(t->first);
+			printf(") {\n");
+			GenerateCode(t->second);
+			printf("}\n");
 			return;
 		case(DO_STATEMENT):
+			printf("do {\n");
+			GenerateCode(t->first);
+			printf("} while (");
+			GenerateCode(t->second);
+			printf(");");
 			return;
 		case(FOR_STATEMENT):
+			GenerateCode(t->first);
 			return;
 		case(WHILE_STATEMENT):
+			printf("while (");
+			GenerateCode(t->first);
+			printf(") {\n");
+			GenerateCode(t->second);
+			printf("}\n");
 			return;
 		case(WRITE_STATEMENT):
+			GenerateCode(t->first);
 			return;
 		case(OUTPUT_LIST):
+			GenerateCode(t->first);
 			return;
 		case(READ_STATEMENT):
+			GenerateCode(t->first);
 			return;
 		case(CONDITIONAL):
+			GenerateCode(t->first);
 			return;
 		case(COMPARATOR):
+			if(t->item>=0 && t->item<SYMTABSIZE)
+			{
+				printf("%s",symTab[t->item]->identifier);
+			}
+			else
+			{
+				printf("UnknownIdentifier: %d",t->item);
+			}
 			return;
 		case(EXPRESSION):
+			GenerateCode(t->first);
 			return;
 		case(TERM):
+			GenerateCode(t->first);
 			return;
 		case(VALUE):
+			GenerateCode(t->first);
 			return;
 		case(CONSTANT):
+			GenerateCode(t->first);
 			return;
 		case(NUMBER_CONSTANT):
+			printf("%d",t->item);
 			return;
 		case(TYPE):
+			GenerateCode(t->first);
 			return;
 	}
-	GenerateCode(t->first,pIndent);
-	GenerateCode(t->second,pIndent);
-	GenerateCode(t->third,pIndent);
+	GenerateCode(t->first);
+	GenerateCode(t->second);
+	GenerateCode(t->third);
 }
 #include "lex.yy.c"
