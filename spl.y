@@ -22,13 +22,12 @@ int yydebug = 1;
   enum ParseTreeNodeType { PROGRAM, BLOCK, DECLARATION_BLOCK, IDENTIFIER_LIST, REAL, STATEMENT_LIST, STATEMENT,
   ASSIGNMENT_STATEMENT, IF_STATEMENT, DO_STATEMENT, FOR_STATEMENT, WHILE_STATEMENT, WRITE_STATEMENT, OUTPUT_LIST, READ_STATEMENT, CONDITIONAL, COMPARATOR,
   EXPRESSION, TERM, VALUE, CONSTANT, NUMBER_CONSTANT, TYPE, POSITIVE_REAL, NEGATIVE_REAL, DEFAULT_CONDITIONAL, DEFAULT_EXPRESSION, EXPRESSION_PLUS, EXPRESSION_MINUS,
-  DEFAULT_TERM, TIMES_TERM, DIVIDE_TERM, NORMAL_NUMBER, NEGATIVE_NUMBER, REAL_NUMBER, REAL_TYPE };
+  DEFAULT_TERM, TIMES_TERM, DIVIDE_TERM, NORMAL_NUMBER, NEGATIVE_NUMBER, REAL_NUMBER, REAL_TYPE,e_EQUALS,e_SHEVRONS,e_LESSTHAN,e_MORETHAN,e_LESSOREQUAL,e_MOREOREQUAL};
   
-  const char ParseTreeValues[36][21]={"PROGRAM", "BLOCK", "DECLARATION_BLOCK", "IDENTIFIER_LIST", "REAL", "STATEMENT_LIST", "STATEMENT",
+  const char *ParseTreeValues[]={"PROGRAM", "BLOCK", "DECLARATION_BLOCK", "IDENTIFIER_LIST", "REAL", "STATEMENT_LIST", "STATEMENT",
   "ASSIGNMENT_STATEMENT", "IF_STATEMENT", "DO_STATEMENT", "FOR_STATEMENT", "WHILE_STATEMENT", "WRITE_STATEMENT", "OUTPUT_LIST", "READ_STATEMENT", "CONDITIONAL", "COMPARATOR",
   "EXPRESSION", "TERM", "VALUE", "CONSTANT", "NUMBER_CONSTANT", "TYPE", "POSITIVE_REAL", "NEGATIVE_REAL", "DEFAULT_CONDITIONAL", "DEFAULT_EXPRESSION", "EXPRESSION_PLUS", "EXPRESSION_MINUS",
-  "DEFAULT_TERM", "TIMES_TERM", "DIVIDE_TERM", "NORMAL_NUMBER", "NEGATIVE_NUMBER", "REAL_NUMBER", "REAL_TYPE"};
-  int indent=0;
+  "DEFAULT_TERM", "TIMES_TERM", "DIVIDE_TERM", "NORMAL_NUMBER", "NEGATIVE_NUMBER", "REAL_NUMBER", "REAL_TYPE","e_EQUALS","e_SHEVRONS","e_LESSTHAN","e_MORETHAN","e_LESSOREQUAL","e_MOREOREQUAL"};
 
 #ifndef TRUE
 #define TRUE 1
@@ -58,8 +57,10 @@ typedef  TREE_NODE        *TERNARY_TREE;
 /* ------------- forward declarations --------------------------- */
 
 TERNARY_TREE create_node(int,int,TERNARY_TREE,TERNARY_TREE,TERNARY_TREE);
+#ifdef DEBUG
 void PrintTree(TERNARY_TREE,int);
-
+#endif
+void GenerateCode(TERNARY_TREE,int);
 /* ------------- symbol table definition --------------------------- */
 
 struct symTabNode {
@@ -102,10 +103,18 @@ int currentSymTabSize = 0;
 program : IDENTIFIER COLON block ENDPROGRAM IDENTIFIER DOT
 			{
 				TERNARY_TREE ParseTree;
-				ParseTree= create_node(NOTHING,PROGRAM,$3,NULL,NULL);
-				#ifdef DEBUG
-				PrintTree(ParseTree,indent);
-				#endif
+				if($1==$5)
+				{
+					ParseTree= create_node($1,PROGRAM,$3,NULL,NULL);
+					#ifdef DEBUG
+					PrintTree(ParseTree,0);
+					#endif
+					GenerateCode(ParseTree,0);
+				}
+				else
+				{
+					printf("Program IDENTIFIER is not called at the start and end of the program!");
+				}
 			}
 	;
 block : DECLARATIONS declaration_block CODE statement_list
@@ -253,27 +262,27 @@ conditional : expression comparator expression
 	;
 comparator : EQUALS
 		{
-			$$=create_node(EQUALS,COMPARATOR,NULL,NULL,NULL);
+			$$=create_node(e_EQUALS,COMPARATOR,NULL,NULL,NULL);
 		}
 | SHEVRONS
 		{
-			$$=create_node(SHEVRONS,COMPARATOR,NULL,NULL,NULL);
+			$$=create_node(e_SHEVRONS,COMPARATOR,NULL,NULL,NULL);
 		}
 | LESSTHAN
 		{
-			$$=create_node(LESSTHAN,COMPARATOR,NULL,NULL,NULL);
+			$$=create_node(e_LESSTHAN,COMPARATOR,NULL,NULL,NULL);
 		}
 | MORETHAN
 		{
-			$$=create_node(MORETHAN,COMPARATOR,NULL,NULL,NULL);
+			$$=create_node(e_MORETHAN,COMPARATOR,NULL,NULL,NULL);
 		}
 | LESSOREQUAL
 		{
-			$$=create_node(LESSOREQUAL,COMPARATOR,NULL,NULL,NULL);
+			$$=create_node(e_LESSOREQUAL,COMPARATOR,NULL,NULL,NULL);
 		}
 | MOREOREQUAL
 		{
-			$$=create_node(MOREOREQUAL,COMPARATOR,NULL,NULL,NULL);
+			$$=create_node(e_MOREOREQUAL,COMPARATOR,NULL,NULL,NULL);
 		}
 	;
 expression : term
@@ -367,34 +376,79 @@ TERNARY_TREE create_node(int ival, int case_identifier, TERNARY_TREE p1,
     t->third = p3;
     return (t);
 }
-
-void PrintTree(TERNARY_TREE t,int pindent)
+#ifdef DEBUG
+void PrintTree(TERNARY_TREE t,int pIndent)
 {
    if (t == NULL) return;
-   for(int i=0;i<pindent; i++)
+   for(int i=0;i<pIndent; i++)
    {
-		printf("	");
+		printf(" ");
    }
-   if(t->item!=-1){
-      printf("Item_Name:%s", ParseTreeValues[t->item]);
-   }
-   printf(" nodeID:%s",ParseTreeValues[t->nodeIdentifier]);
-   if(t->first!=NULL)
-   {
-		printf(" First_Child:%s",ParseTreeValues[t->first->nodeIdentifier]);
-   }
-   if(t->second!=NULL)
-   {
-		printf(" Second_Child:%s",ParseTreeValues[t->second->nodeIdentifier]);
-   }
-      if(t->third!=NULL)
-   {
-		printf(" Third_Child:%s",ParseTreeValues[t->third->nodeIdentifier]);
+      printf("nodeID:%s",ParseTreeValues[t->nodeIdentifier]);
+   if(t->item!=NOTHING){
+      printf(" Item_Name:%s", ParseTreeValues[t->item]);
    }
    printf("\n");
-   pindent++;
-   PrintTree(t->first,pindent);
-   PrintTree(t->second,pindent);
-   PrintTree(t->third,pindent);
+   pIndent++;
+   PrintTree(t->first,pIndent);
+   PrintTree(t->second,pIndent);
+   PrintTree(t->third,pIndent);
+}
+#endif
+void GenerateCode(TERNARY_TREE t,int pIndent)
+{
+	if(t==NULL) return;
+	switch(t->nodeIdentifier)
+	{
+		case(PROGRAM):
+			return;
+		case(BLOCK):
+			return;
+		case(DECLARATION_BLOCK):
+			return;
+		case(IDENTIFIER_LIST):
+			return;
+		case(REAL):
+			return;
+		case(STATEMENT_LIST):
+			return;
+		case(STATEMENT):
+			return;
+		case(ASSIGNMENT_STATEMENT):
+			return;
+		case(IF_STATEMENT):
+			return;
+		case(DO_STATEMENT):
+			return;
+		case(FOR_STATEMENT):
+			return;
+		case(WHILE_STATEMENT):
+			return;
+		case(WRITE_STATEMENT):
+			return;
+		case(OUTPUT_LIST):
+			return;
+		case(READ_STATEMENT):
+			return;
+		case(CONDITIONAL):
+			return;
+		case(COMPARATOR):
+			return;
+		case(EXPRESSION):
+			return;
+		case(TERM):
+			return;
+		case(VALUE):
+			return;
+		case(CONSTANT):
+			return;
+		case(NUMBER_CONSTANT):
+			return;
+		case(TYPE):
+			return;
+	}
+	GenerateCode(t->first,pIndent);
+	GenerateCode(t->second,pIndent);
+	GenerateCode(t->third,pIndent);
 }
 #include "lex.yy.c"
