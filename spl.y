@@ -418,12 +418,24 @@ void GenerateCode(TERNARY_TREE t)
 			return;
 		case(IDENTIFIER_LIST):
 			GenerateCode(t->first);
+			printf(",");
+			GenerateCode(t->second);
 			return;
 		case(REAL):
-			GenerateCode(t->first);
+			if(t->item>=0 && t->item<SYMTABSIZE)
+			{
+				printf("%s", symTab[t->item]->number);
+			}
+			else
+			{
+				printf("UnknownSymbol: %d",t->item); 
+			}
 			return;
 		case(STATEMENT_LIST):
 			GenerateCode(t->first);
+			printf(";");
+			GenerateCode(t->second);
+			printf(";");
 			return;
 		case(STATEMENT):
 			GenerateCode(t->first);

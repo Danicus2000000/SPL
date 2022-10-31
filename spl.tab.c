@@ -2357,7 +2357,7 @@ void GenerateCode(TERNARY_TREE t)
 		case(ASSIGNMENT_STATEMENT):
 			if(t->item>=0 && t->item<SYMTABSIZE)
 			{
-				printf("%s",symTab[t->item]->identifier);
+				printf("%s", symTab[t->item]->identifier);
 			}
 			else
 			{
