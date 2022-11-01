@@ -1,9 +1,9 @@
-Lex Test:
+Lexical Analyser Test:
 flex spl.l
 gcc -o spl.exe -DPRINT lex.yy.c -lfl
 spl.exe < (spl_example_file)
 
-Yacc Test:
+Parse Tree Test:
 bison spl.y --debug
 gcc -o spl.exe spl.c spl.tab.c -lfl -DDEBUG
 spl.exe < (spl_example_file)
@@ -12,5 +12,6 @@ Full Compile:
 flex spl.l
 bison spl.y
 gcc -o spl.exe spl.c spl.tab.c -lfl 
-spl.exe < (spl_example_file)
+spl.exe < (spl_example_file) > (spl_output_name).c
+gcc -o (program_name).exe (spl_output_name).c -lfl
 

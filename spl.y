@@ -65,6 +65,10 @@ void GenerateCode(TERNARY_TREE);
 
 struct symTabNode {
     char identifier[IDLENGTH];
+	int number[IDLENGTH];
+	char comparator[IDLENGTH];
+	char* type[IDLENGTH];
+	char* value[IDLENGTH];
 };
 
 typedef  struct symTabNode SYMTABNODE;
@@ -414,7 +418,6 @@ void GenerateCode(TERNARY_TREE t)
 			GenerateCode(t->first);
 			printf("OF TYPE");
 			GenerateCode(t->second);
-			printf(";");
 			return;
 		case(IDENTIFIER_LIST):
 			GenerateCode(t->first);
@@ -454,10 +457,52 @@ void GenerateCode(TERNARY_TREE t)
 			GenerateCode(t->first);
 			printf("} while (");
 			GenerateCode(t->second);
-			printf(");");
+			printf(")");
 			return;
 		case(FOR_STATEMENT):
-			GenerateCode(t->first);
+			printf("for (");
+			if(t->item>=0 && t->item<SYMTABSIZE)
+			{
+				printf("%s", symTab[t->item]->type);
+			}
+			else
+			{
+				printf("UnknownIdentifier: %d",t->item);
+			}
+			printf(" ");
+			if(t->item>=0 && t->item<SYMTABSIZE)
+			{
+				printf("%s", symTab[t->item]->identifier);
+			}
+			else
+			{
+				printf("UnknownIdentifier: %d",t->item);
+			}
+			printf("=");
+			if(t->item>=0 && t->item<SYMTABSIZE)
+			{
+				printf("%s", symTab[t->item]->value);
+			}
+			else
+			{
+				printf("UnknownIdentifier: %d",t->item);
+			}
+			printf(";");
+			GenerateCode(t->first->first);
+			if(t->item>=0 && t->item<SYMTABSIZE)
+			{
+				printf("%s", symTab[t->item]->comparator);
+			}
+			else
+			{
+				printf("UnknownIdentifier: %d",t->item);
+			}
+			GenerateCode(t->first->second);
+			printf(";");
+			GenerateCode(t->first->third);
+			printf("){\n");
+			GenerateCode(t->second);
+			printf("\n}");
 			return;
 		case(WHILE_STATEMENT):
 			printf("while (");
@@ -469,7 +514,7 @@ void GenerateCode(TERNARY_TREE t)
 		case(WRITE_STATEMENT):
 			printf("printf(");
 			GenerateCode(t->first);
-			printf(");");
+			printf(")");
 			return;
 		case(OUTPUT_LIST):
 			GenerateCode(t->first);
@@ -479,7 +524,7 @@ void GenerateCode(TERNARY_TREE t)
 		case(READ_STATEMENT):
 			printf("scanf(\"%s\",");
 			GenerateCode(t->first);
-			printf(");");
+			printf(")");
 			return;
 		case(CONDITIONAL):
 			GenerateCode(t->first);

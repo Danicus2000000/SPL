@@ -65,6 +65,10 @@ void GenerateCode(TERNARY_TREE);
 
 struct symTabNode {
     char identifier[IDLENGTH];
+	int number[IDLENGTH];
+	char comparator[IDLENGTH];
+	char* type[IDLENGTH];
+	char* value[IDLENGTH];
 };
 
 typedef  struct symTabNode SYMTABNODE;
@@ -414,28 +418,18 @@ void GenerateCode(TERNARY_TREE t)
 			GenerateCode(t->first);
 			printf("OF TYPE");
 			GenerateCode(t->second);
-			printf(";");
+			printf("");
 			return;
 		case(IDENTIFIER_LIST):
 			GenerateCode(t->first);
-			printf(",");
-			GenerateCode(t->second);
 			return;
 		case(REAL):
-			if(t->item>=0 && t->item<SYMTABSIZE)
-			{
-				printf("%s", symTab[t->item]->number);
-			}
-			else
-			{
-				printf("UnknownSymbol: %d",t->item); 
-			}
+			GenerateCode(t->first);
 			return;
 		case(STATEMENT_LIST):
 			GenerateCode(t->first);
 			printf(";");
 			GenerateCode(t->second);
-			printf(";");
 			return;
 		case(STATEMENT):
 			GenerateCode(t->first);
@@ -464,10 +458,52 @@ void GenerateCode(TERNARY_TREE t)
 			GenerateCode(t->first);
 			printf("} while (");
 			GenerateCode(t->second);
-			printf(");");
+			printf(")");
 			return;
 		case(FOR_STATEMENT):
-			GenerateCode(t->first);
+			printf("for (");
+			if(t->item>=0 && t->item<SYMTABSIZE)
+			{
+				printf("%s", symTab[t->item]->type);
+			}
+			else
+			{
+				printf("UnknownIdentifier: %d",t->item);
+			}
+			printf(" ");
+			if(t->item>=0 && t->item<SYMTABSIZE)
+			{
+				printf("%s", symTab[t->item]->identifier);
+			}
+			else
+			{
+				printf("UnknownIdentifier: %d",t->item);
+			}
+			printf("=");
+			if(t->item>=0 && t->item<SYMTABSIZE)
+			{
+				printf("%s", symTab[t->item]->value);
+			}
+			else
+			{
+				printf("UnknownIdentifier: %d",t->item);
+			}
+			printf(";");
+			GenerateCode(t->first->first);
+			if(t->item>=0 && t->item<SYMTABSIZE)
+			{
+				printf("%s", symTab[t->item]->comparator);
+			}
+			else
+			{
+				printf("UnknownIdentifier: %d",t->item);
+			}
+			GenerateCode(t->first->second);
+			printf(";");
+			GenerateCode(t->first->third);
+			printf("){\n");
+			GenerateCode(t->second);
+			printf("\n}");
 			return;
 		case(WHILE_STATEMENT):
 			printf("while (");
@@ -477,21 +513,29 @@ void GenerateCode(TERNARY_TREE t)
 			printf("}\n");
 			return;
 		case(WRITE_STATEMENT):
+			printf("printf(");
 			GenerateCode(t->first);
+			printf(")");
 			return;
 		case(OUTPUT_LIST):
 			GenerateCode(t->first);
+			printf(",");
+			GenerateCode(t->second);
 			return;
 		case(READ_STATEMENT):
+			printf("scanf(\"%s\",");
 			GenerateCode(t->first);
+			printf(")");
 			return;
 		case(CONDITIONAL):
 			GenerateCode(t->first);
+			GenerateCode(t->second);
+			GenerateCode(t->third);
 			return;
 		case(COMPARATOR):
 			if(t->item>=0 && t->item<SYMTABSIZE)
 			{
-				printf("%s",symTab[t->item]->identifier);
+				printf("%s",symTab[t->item]->comparator);
 			}
 			else
 			{
