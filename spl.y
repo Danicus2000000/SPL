@@ -424,6 +424,8 @@ void GenerateCode(TERNARY_TREE t)
 			return;
 		case(STATEMENT_LIST):
 			GenerateCode(t->first);
+			printf(";");
+			GenerateCode(t->second);
 			return;
 		case(STATEMENT):
 			GenerateCode(t->first);
@@ -465,21 +467,29 @@ void GenerateCode(TERNARY_TREE t)
 			printf("}\n");
 			return;
 		case(WRITE_STATEMENT):
+			printf("printf(");
 			GenerateCode(t->first);
+			printf(");");
 			return;
 		case(OUTPUT_LIST):
 			GenerateCode(t->first);
+			printf(",");
+			GenerateCode(t->second);
 			return;
 		case(READ_STATEMENT):
+			printf("scanf(\"%s\",");
 			GenerateCode(t->first);
+			printf(");");
 			return;
 		case(CONDITIONAL):
 			GenerateCode(t->first);
+			GenerateCode(t->second);
+			GenerateCode(t->third);
 			return;
 		case(COMPARATOR):
 			if(t->item>=0 && t->item<SYMTABSIZE)
 			{
-				printf("%s",symTab[t->item]->identifier);
+				printf("%s",symTab[t->item]->comparator);
 			}
 			else
 			{

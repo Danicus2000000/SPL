@@ -2357,7 +2357,7 @@ void GenerateCode(TERNARY_TREE t)
 		case(ASSIGNMENT_STATEMENT):
 			if(t->item>=0 && t->item<SYMTABSIZE)
 			{
-				printf("%s",symTab[t->item]->identifier);
+				printf("%s", symTab[t->item]->identifier);
 			}
 			else
 			{
@@ -2391,16 +2391,24 @@ void GenerateCode(TERNARY_TREE t)
 			printf("}\n");
 			return;
 		case(WRITE_STATEMENT):
+			printf("Write (");
 			GenerateCode(t->first);
+			printf(");");
 			return;
 		case(OUTPUT_LIST):
 			GenerateCode(t->first);
+			printf(",");
+			GenerateCode(t->second);
 			return;
 		case(READ_STATEMENT):
+			printf("Read (");
 			GenerateCode(t->first);
+			printf(");");
 			return;
 		case(CONDITIONAL):
 			GenerateCode(t->first);
+			GenerateCode(t->second);
+			GenerateCode(t->third);
 			return;
 		case(COMPARATOR):
 			if(t->item>=0 && t->item<SYMTABSIZE)
