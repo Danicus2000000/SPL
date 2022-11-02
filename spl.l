@@ -67,11 +67,23 @@ NOT TOKEN(NOT)
 AND TOKEN(AND)
 OR TOKEN(OR)
 REAL TOKEN(REALTYPE)
-{character} TOKEN(CHARACTER)
 CHARACTER TOKEN(CHARACTERTYPE)
 INTEGER TOKEN (INTEGERTYPE)
+{character} TOKEN(CHARACTER)
+{
+	yylval.iVal=installId(yytext);
+	return(CHARACTER);
+}
 {number} TOKEN(NUMBER)
+{
+	yylval.iVal=installId(atoi(yytext));
+	return NUMBER;
+}
 {identifier} TOKEN(IDENTIFIER)
+{
+	yylval.iVal=installId(yytext);
+	return(IDENTIFIER);
+}
 . printf("Error: Unexpected symbol in lexical analyser: %s (%d)\n",yytext,yytext[0]);
 %%
 #ifndef PRINT

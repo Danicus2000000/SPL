@@ -98,9 +98,9 @@ int currentSymTabSize = 0;
 }
 %token COLON DOT LESSTHAN MORETHAN PLUS MINUS SEMICOLON COMMA POINTER BRA KET LESSOREQUAL MOREOREQUAL
 	SHEVRONS APOSTROPHE TIMES DIVIDE EQUALS ENDPROGRAM DECLARATIONS CODE OF TYPEVAR IF THEN ENDIF ELSE DO WHILE ENDDO
-	FOR IS BY TO ENDFOR ENDWHILE WRITE NEWLINE READ NOT AND OR REALTYPE CHARACTER CHARACTERTYPE INTEGERTYPE
+	FOR IS BY TO ENDFOR ENDWHILE WRITE NEWLINE READ NOT AND OR REALTYPE CHARACTERTYPE INTEGERTYPE
 
-%token<iVal> IDENTIFIER NUMBER
+%token<iVal> IDENTIFIER NUMBER CHARACTER
 
 %type<tVal> program block declaration_block identifier_list real statement_list statement assignment_statement
 	if_statement do_statement for_statement while_statement write_statement
@@ -424,6 +424,15 @@ void GenerateCode(TERNARY_TREE t)
 			return;
 		case(IDENTIFIER_LIST):
 			GenerateCode(t->first);
+			printf(",");
+			if(t->item>=0 && t->item<SYMTABSIZE)
+			{
+				printf("%s", symTab[t->item]->identifier);
+			}
+			else
+			{
+				printf("UnknownIdentifier: %d",t->item);
+			}
 			return;
 		case(REAL):
 			GenerateCode(t->first);
@@ -584,7 +593,7 @@ void GenerateCode(TERNARY_TREE t)
 		case(NUMBER_CONSTANT):
 			if(t->item>=0 && t->item<SYMTABSIZE)
 			{
-				printf("%s",symTab[t->item]->number);
+				printf("%d",symTab[t->item]->number);
 			}
 			else
 			{
