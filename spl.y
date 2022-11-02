@@ -67,8 +67,10 @@ struct symTabNode {
     char identifier[IDLENGTH];
 	int number[IDLENGTH];
 	char comparator[IDLENGTH];
-	char* type[IDLENGTH];
-	char* value[IDLENGTH];
+	char type[IDLENGTH];
+	char value[IDLENGTH];
+	char operator[IDLENGTH];
+	char character[IDLENGTH];
 };
 
 typedef  struct symTabNode SYMTABNODE;
@@ -117,7 +119,7 @@ program : IDENTIFIER COLON block ENDPROGRAM IDENTIFIER DOT
 				}
 				else
 				{
-					printf("Program IDENTIFIER is not called at the start and end of the program!");
+					fprintf(stderr,"Program IDENTIFIER is not called at the start and end of the program!");
 				}
 			}
 	;
@@ -418,6 +420,7 @@ void GenerateCode(TERNARY_TREE t)
 			GenerateCode(t->first);
 			printf("OF TYPE");
 			GenerateCode(t->second);
+			printf(";");
 			return;
 		case(IDENTIFIER_LIST):
 			GenerateCode(t->first);
@@ -543,21 +546,60 @@ void GenerateCode(TERNARY_TREE t)
 			return;
 		case(EXPRESSION):
 			GenerateCode(t->first);
+			if(t->item>=0 && t->item<SYMTABSIZE)
+			{
+				printf("%s",symTab[t->item]->operator);
+			}
+			else
+			{
+				printf("UnknownIdentifier: %d",t->item);
+			}
+			GenerateCode(t->second);
 			return;
 		case(TERM):
 			GenerateCode(t->first);
+			if(t->item>=0 && t->item<SYMTABSIZE)
+			{
+				printf("%s",symTab[t->item]->operator);
+			}
+			else
+			{
+				printf("UnknownIdentifier: %d",t->item);
+			}
+			GenerateCode(t->second);
 			return;
 		case(VALUE):
 			GenerateCode(t->first);
 			return;
 		case(CONSTANT):
-			GenerateCode(t->first);
+			if(t->item>=0 && t->item<SYMTABSIZE)
+			{
+				printf("%s",symTab[t->item]->character);
+			}
+			else
+			{
+				GenerateCode(t->first);
+			}
 			return;
 		case(NUMBER_CONSTANT):
-			printf("%d",t->item);
+			if(t->item>=0 && t->item<SYMTABSIZE)
+			{
+				printf("%s",symTab[t->item]->number);
+			}
+			else
+			{
+				GenerateCode(t->first);
+			}
 			return;
 		case(TYPE):
-			GenerateCode(t->first);
+			if(t->item>=0 && t->item<SYMTABSIZE)
+			{
+				printf("%s",symTab[t->item]->type);
+			}
+			else
+			{
+				printf("UnknownIdentifier: %d",t->item);
+			}
 			return;
 	}
 	GenerateCode(t->first);
