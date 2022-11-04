@@ -74,15 +74,15 @@ INTEGER TOKEN (INTEGERTYPE)
 	yylval.iVal=installId(yytext);
 	return(CHARACTER);
 }
-{number} TOKEN(NUMBER)
-{
-	yylval.iVal=installId(atoi(yytext));
-	return NUMBER;
-}
 {identifier} TOKEN(IDENTIFIER)
 {
 	yylval.iVal=installId(yytext);
 	return(IDENTIFIER);
+}
+{number} TOKEN(NUMBER)
+{
+	yylval.iVal=installId(atoi(yytext));
+	return(NUMBER);
 }
 . printf("Error: Unexpected symbol in lexical analyser: %s (%d)\n",yytext,yytext[0]);
 %%

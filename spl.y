@@ -22,12 +22,12 @@ int yydebug = 1;
   enum ParseTreeNodeType { PROGRAM, BLOCK, DECLARATION_BLOCK, IDENTIFIER_LIST, REAL, STATEMENT_LIST, STATEMENT,
   ASSIGNMENT_STATEMENT, IF_STATEMENT, DO_STATEMENT, FOR_STATEMENT, WHILE_STATEMENT, WRITE_STATEMENT, OUTPUT_LIST, READ_STATEMENT, CONDITIONAL, COMPARATOR,
   EXPRESSION, TERM, VALUE, CONSTANT, NUMBER_CONSTANT, TYPE, POSITIVE_REAL, NEGATIVE_REAL, DEFAULT_CONDITIONAL, DEFAULT_EXPRESSION, EXPRESSION_PLUS, EXPRESSION_MINUS,
-  DEFAULT_TERM, TIMES_TERM, DIVIDE_TERM, NORMAL_NUMBER, NEGATIVE_NUMBER, REAL_NUMBER, REAL_TYPE,e_EQUALS,e_SHEVRONS,e_LESSTHAN,e_MORETHAN,e_LESSOREQUAL,e_MOREOREQUAL};
+  DEFAULT_TERM, TIMES_TERM, DIVIDE_TERM, NORMAL_NUMBER, NEGATIVE_NUMBER, REAL_NUMBER, REAL_TYPE,e_EQUALS,e_SHEVRONS,e_LESSTHAN,e_MORETHAN,e_LESSOREQUAL,e_MOREOREQUAL,CHARACTER_CONSTANT};
   
   const char *ParseTreeValues[]={"PROGRAM", "BLOCK", "DECLARATION_BLOCK", "IDENTIFIER_LIST", "REAL", "STATEMENT_LIST", "STATEMENT",
   "ASSIGNMENT_STATEMENT", "IF_STATEMENT", "DO_STATEMENT", "FOR_STATEMENT", "WHILE_STATEMENT", "WRITE_STATEMENT", "OUTPUT_LIST", "READ_STATEMENT", "CONDITIONAL", "COMPARATOR",
   "EXPRESSION", "TERM", "VALUE", "CONSTANT", "NUMBER_CONSTANT", "TYPE", "POSITIVE_REAL", "NEGATIVE_REAL", "DEFAULT_CONDITIONAL", "DEFAULT_EXPRESSION", "EXPRESSION_PLUS", "EXPRESSION_MINUS",
-  "DEFAULT_TERM", "TIMES_TERM", "DIVIDE_TERM", "NORMAL_NUMBER", "NEGATIVE_NUMBER", "REAL_NUMBER", "REAL_TYPE","e_EQUALS","e_SHEVRONS","e_LESSTHAN","e_MORETHAN","e_LESSOREQUAL","e_MOREOREQUAL"};
+  "DEFAULT_TERM", "TIMES_TERM", "DIVIDE_TERM", "NORMAL_NUMBER", "NEGATIVE_NUMBER", "REAL_NUMBER", "REAL_TYPE","e_EQUALS","e_SHEVRONS","e_LESSTHAN","e_MORETHAN","e_LESSOREQUAL","e_MOREOREQUAL","CHARACTER_CONSTANT"};
 
 #ifndef TRUE
 #define TRUE 1
@@ -65,12 +65,6 @@ void GenerateCode(TERNARY_TREE);
 
 struct symTabNode {
     char identifier[IDLENGTH];
-	int number[IDLENGTH];
-	char comparator[IDLENGTH];
-	char type[IDLENGTH];
-	char value[IDLENGTH];
-	char operator[IDLENGTH];
-	char character[IDLENGTH];
 };
 
 typedef  struct symTabNode SYMTABNODE;
@@ -104,7 +98,7 @@ int currentSymTabSize = 0;
 
 %type<tVal> program block declaration_block identifier_list real statement_list statement assignment_statement
 	if_statement do_statement for_statement while_statement write_statement
-	output_list read_statement conditional comparator expression term value constant number_constant type
+	output_list read_statement conditional comparator expression term value constant number_constant type character_constant
 %%
 program : IDENTIFIER COLON block ENDPROGRAM IDENTIFIER DOT
 			{
@@ -332,11 +326,11 @@ value : IDENTIFIER
 	;
 constant : number_constant
 		{
-			$$=create_node(NOTHING,CONSTANT,$1,NULL,NULL);
+			$$=create_node(NORMAL_NUMBER,CONSTANT,$1,NULL,NULL);
 		}
-| CHARACTER
+| character_constant
 		{
-			$$=create_node(NOTHING,CONSTANT,NULL,NULL,NULL);
+			$$=create_node(CHARACTER_CONSTANT,CONSTANT,$1,NULL,NULL);
 		}
 	;
 number_constant : NUMBER
@@ -364,6 +358,10 @@ type : CHARACTERTYPE
 		{
 			$$=create_node(REAL_TYPE,TYPE,NULL,NULL,NULL);
 		}
+character_constant : CHARACTER
+{
+	$$=create_node($1,CHARACTER_CONSTANT,NULL,NULL,NULL);
+}
 %%
 /* Code for routines for managing the Parse Tree */
 TERNARY_TREE create_node(int ival, int case_identifier, TERNARY_TREE p1,
@@ -475,7 +473,7 @@ void GenerateCode(TERNARY_TREE t)
 			printf("for (");
 			if(t->item>=0 && t->item<SYMTABSIZE)
 			{
-				printf("%s", symTab[t->item]->type);
+				printf("%s", symTab[t->item]->identifier);
 			}
 			else
 			{
@@ -493,7 +491,7 @@ void GenerateCode(TERNARY_TREE t)
 			printf("=");
 			if(t->item>=0 && t->item<SYMTABSIZE)
 			{
-				printf("%s", symTab[t->item]->value);
+				printf("%s", symTab[t->item]->identifier);
 			}
 			else
 			{
@@ -503,7 +501,7 @@ void GenerateCode(TERNARY_TREE t)
 			GenerateCode(t->first->first);
 			if(t->item>=0 && t->item<SYMTABSIZE)
 			{
-				printf("%s", symTab[t->item]->comparator);
+				printf("%s", symTab[t->item]->identifier);
 			}
 			else
 			{
@@ -524,13 +522,17 @@ void GenerateCode(TERNARY_TREE t)
 			printf("}\n");
 			return;
 		case(WRITE_STATEMENT):
-			printf("printf(");
+			if(t->first!=NULL){
+			printf("printf(\"");
 			GenerateCode(t->first);
-			printf(")");
+			printf("\")");
+			}
+			else{
+				printf("printf(\"\\n\")");
+			}
 			return;
 		case(OUTPUT_LIST):
 			GenerateCode(t->first);
-			printf(",");
 			GenerateCode(t->second);
 			return;
 		case(READ_STATEMENT):
@@ -546,7 +548,7 @@ void GenerateCode(TERNARY_TREE t)
 		case(COMPARATOR):
 			if(t->item>=0 && t->item<SYMTABSIZE)
 			{
-				printf("%s",symTab[t->item]->comparator);
+				printf("%s",symTab[t->item]->identifier);
 			}
 			else
 			{
@@ -557,7 +559,7 @@ void GenerateCode(TERNARY_TREE t)
 			GenerateCode(t->first);
 			if(t->item>=0 && t->item<SYMTABSIZE)
 			{
-				printf("%s",symTab[t->item]->operator);
+				printf("%s",symTab[t->item]->identifier);
 			}
 			else
 			{
@@ -569,7 +571,7 @@ void GenerateCode(TERNARY_TREE t)
 			GenerateCode(t->first);
 			if(t->item>=0 && t->item<SYMTABSIZE)
 			{
-				printf("%s",symTab[t->item]->operator);
+				printf("%s",symTab[t->item]->identifier);
 			}
 			else
 			{
@@ -581,19 +583,12 @@ void GenerateCode(TERNARY_TREE t)
 			GenerateCode(t->first);
 			return;
 		case(CONSTANT):
-			if(t->item>=0 && t->item<SYMTABSIZE)
-			{
-				printf("%s",symTab[t->item]->character);
-			}
-			else
-			{
-				GenerateCode(t->first);
-			}
+			GenerateCode(t->first);
 			return;
 		case(NUMBER_CONSTANT):
 			if(t->item>=0 && t->item<SYMTABSIZE)
 			{
-				printf("%d",symTab[t->item]->number);
+				printf("%d",symTab[t->item]->identifier);
 			}
 			else
 			{
@@ -603,11 +598,21 @@ void GenerateCode(TERNARY_TREE t)
 		case(TYPE):
 			if(t->item>=0 && t->item<SYMTABSIZE)
 			{
-				printf("%s",symTab[t->item]->type);
+				printf("%s",symTab[t->item]->identifier);
 			}
 			else
 			{
 				printf("UnknownIdentifier: %d",t->item);
+			}
+			return;
+		case(CHARACTER_CONSTANT):
+			if(t->item>=0 && t->item<SYMTABSIZE)
+			{
+				printf("%s",symTab[t->item]->identifier);
+			}
+			else
+			{
+				GenerateCode(t->first);
 			}
 			return;
 	}
