@@ -405,6 +405,8 @@ void GenerateCode(TERNARY_TREE t)
 	switch(t->nodeIdentifier)
 	{
 		case(e_PROGRAM):
+			printf("#include <stdio.h>\n");
+			printf("#include <stdlib.h>\n");
 			printf("int main(void) {\n");
 			GenerateCode(t->first);
 			printf("}\n");
