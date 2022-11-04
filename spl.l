@@ -1,28 +1,42 @@
-delim [\t\r\n" "]
+delim [\t\r\n]
 ws {delim}+
 digit [0-9]
 number {digit}+
 letter [A-Za-z]
-character "'"{letter}"'"
+character_actual "'"{letter}"'"
 decimal [.]
+decimal_number {number}"."{number}
+negative_decimal_number "-"{number}"."{number}
+negative_number "-"{number}
 identifier {letter}({letter}|{number})*
 %{
 #ifdef PRINT
 #define TOKEN(t) printf("Token: " #t "\n");
-#define NUMBER_TOKEN(t) printf("NUMBER %d Token: " #t "\n",atoi(yytext));
-#define IDENTIFIER_TOKEN(t) printf("IDENTIFIER %s Token: " #t "\n",yytext);
-#define TOKEN(t) printf("Token: " #t "\n");
+#define NUMBER_TOKEN(t) printf("Number %d Token: " #t "\n",yytext);
+#define NEGATIVE_NUMBER_TOKEN(t) printf("Negative Number %d Token: " #t "\n",yytext);
+#define DECIMAL_TOKEN(t) printf("decimal %d Token: " #t "\n",yytext);
+#define NEGATIVE_DECIMAL_TOKEN(t) printf("Negative decimal %d Token: " #t "\n",yytext);
+#define CHARACTER_TOKEN(t) printf("Character %c Token: " #t "\n", yytext);
+#define IDENTIFIER_TOKEN(t) printf("Identifier %s Token: " #t "\n", yytext);
 #else
-#define TOKEN(t) return (t);
-#define NUMBER_TOKEN(t) yylval.iVal=atoi(yytext); return(t);
-#define IDENTIFIER_TOKEN(t) yylval.iVal=installId(yytext); return (t);
+#define TOKEN(t) return(t);
+#define NUMBER_TOKEN(t) yylval.iVal = installId(yytext); return(t);
+#define NEGATIVE_NUMBER_TOKEN(t) yylval.iVal = installId(yytext); return(t);
+#define DECIMAL_TOKEN(t) yylval.iVal = installId(yytext); return(t);
+#define NEGATIVE_DECIMAL_TOKEN(t) yylval.iVal = installId(yytext); return(t);
+#define CHARACTER_TOKEN(t) yylval.iVal = installId(yytext); return(t);
+#define IDENTIFIER_TOKEN(t) yylval.iVal = installId(yytext); return(t);
 #endif
+#ifndef PRINT
 #include <string.h>
 extern SYMTABNODEPTR symTab[SYMTABSIZE];
 extern int currentSymTabSize;
-int installId(char *);
+int installId(char*);
+#endif
 %}
+
 %%
+
 {ws} ;
 ":"  TOKEN(COLON)
 "."  TOKEN(DOT)
@@ -69,22 +83,31 @@ OR TOKEN(OR)
 REAL TOKEN(REALTYPE)
 CHARACTER TOKEN(CHARACTERTYPE)
 INTEGER TOKEN (INTEGERTYPE)
-{character} TOKEN(CHARACTER)
-{
-	yylval.iVal=installId(yytext);
-	return(CHARACTER);
+{identifier} {
+    yylval.iVal = installId(yytext);
+    return(IDENTIFIER);
 }
-{identifier} TOKEN(IDENTIFIER)
-{
-	yylval.iVal=installId(yytext);
-	return(IDENTIFIER);
+{character_actual} {
+    yylval.iVal = installId(yytext);
+    return(CHARACTER_ACTUAL);
 }
-{number} TOKEN(NUMBER)
-{
-	yylval.iVal=installId(atoi(yytext));
-	return(NUMBER);
+{decimal_number} {
+    yylval.iVal = installId(yytext);
+    return(DECIMAL_NUMBER);
 }
-. printf("Error: Unexpected symbol in lexical analyser: %s (%d)\n",yytext,yytext[0]);
+{negative_decimal_number} {
+    yylval.iVal = installId(yytext);
+    return(NEGATIVE_DECIMAL_NUMBER);
+}
+{number} {
+    yylval.iVal = installId(yytext);
+    return(NUMBER);
+}
+{negative_number} {
+    yylval.iVal = installId(yytext);
+    return(NEGATIVE_NUMBER);
+}
+ 
 %%
 #ifndef PRINT
 /* Here is the code for the library of symbol table routines */
