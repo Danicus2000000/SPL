@@ -262,27 +262,27 @@ conditional : expression comparator expression
 	;
 comparator : EQUALS
 		{
-			$$=create_node(e_EQUALS,e_COMPARATOR,NULL,NULL,NULL);
+			$$=create_node(e_EQUALS,e_EQUALS,NULL,NULL,NULL);
 		}
 | SHEVRONS
 		{
-			$$=create_node(e_SHEVRONS,e_COMPARATOR,NULL,NULL,NULL);
+			$$=create_node(e_SHEVRONS,e_SHEVRONS,NULL,NULL,NULL);
 		}
 | LESSTHAN
 		{
-			$$=create_node(e_LESSTHAN,e_COMPARATOR,NULL,NULL,NULL);
+			$$=create_node(e_LESSTHAN,e_LESSTHAN,NULL,NULL,NULL);
 		}
 | MORETHAN
 		{
-			$$=create_node(e_MORETHAN,e_COMPARATOR,NULL,NULL,NULL);
+			$$=create_node(e_MORETHAN,e_MORETHAN,NULL,NULL,NULL);
 		}
 | LESSOREQUAL
 		{
-			$$=create_node(e_LESSOREQUAL,e_COMPARATOR,NULL,NULL,NULL);
+			$$=create_node(e_LESSOREQUAL,e_LESSOREQUAL,NULL,NULL,NULL);
 		}
 | MOREOREQUAL
 		{
-			$$=create_node(e_MOREOREQUAL,e_COMPARATOR,NULL,NULL,NULL);
+			$$=create_node(e_MOREOREQUAL,e_MOREOREQUAL,NULL,NULL,NULL);
 		}
 	;
 expression : term
@@ -543,15 +543,23 @@ void GenerateCode(TERNARY_TREE t)
 			GenerateCode(t->second);
 			GenerateCode(t->third);
 			return;
-		case(e_COMPARATOR):
-			if(t->item>=0 && t->item<SYMTABSIZE)
-			{
-				printf("%s",symTab[t->item]->identifier);
-			}
-			else
-			{
-				printf("UnknownIdentifier: %d",t->item);
-			}
+		case(e_EQUALS):
+			printf("=");
+			return;
+		case(e_SHEVRONS):
+			printf("<>");
+			return;
+		case(e_LESSTHAN):
+			printf("<");
+			return;
+		case(e_MORETHAN):
+			printf(">");
+			return;
+		case(e_LESSOREQUAL):
+			printf("<=");
+			return;
+		case(e_MOREOREQUAL):
+			printf(">=");
 			return;
 		case(e_EXPRESSION):
 			GenerateCode(t->first);
