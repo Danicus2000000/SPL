@@ -7,7 +7,7 @@
 /* make forward declarations to avoid compiler warnings */
 int yylex (void);
 void yyerror (char *);
-
+int yydebug = 1;
 /* 
    Some constants.
 */
@@ -144,11 +144,11 @@ identifier_list : IDENTIFIER
 					$$=create_node($3,e_IDENTIFIER_LIST,$1,NULL,NULL);
 				}
 	;
-real : NUMBER DOT NUMBER
+real : DECIMAL_NUMBER
 		{
 			$$=create_node(e_POSITIVE_REAL,e_REAL,NULL,NULL,NULL);
 		}
-		| MINUS NUMBER DOT NUMBER
+		| NEGATIVE_DECIMAL_NUMBER
 		{
 			$$=create_node(e_NEGATIVE_REAL,e_REAL,NULL,NULL,NULL);
 		}
@@ -337,7 +337,7 @@ number_constant : NUMBER
 		{
 			$$=create_node(e_NORMAL_NUMBER,e_NUMBER_CONSTANT,NULL,NULL,NULL);
 		}
-| MINUS NUMBER
+| NEGATIVE_NUMBER
 		{
 			$$=create_node(e_NEGATIVE_NUMBER,e_NUMBER_CONSTANT,NULL,NULL,NULL);
 		}
