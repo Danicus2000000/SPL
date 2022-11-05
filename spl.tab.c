@@ -92,12 +92,12 @@ int yydebug = 1;
   enum ParseTreeNodeType {e_PROGRAM, e_BLOCK, e_DECLARATION_BLOCK, e_IDENTIFIER_LIST, e_REAL, e_STATEMENT_LIST, e_STATEMENT,
   e_ASSIGNMENT_STATEMENT, e_IF_STATEMENT, e_DO_STATEMENT, e_FOR_STATEMENT, e_WHILE_STATEMENT, e_WRITE_STATEMENT, e_OUTPUT_LIST, e_READ_STATEMENT, e_CONDITIONAL, e_COMPARATOR,
   e_EXPRESSION, e_TERM, e_VALUE, e_CONSTANT, e_NUMBER_CONSTANT, e_TYPE, e_POSITIVE_REAL, e_NEGATIVE_REAL, e_DEFAULT_CONDITIONAL, e_DEFAULT_EXPRESSION, e_EXPRESSION_PLUS, e_EXPRESSION_MINUS,
-  e_DEFAULT_TERM, e_TIMES_TERM, e_DIVIDE_TERM, e_NORMAL_NUMBER, e_NEGATIVE_NUMBER, e_REAL_NUMBER, e_REALTYPE,e_EQUALS,e_SHEVRONS,e_LESSTHAN,e_MORETHAN,e_LESSOREQUAL,e_MOREOREQUAL,e_CHARACTER_CONSTANT,e_NEWLINE_WRITE_STATEMENT};
+  e_DEFAULT_TERM, e_TIMES_TERM, e_DIVIDE_TERM, e_NORMAL_NUMBER, e_NEGATIVE_NUMBER, e_REAL_NUMBER, e_REALTYPE,e_EQUALS,e_SHEVRONS,e_LESSTHAN,e_MORETHAN,e_LESSOREQUAL,e_MOREOREQUAL,e_CHARACTER_CONSTANT,e_NEWLINE_WRITE_STATEMENT,e_INTEGERTYPE,e_CHARACTERTYPE};
   
   const char *ParseTreeValues[]={"PROGRAM", "BLOCK", "DECLARATION_BLOCK", "IDENTIFIER_LIST", "REAL", "STATEMENT_LIST", "STATEMENT",
   "ASSIGNMENT_STATEMENT", "IF_STATEMENT", "DO_STATEMENT", "FOR_STATEMENT", "WHILE_STATEMENT", "WRITE_STATEMENT", "OUTPUT_LIST", "READ_STATEMENT", "CONDITIONAL", "COMPARATOR",
   "EXPRESSION", "TERM", "VALUE", "CONSTANT", "NUMBER_CONSTANT", "TYPE", "POSITIVE_REAL", "NEGATIVE_REAL", "DEFAULT_CONDITIONAL", "DEFAULT_EXPRESSION", "EXPRESSION_PLUS", "EXPRESSION_MINUS",
-  "DEFAULT_TERM", "TIMES_TERM", "DIVIDE_TERM", "NORMAL_NUMBER", "NEGATIVE_NUMBER", "REAL_NUMBER", "REALTYPE","EQUALS","SHEVRONS","LESSTHAN","MORETHAN","LESSOREQUAL","MOREOREQUAL","CHARACTER_CONSTANT","NEWLINE_WRITE_STATEMENT"};
+  "DEFAULT_TERM", "TIMES_TERM", "DIVIDE_TERM", "NORMAL_NUMBER", "NEGATIVE_NUMBER", "REAL_NUMBER", "REALTYPE","EQUALS","SHEVRONS","LESSTHAN","MORETHAN","LESSOREQUAL","MOREOREQUAL","CHARACTER_CONSTANT","NEWLINE_WRITE_STATEMENT","INTEGERTYPE","CHARACTERTYPE"};
 
 #ifndef TRUE
 #define TRUE 1
@@ -2050,7 +2050,7 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 350 "spl.y"
     {
-			(yyval.tVal)=create_node((yyvsp[(1) - (1)].iVal),CHARACTERTYPE,NULL,NULL,NULL);
+			(yyval.tVal)=create_node((yyvsp[(1) - (1)].iVal),e_CHARACTERTYPE,NULL,NULL,NULL);
 		;}
     break;
 
@@ -2059,7 +2059,7 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 354 "spl.y"
     {
-			(yyval.tVal)=create_node((yyvsp[(1) - (1)].iVal),INTEGERTYPE,NULL,NULL,NULL);
+			(yyval.tVal)=create_node((yyvsp[(1) - (1)].iVal),e_INTEGERTYPE,NULL,NULL,NULL);
 		;}
     break;
 
@@ -2353,12 +2353,12 @@ void GenerateCode(TERNARY_TREE t)
 			return;
 		case(e_DECLARATION_BLOCK):
 			GenerateCode(t->first);
-			printf("OF TYPE");
+			printf(" OF TYPE ");
 			GenerateCode(t->second);
+			printf("\n");
 			return;
 		case(e_IDENTIFIER_LIST):
 			GenerateCode(t->first);
-			printf(",");
 			if(t->item>=0 && t->item<SYMTABSIZE)
 			{
 				printf("%s", symTab[t->item]->identifier);
@@ -2367,6 +2367,7 @@ void GenerateCode(TERNARY_TREE t)
 			{
 				printf("UnknownIdentifier: %d",t->item);
 			}
+			printf(",");
 			return;
 		case(e_REAL):
 			GenerateCode(t->first);
@@ -2536,15 +2537,14 @@ void GenerateCode(TERNARY_TREE t)
 				printf("UnknownIdentifier: %d",t->item);
 			}
 			return;
-		case(e_TYPE):
-			if(t->item>=0 && t->item<SYMTABSIZE)
-			{
-				printf("%s",symTab[t->item]->identifier);
-			}
-			else
-			{
-				printf("UnknownIdentifier: %d",t->item);
-			}
+		case (e_REALTYPE):
+			printf("real");
+			return;
+		case(e_INTEGERTYPE):
+			printf("int");
+			return;
+		case(e_CHARACTERTYPE):
+			printf("char");
 			return;
 		case(e_CHARACTER_CONSTANT):
 			if(t->item>=0 && t->item<SYMTABSIZE)
