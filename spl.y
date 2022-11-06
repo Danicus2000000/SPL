@@ -407,9 +407,9 @@ void GenerateCode(TERNARY_TREE t)
 		case(e_PROGRAM):
 			printf("#include <stdio.h>\n");
 			printf("#include <stdlib.h>\n");
-			printf("int main(void) {\n");
+			printf("int main(void) \n{\n");
 			GenerateCode(t->first);
-			printf("}\n");
+			printf("\n}");
 			return;
 		case(e_BLOCK):
 			GenerateCode(t->first);
@@ -417,10 +417,26 @@ void GenerateCode(TERNARY_TREE t)
 			GenerateCode(t->second);
 			return;
 		case(e_DECLARATION_BLOCK):
-			GenerateCode(t->first);
+			/*GenerateCode(t->first);
 			printf(" OF TYPE ");
 			GenerateCode(t->second);
 			printf("\n");
+			return;*/
+			if(t->third!=NULL)
+			{
+				GenerateCode(t->first);
+				GenerateCode(t->third);
+				printf(" ");
+				GenerateCode(t->second);
+				printf(";\n");
+			}
+			else
+			{
+				GenerateCode(t->second);
+				printf(" ");
+				GenerateCode(t->first);
+				printf(";\n");
+			}
 			return;
 		case(e_IDENTIFIER_LIST):
 			GenerateCode(t->first);
@@ -432,7 +448,10 @@ void GenerateCode(TERNARY_TREE t)
 			{
 				printf("UnknownIdentifier: %d",t->item);
 			}
-			printf(",");
+			if(t->first==NULL)
+			{
+				printf(",");
+			}
 			return;
 		case(e_REAL):
 			GenerateCode(t->first);
@@ -537,7 +556,7 @@ void GenerateCode(TERNARY_TREE t)
 		case(e_READ_STATEMENT):
 			printf("scanf(\"%s\",");
 			GenerateCode(t->first);
-			printf(")");
+			printf(");\n");
 			return;
 		case(e_CONDITIONAL):
 			GenerateCode(t->first);
@@ -603,7 +622,7 @@ void GenerateCode(TERNARY_TREE t)
 			}
 			return;
 		case (e_REALTYPE):
-			printf("real");
+			printf("double");
 			return;
 		case(e_INTEGERTYPE):
 			printf("int");

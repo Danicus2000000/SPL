@@ -1,4 +1,4 @@
-delim [\t\r\n]
+delim [\t\r\n" "]
 ws {delim}+
 digit [0-9]
 number {digit}+
