@@ -417,11 +417,6 @@ void GenerateCode(TERNARY_TREE t)
 			GenerateCode(t->second);
 			return;
 		case(e_DECLARATION_BLOCK):
-			/*GenerateCode(t->first);
-			printf(" OF TYPE ");
-			GenerateCode(t->second);
-			printf("\n");
-			return;*/
 			if(t->third!=NULL)
 			{
 				GenerateCode(t->first);
@@ -554,7 +549,7 @@ void GenerateCode(TERNARY_TREE t)
 			GenerateCode(t->second);
 			return;
 		case(e_READ_STATEMENT):
-			printf("scanf(\"%s\",");
+			printf("scanf(\"%%s\",");
 			GenerateCode(t->first);
 			printf(");\n");
 			return;
