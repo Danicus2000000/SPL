@@ -92,12 +92,12 @@ int yydebug = 1;
   enum ParseTreeNodeType {e_PROGRAM, e_BLOCK, e_DECLARATION_BLOCK, e_IDENTIFIER_LIST, e_REAL, e_STATEMENT_LIST, e_STATEMENT,
   e_ASSIGNMENT_STATEMENT, e_IF_STATEMENT, e_DO_STATEMENT, e_FOR_STATEMENT, e_WHILE_STATEMENT, e_WRITE_STATEMENT, e_OUTPUT_LIST, e_READ_STATEMENT, e_CONDITIONAL, e_COMPARATOR,
   e_EXPRESSION, e_TERM, e_VALUE, e_CONSTANT, e_NUMBER_CONSTANT, e_TYPE, e_POSITIVE_REAL, e_NEGATIVE_REAL, e_DEFAULT_CONDITIONAL, e_DEFAULT_EXPRESSION, e_EXPRESSION_PLUS, e_EXPRESSION_MINUS,
-  e_DEFAULT_TERM, e_TIMES_TERM, e_DIVIDE_TERM, e_NORMAL_NUMBER, e_NEGATIVE_NUMBER, e_REAL_NUMBER, e_REALTYPE,e_EQUALS,e_SHEVRONS,e_LESSTHAN,e_MORETHAN,e_LESSOREQUAL,e_MOREOREQUAL,e_CHARACTER_CONSTANT,e_NEWLINE_WRITE_STATEMENT,e_INTEGERTYPE,e_CHARACTERTYPE,e_IF_ELSE_STATEMENT,e_NOT_CONDITION,e_AND_CONDITIONAL,e_OR_CONDITIONAL,e_IDENTIFIER_VALUE,e_CONSTANT_VALUE,e_EXPRESSION_VALUE};
+  e_DEFAULT_TERM, e_TIMES_TERM, e_DIVIDE_TERM, e_NORMAL_NUMBER, e_NEGATIVE_NUMBER, e_REAL_NUMBER, e_REALTYPE,e_EQUALS,e_SHEVRONS,e_LESSTHAN,e_MORETHAN,e_LESSOREQUAL,e_MOREOREQUAL,e_CHARACTER_CONSTANT,e_NEWLINE_WRITE_STATEMENT,e_INTEGERTYPE,e_CHARACTERTYPE,e_IF_ELSE_STATEMENT,e_NOT_CONDITION,e_AND_CONDITIONAL,e_OR_CONDITIONAL,e_IDENTIFIER_VALUE,e_CONSTANT_VALUE,e_EXPRESSION_VALUE,e_DECLARATION_BLOCK_EXTEND,e_IDENTIFIER_LIST_EXTEND};
   
   const char *ParseTreeValues[]={"PROGRAM", "BLOCK", "DECLARATION_BLOCK", "IDENTIFIER_LIST", "REAL", "STATEMENT_LIST", "STATEMENT",
   "ASSIGNMENT_STATEMENT", "IF_STATEMENT", "DO_STATEMENT", "FOR_STATEMENT", "WHILE_STATEMENT", "WRITE_STATEMENT", "OUTPUT_LIST", "READ_STATEMENT", "CONDITIONAL", "COMPARATOR",
   "EXPRESSION", "TERM", "VALUE", "CONSTANT", "NUMBER_CONSTANT", "TYPE", "POSITIVE_REAL", "NEGATIVE_REAL", "DEFAULT_CONDITIONAL", "DEFAULT_EXPRESSION", "EXPRESSION_PLUS", "EXPRESSION_MINUS",
-  "DEFAULT_TERM", "TIMES_TERM", "DIVIDE_TERM", "NORMAL_NUMBER", "NEGATIVE_NUMBER", "REAL_NUMBER", "REALTYPE","EQUALS","SHEVRONS","LESSTHAN","MORETHAN","LESSOREQUAL","MOREOREQUAL","CHARACTER_CONSTANT","NEWLINE_WRITE_STATEMENT","INTEGERTYPE","CHARACTERTYPE","IF_ELSE_STATEMENT","NOT_CONDITION","AND_CONDITIONAL","OR_CONDITIONAL","IDENTIFIER_VALUE","CONSTANT_VALUE","EXPRESSION_VALUE"};
+  "DEFAULT_TERM", "TIMES_TERM", "DIVIDE_TERM", "NORMAL_NUMBER", "NEGATIVE_NUMBER", "REAL_NUMBER", "REALTYPE","EQUALS","SHEVRONS","LESSTHAN","MORETHAN","LESSOREQUAL","MOREOREQUAL","CHARACTER_CONSTANT","NEWLINE_WRITE_STATEMENT","INTEGERTYPE","CHARACTERTYPE","IF_ELSE_STATEMENT","NOT_CONDITION","AND_CONDITIONAL","OR_CONDITIONAL","IDENTIFIER_VALUE","CONSTANT_VALUE","EXPRESSION_VALUE","DECLARATION_BLOCK_EXTEND","IDENTIFIER_LIST_EXTEND"};
 
 #ifndef TRUE
 #define TRUE 1
@@ -569,8 +569,8 @@ static const yytype_uint16 yyrline[] =
      151,   156,   160,   165,   169,   173,   177,   181,   185,   189,
      194,   199,   203,   208,   213,   218,   223,   227,   232,   236,
      241,   246,   250,   254,   258,   263,   267,   271,   275,   279,
-     283,   288,   292,   296,   301,   305,   309,   314,   318,   322,
-     327,   331,   336,   340,   344,   349,   353,   357,   361
+     283,   287,   291,   295,   300,   304,   308,   313,   317,   321,
+     326,   330,   335,   339,   343,   348,   352,   356,   360
 };
 #endif
 
@@ -1609,7 +1609,7 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 134 "spl.y"
     {
-						(yyval.tVal)=create_node(NOTHING,e_DECLARATION_BLOCK,(yyvsp[(1) - (6)].tVal),(yyvsp[(2) - (6)].tVal),(yyvsp[(5) - (6)].tVal));
+						(yyval.tVal)=create_node(NOTHING,e_DECLARATION_BLOCK_EXTEND,(yyvsp[(1) - (6)].tVal),(yyvsp[(2) - (6)].tVal),(yyvsp[(5) - (6)].tVal));
 					;}
     break;
 
@@ -1627,7 +1627,7 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 143 "spl.y"
     {
-					(yyval.tVal)=create_node((yyvsp[(3) - (3)].iVal),e_IDENTIFIER_LIST,(yyvsp[(1) - (3)].tVal),NULL,NULL);
+					(yyval.tVal)=create_node((yyvsp[(3) - (3)].iVal),e_IDENTIFIER_LIST_EXTEND,(yyvsp[(1) - (3)].tVal),NULL,NULL);
 				;}
     break;
 
@@ -1922,7 +1922,7 @@ yyreduce:
   case 41:
 
 /* Line 1455 of yacc.c  */
-#line 289 "spl.y"
+#line 288 "spl.y"
     {
 			(yyval.tVal)=create_node(e_DEFAULT_EXPRESSION,e_EXPRESSION,(yyvsp[(1) - (1)].tVal),NULL,NULL);
 		;}
@@ -1931,7 +1931,7 @@ yyreduce:
   case 42:
 
 /* Line 1455 of yacc.c  */
-#line 293 "spl.y"
+#line 292 "spl.y"
     {
 			(yyval.tVal)=create_node(e_EXPRESSION_PLUS,e_EXPRESSION_PLUS,(yyvsp[(1) - (3)].tVal),(yyvsp[(3) - (3)].tVal),NULL);
 		;}
@@ -1940,7 +1940,7 @@ yyreduce:
   case 43:
 
 /* Line 1455 of yacc.c  */
-#line 297 "spl.y"
+#line 296 "spl.y"
     {
 			(yyval.tVal)=create_node(e_EXPRESSION_MINUS,e_EXPRESSION_MINUS,(yyvsp[(1) - (3)].tVal),(yyvsp[(3) - (3)].tVal),NULL);
 		;}
@@ -1949,7 +1949,7 @@ yyreduce:
   case 44:
 
 /* Line 1455 of yacc.c  */
-#line 302 "spl.y"
+#line 301 "spl.y"
     {
 			(yyval.tVal)=create_node(e_DEFAULT_TERM,e_TERM,(yyvsp[(1) - (1)].tVal),NULL,NULL);
 		;}
@@ -1958,7 +1958,7 @@ yyreduce:
   case 45:
 
 /* Line 1455 of yacc.c  */
-#line 306 "spl.y"
+#line 305 "spl.y"
     {
 			(yyval.tVal)=create_node(e_TIMES_TERM,e_TIMES_TERM,(yyvsp[(1) - (3)].tVal),(yyvsp[(3) - (3)].tVal),NULL);
 		;}
@@ -1967,7 +1967,7 @@ yyreduce:
   case 46:
 
 /* Line 1455 of yacc.c  */
-#line 310 "spl.y"
+#line 309 "spl.y"
     {
 			(yyval.tVal)=create_node(e_DIVIDE_TERM,e_DIVIDE_TERM,(yyvsp[(1) - (3)].tVal),(yyvsp[(3) - (3)].tVal),NULL);
 		;}
@@ -1976,7 +1976,7 @@ yyreduce:
   case 47:
 
 /* Line 1455 of yacc.c  */
-#line 315 "spl.y"
+#line 314 "spl.y"
     {
 			(yyval.tVal)=create_node((yyvsp[(1) - (1)].iVal),e_IDENTIFIER_VALUE,NULL,NULL,NULL);
 		;}
@@ -1985,7 +1985,7 @@ yyreduce:
   case 48:
 
 /* Line 1455 of yacc.c  */
-#line 319 "spl.y"
+#line 318 "spl.y"
     {
 			(yyval.tVal)=create_node(NOTHING,e_CONSTANT_VALUE,(yyvsp[(1) - (1)].tVal),NULL,NULL);
 		;}
@@ -1994,7 +1994,7 @@ yyreduce:
   case 49:
 
 /* Line 1455 of yacc.c  */
-#line 323 "spl.y"
+#line 322 "spl.y"
     {
 			(yyval.tVal)=create_node(NOTHING,e_EXPRESSION_VALUE,(yyvsp[(2) - (3)].tVal),NULL,NULL);
 		;}
@@ -2003,7 +2003,7 @@ yyreduce:
   case 50:
 
 /* Line 1455 of yacc.c  */
-#line 328 "spl.y"
+#line 327 "spl.y"
     {
 			(yyval.tVal)=create_node(e_NORMAL_NUMBER,e_CONSTANT,(yyvsp[(1) - (1)].tVal),NULL,NULL);
 		;}
@@ -2012,7 +2012,7 @@ yyreduce:
   case 51:
 
 /* Line 1455 of yacc.c  */
-#line 332 "spl.y"
+#line 331 "spl.y"
     {
 			(yyval.tVal)=create_node(e_CHARACTER_CONSTANT,e_CONSTANT,(yyvsp[(1) - (1)].tVal),NULL,NULL);
 		;}
@@ -2021,7 +2021,7 @@ yyreduce:
   case 52:
 
 /* Line 1455 of yacc.c  */
-#line 337 "spl.y"
+#line 336 "spl.y"
     {
 			(yyval.tVal)=create_node(e_NORMAL_NUMBER,e_NUMBER_CONSTANT,NULL,NULL,NULL);
 		;}
@@ -2030,7 +2030,7 @@ yyreduce:
   case 53:
 
 /* Line 1455 of yacc.c  */
-#line 341 "spl.y"
+#line 340 "spl.y"
     {
 			(yyval.tVal)=create_node(e_NEGATIVE_NUMBER,e_NUMBER_CONSTANT,NULL,NULL,NULL);
 		;}
@@ -2039,7 +2039,7 @@ yyreduce:
   case 54:
 
 /* Line 1455 of yacc.c  */
-#line 345 "spl.y"
+#line 344 "spl.y"
     {
 			(yyval.tVal)=create_node(e_REAL_NUMBER,e_NUMBER_CONSTANT,(yyvsp[(1) - (1)].tVal),NULL,NULL);
 		;}
@@ -2048,7 +2048,7 @@ yyreduce:
   case 55:
 
 /* Line 1455 of yacc.c  */
-#line 350 "spl.y"
+#line 349 "spl.y"
     {
 			(yyval.tVal)=create_node((yyvsp[(1) - (1)].iVal),e_CHARACTERTYPE,NULL,NULL,NULL);
 		;}
@@ -2057,7 +2057,7 @@ yyreduce:
   case 56:
 
 /* Line 1455 of yacc.c  */
-#line 354 "spl.y"
+#line 353 "spl.y"
     {
 			(yyval.tVal)=create_node((yyvsp[(1) - (1)].iVal),e_INTEGERTYPE,NULL,NULL,NULL);
 		;}
@@ -2066,7 +2066,7 @@ yyreduce:
   case 57:
 
 /* Line 1455 of yacc.c  */
-#line 358 "spl.y"
+#line 357 "spl.y"
     {
 			(yyval.tVal)=create_node((yyvsp[(1) - (1)].iVal),e_REALTYPE,NULL,NULL,NULL);
 		;}
@@ -2075,7 +2075,7 @@ yyreduce:
   case 58:
 
 /* Line 1455 of yacc.c  */
-#line 362 "spl.y"
+#line 361 "spl.y"
     {
 	(yyval.tVal)=create_node((yyvsp[(1) - (1)].iVal),e_CHARACTER_CONSTANT,NULL,NULL,NULL);
 ;}
@@ -2296,7 +2296,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 365 "spl.y"
+#line 364 "spl.y"
 
 /* Code for routines for managing the Parse Tree */
 TERNARY_TREE create_node(int ival, int case_identifier, TERNARY_TREE p1,
@@ -2352,24 +2352,19 @@ void GenerateCode(TERNARY_TREE t)
 			GenerateCode(t->second);
 			return;
 		case(e_DECLARATION_BLOCK):
-			if(t->third!=NULL)
-			{
-				GenerateCode(t->first);
-				GenerateCode(t->third);
-				printf(" ");
-				GenerateCode(t->second);
-				printf(";\n");
-			}
-			else
-			{
-				GenerateCode(t->second);
-				printf(" ");
-				GenerateCode(t->first);
-				printf(";\n");
-			}
+			GenerateCode(t->second);
+			printf(" ");
+			GenerateCode(t->first);
+			printf(";\n");
+			return;
+		case(e_DECLARATION_BLOCK_EXTEND):
+			GenerateCode(t->first);
+			GenerateCode(t->third);
+			printf(" ");
+			GenerateCode(t->second);
+			printf(";\n");
 			return;
 		case(e_IDENTIFIER_LIST):
-			GenerateCode(t->first);
 			if(t->item>=0 && t->item<SYMTABSIZE)
 			{
 				printf("%s", symTab[t->item]->identifier);
@@ -2378,9 +2373,17 @@ void GenerateCode(TERNARY_TREE t)
 			{
 				printf("UnknownIdentifier: %d",t->item);
 			}
-			if(t->first==NULL)
+			return;
+		case(e_IDENTIFIER_LIST_EXTEND):
+			GenerateCode(t->first);
+			printf(",");
+			if(t->item>=0 && t->item<SYMTABSIZE)
 			{
-				printf(",");
+				printf("%s", symTab[t->item]->identifier);
+			}
+			else
+			{
+				printf("UnknownIdentifier: %d",t->item);
 			}
 			return;
 		case(e_REAL):
@@ -2524,31 +2527,31 @@ void GenerateCode(TERNARY_TREE t)
 			return;
 		case(e_AND_CONDITIONAL):
 			GenerateCode(t->first);
-			printf("&&");
+			printf(" && ");
 			GenerateCode(t->second);
 			return;
 		case(e_OR_CONDITIONAL):
 			GenerateCode(t->first);
-			printf("||");
+			printf(" || ");
 			GenerateCode(t->second);
 			return;
 		case(e_EQUALS):
-			printf("=");
+			printf(" == ");
 			return;
 		case(e_SHEVRONS):
-			printf("==");
+			printf(" <> ");
 			return;
 		case(e_LESSTHAN):
-			printf("<");
+			printf(" < ");
 			return;
 		case(e_MORETHAN):
-			printf(">");
+			printf(" > ");
 			return;
 		case(e_LESSOREQUAL):
-			printf("<=");
+			printf(" <= ");
 			return;
 		case(e_MOREOREQUAL):
-			printf(">=");
+			printf(" >= ");
 			return;
 		case(e_EXPRESSION):
 			GenerateCode(t->first);
