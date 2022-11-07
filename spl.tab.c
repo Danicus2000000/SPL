@@ -1636,7 +1636,7 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 148 "spl.y"
     {
-			(yyval.tVal)=create_node(e_POSITIVE_REAL,e_REAL,NULL,NULL,NULL);
+			(yyval.tVal)=create_node((yyvsp[(1) - (1)].iVal),e_REAL,NULL,NULL,NULL);
 		;}
     break;
 
@@ -1645,7 +1645,7 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 152 "spl.y"
     {
-			(yyval.tVal)=create_node(e_NEGATIVE_REAL,e_REAL,NULL,NULL,NULL);
+			(yyval.tVal)=create_node((yyvsp[(1) - (1)].iVal),e_REAL,NULL,NULL,NULL);
 		;}
     break;
 
@@ -2384,7 +2384,14 @@ void GenerateCode(TERNARY_TREE t)
 			}
 			return;
 		case(e_REAL):
-			GenerateCode(t->first);
+			if(t->item>=0 && t->item<SYMTABSIZE)
+			{
+				printf("%s", symTab[t->item]->identifier);
+			}
+			else
+			{
+				printf("UnknownIdentifier: %d",t->item);
+			}
 			return;
 		case(e_STATEMENT_LIST):
 			GenerateCode(t->first);
@@ -2404,6 +2411,7 @@ void GenerateCode(TERNARY_TREE t)
 			}
 			printf(" = ");
 			GenerateCode(t->first);
+			printf(";\n");
 			return;
 		case(e_IF_STATEMENT):
 			printf("if (");
@@ -2528,7 +2536,7 @@ void GenerateCode(TERNARY_TREE t)
 			printf("=");
 			return;
 		case(e_SHEVRONS):
-			printf("<>");
+			printf("==");
 			return;
 		case(e_LESSTHAN):
 			printf("<");
