@@ -334,11 +334,11 @@ constant : number_constant
 	;
 number_constant : NUMBER
 		{
-			$$=create_node(e_NORMAL_NUMBER,e_NUMBER_CONSTANT,NULL,NULL,NULL);
+			$$=create_node($1,e_NUMBER_CONSTANT,NULL,NULL,NULL);
 		}
 | NEGATIVE_NUMBER
 		{
-			$$=create_node(e_NEGATIVE_NUMBER,e_NUMBER_CONSTANT,NULL,NULL,NULL);
+			$$=create_node($1,e_NUMBER_CONSTANT,NULL,NULL,NULL);
 		}
 | real
 		{
@@ -408,7 +408,7 @@ void GenerateCode(TERNARY_TREE t)
 			printf("#include <stdlib.h>\n");
 			printf("int main(void) \n{\n");
 			GenerateCode(t->first);
-			printf("\n}");
+			printf("}");
 			return;
 		case(e_BLOCK):
 			GenerateCode(t->first);
@@ -483,26 +483,26 @@ void GenerateCode(TERNARY_TREE t)
 		case(e_IF_STATEMENT):
 			printf("if (");
 			GenerateCode(t->first);
-			printf(") {\n");
+			printf(") \n{\n");
 			GenerateCode(t->second);
-			printf("\n}\n");
+			printf("}\n");
 			return;
 		case(e_IF_ELSE_STATEMENT):
 			printf("if (");
 			GenerateCode(t->first);
 			printf(") \n{\n");
 			GenerateCode(t->second);
-			printf("\n}\n");
+			printf("}\n");
 			printf("else\n{\n");
 			GenerateCode(t->third);
-			printf("\n}\n");
+			printf("}\n");
 			return;
 		case(e_DO_STATEMENT):
 			printf("do {\n");
 			GenerateCode(t->first);
 			printf("} while (");
 			GenerateCode(t->second);
-			printf(")");
+			printf(");\n");
 			return;
 		case(e_FOR_STATEMENT):
 			printf("for (");
@@ -514,26 +514,9 @@ void GenerateCode(TERNARY_TREE t)
 			{
 				printf("UnknownIdentifier: %d",t->item);
 			}
-			printf(" ");
-			if(t->item>=0 && t->item<SYMTABSIZE)
-			{
-				printf("%s", symTab[t->item]->identifier);
-			}
-			else
-			{
-				printf("UnknownIdentifier: %d",t->item);
-			}
 			printf("=");
-			if(t->item>=0 && t->item<SYMTABSIZE)
-			{
-				printf("%s", symTab[t->item]->identifier);
-			}
-			else
-			{
-				printf("UnknownIdentifier: %d",t->item);
-			}
-			printf(";");
 			GenerateCode(t->first->first);
+			printf(";");
 			if(t->item>=0 && t->item<SYMTABSIZE)
 			{
 				printf("%s", symTab[t->item]->identifier);
@@ -542,27 +525,37 @@ void GenerateCode(TERNARY_TREE t)
 			{
 				printf("UnknownIdentifier: %d",t->item);
 			}
-			GenerateCode(t->first->second);
-			printf(";");
+			printf("<");
 			GenerateCode(t->first->third);
-			printf("){\n");
+			printf(";");
+			if(t->item>=0 && t->item<SYMTABSIZE)
+			{
+				printf("%s", symTab[t->item]->identifier);
+			}
+			else
+			{
+				printf("UnknownIdentifier: %d",t->item);
+			}
+			printf("+=");
+			GenerateCode(t->first->second);
+			printf(")\n{\n");
 			GenerateCode(t->second);
-			printf("\n}");
+			printf("}\n");
 			return;
 		case(e_WHILE_STATEMENT):
 			printf("while (");
 			GenerateCode(t->first);
-			printf(") {\n");
+			printf(") \n{\n");
 			GenerateCode(t->second);
 			printf("}\n");
 			return;
 		case(e_WRITE_STATEMENT):
 			printf("printf(\"");
 			GenerateCode(t->first);
-			printf("\");");
+			printf("\");\n");
 			return;
 		case(e_NEWLINE_WRITE_STATEMENT):
-			printf("\n");
+			printf("printf(\"\\n\");\n");
 			return;
 		case(e_OUTPUT_LIST):
 			GenerateCode(t->first);
@@ -586,8 +579,9 @@ void GenerateCode(TERNARY_TREE t)
 			GenerateCode(t->third);
 			return;
 		case(e_NOT_CONDITION):
-			printf("!");
+			printf("!(");
 			GenerateCode(t->first);
+			printf(")");
 			return;
 		case(e_AND_CONDITIONAL):
 			GenerateCode(t->first);
@@ -667,7 +661,7 @@ void GenerateCode(TERNARY_TREE t)
 		case(e_NUMBER_CONSTANT):
 			if(t->item>=0 && t->item<SYMTABSIZE)
 			{
-				printf("%d",symTab[t->item]->identifier);
+				printf("%s",symTab[t->item]->identifier);
 			}
 			else
 			{

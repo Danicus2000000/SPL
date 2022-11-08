@@ -91,21 +91,21 @@ INTEGER TOKEN (INTEGERTYPE)
     yylval.iVal = installId(yytext);
     return(CHARACTER_ACTUAL);
 }
-{decimal_number} {
-    yylval.iVal = installId(yytext);
-    return(DECIMAL_NUMBER);
-}
 {negative_decimal_number} {
     yylval.iVal = installId(yytext);
     return(NEGATIVE_DECIMAL_NUMBER);
 }
-{number} {
+{decimal_number} {
     yylval.iVal = installId(yytext);
-    return(NUMBER);
+    return(DECIMAL_NUMBER);
 }
 {negative_number} {
     yylval.iVal = installId(yytext);
     return(NEGATIVE_NUMBER);
+}
+{number} {
+    yylval.iVal = installId(yytext);
+    return(NUMBER);
 }
  
 %%

@@ -287,14 +287,14 @@ static void yy_fatal_error YY_PROTO(( yyconst char msg[] ));
 static yyconst short int yy_accept[133] =
     {   0,
         0,    0,   54,   53,    1,   16,   11,   12,   17,    6,
-        9,    7,    3,   18,   51,    2,    8,    4,   19,    5,
+        9,    7,    3,   18,   52,    2,    8,    4,   19,    5,
        47,   47,   47,   47,   47,   47,   47,   47,   47,   47,
-       47,   47,   47,    1,    0,   52,   10,    0,   51,   13,
+       47,   47,   47,    1,    0,   51,   10,    0,   52,   13,
        15,   14,   47,   47,   47,   34,   47,   47,   47,   29,
        47,   47,   47,   25,   47,   33,   47,   47,   23,   43,
-       47,   47,   35,   47,   47,   47,   48,    0,   49,   42,
+       47,   47,   35,   47,   47,   47,   48,    0,   50,   42,
        47,   47,   47,   47,   47,   32,   47,   47,   41,   47,
-       47,   47,   47,   47,   50,   47,   22,   47,   28,   47,
+       47,   47,   47,   47,   49,   47,   22,   47,   28,   47,
        47,   47,   20,   47,   47,   47,   40,   44,   26,   24,
 
        47,   47,   47,   47,   31,   47,   27,   47,   47,   47,
@@ -974,7 +974,7 @@ YY_RULE_SETUP
 #line 94 "spl.l"
 {
     yylval.iVal = installId(yytext);
-    return(DECIMAL_NUMBER);
+    return(NEGATIVE_DECIMAL_NUMBER);
 }
 	YY_BREAK
 case 50:
@@ -982,7 +982,7 @@ YY_RULE_SETUP
 #line 98 "spl.l"
 {
     yylval.iVal = installId(yytext);
-    return(NEGATIVE_DECIMAL_NUMBER);
+    return(DECIMAL_NUMBER);
 }
 	YY_BREAK
 case 51:
@@ -990,7 +990,7 @@ YY_RULE_SETUP
 #line 102 "spl.l"
 {
     yylval.iVal = installId(yytext);
-    return(NUMBER);
+    return(NEGATIVE_NUMBER);
 }
 	YY_BREAK
 case 52:
@@ -998,7 +998,7 @@ YY_RULE_SETUP
 #line 106 "spl.l"
 {
     yylval.iVal = installId(yytext);
-    return(NEGATIVE_NUMBER);
+    return(NUMBER);
 }
 	YY_BREAK
 case 53:
