@@ -2041,7 +2041,7 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 344 "spl.y"
     {
-			(yyval.tVal)=create_node(e_REAL_NUMBER,e_NUMBER_CONSTANT,(yyvsp[(1) - (1)].tVal),NULL,NULL);
+			(yyval.tVal)=create_node(e_REAL_NUMBER,e_REAL_NUMBER,(yyvsp[(1) - (1)].tVal),NULL,NULL);
 		;}
     break;
 
@@ -2603,6 +2603,9 @@ void GenerateCode(TERNARY_TREE t)
 			{
 				printf("UnknownIdentifier: %d",t->item);
 			}
+			return;
+		case(e_REAL_NUMBER):
+			GenerateCode(t->first);
 			return;
 		case (e_REALTYPE):
 			printf("double");

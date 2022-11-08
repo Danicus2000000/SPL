@@ -342,7 +342,7 @@ number_constant : NUMBER
 		}
 | real
 		{
-			$$=create_node(e_REAL_NUMBER,e_NUMBER_CONSTANT,$1,NULL,NULL);
+			$$=create_node(e_REAL_NUMBER,e_REAL_NUMBER,$1,NULL,NULL);
 		}
 	;
 type : CHARACTERTYPE
@@ -667,6 +667,9 @@ void GenerateCode(TERNARY_TREE t)
 			{
 				printf("UnknownIdentifier: %d",t->item);
 			}
+			return;
+		case(e_REAL_NUMBER):
+			GenerateCode(t->first);
 			return;
 		case (e_REALTYPE):
 			printf("double");
