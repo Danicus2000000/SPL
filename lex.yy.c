@@ -1920,6 +1920,7 @@ int installId(char *id)
        /* Recommended code for preventing buffer overrun on bounded strings */
        strncpy(symTab[currentSymTabSize]->identifier,id,IDLENGTH);
        symTab[currentSymTabSize]->identifier[IDLENGTH-1] = '\0';
+       symTab[currentSymTabSize]->variableType = NOTHING;
        return(currentSymTabSize++);
     }
 }
