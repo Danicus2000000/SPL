@@ -956,57 +956,39 @@ TOKEN (INTEGERTYPE)
 case 47:
 YY_RULE_SETUP
 #line 86 "spl.l"
-{
-    yylval.iVal = installId(yytext);
-    return(IDENTIFIER);
-}
+IDENTIFIER_TOKEN(IDENTIFIER)
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 90 "spl.l"
-{
-    yylval.iVal = installId(yytext);
-    return(CHARACTER_ACTUAL);
-}
+#line 87 "spl.l"
+CHARACTER_TOKEN(CHARACTER_ACTUAL)
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 94 "spl.l"
-{
-    yylval.iVal = installId(yytext);
-    return(NEGATIVE_DECIMAL_NUMBER);
-}
+#line 88 "spl.l"
+NEGATIVE_DECIMAL_TOKEN(NEGATIVE_DECIMAL_NUMBER)
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 98 "spl.l"
-{
-    yylval.iVal = installId(yytext);
-    return(DECIMAL_NUMBER);
-}
+#line 89 "spl.l"
+DECIMAL_TOKEN(DECIMAL_NUMBER)
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 102 "spl.l"
-{
-    yylval.iVal = installId(yytext);
-    return(NEGATIVE_NUMBER);
-}
+#line 90 "spl.l"
+NEGATIVE_NUMBER_TOKEN(NEGATIVE_NUMBER)
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 106 "spl.l"
-{
-    yylval.iVal = installId(yytext);
-    return(NUMBER);
-}
+#line 91 "spl.l"
+NUMBER_TOKEN(NUMBER)
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 111 "spl.l"
+#line 93 "spl.l"
 ECHO;
 	YY_BREAK
-#line 1010 "lex.yy.c"
+#line 992 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1892,7 +1874,7 @@ int main()
 	return 0;
 	}
 #endif
-#line 111 "spl.l"
+#line 93 "spl.l"
 
 #ifndef PRINT
 /* Here is the code for the library of symbol table routines */

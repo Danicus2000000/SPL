@@ -83,30 +83,12 @@ OR TOKEN(OR)
 REAL TOKEN(REALTYPE)
 CHARACTER TOKEN(CHARACTERTYPE)
 INTEGER TOKEN (INTEGERTYPE)
-{identifier} {
-    yylval.iVal = installId(yytext);
-    return(IDENTIFIER);
-}
-{character_actual} {
-    yylval.iVal = installId(yytext);
-    return(CHARACTER_ACTUAL);
-}
-{negative_decimal_number} {
-    yylval.iVal = installId(yytext);
-    return(NEGATIVE_DECIMAL_NUMBER);
-}
-{decimal_number} {
-    yylval.iVal = installId(yytext);
-    return(DECIMAL_NUMBER);
-}
-{negative_number} {
-    yylval.iVal = installId(yytext);
-    return(NEGATIVE_NUMBER);
-}
-{number} {
-    yylval.iVal = installId(yytext);
-    return(NUMBER);
-}
+{identifier} IDENTIFIER_TOKEN(IDENTIFIER)
+{character_actual} CHARACTER_TOKEN(CHARACTER_ACTUAL)
+{negative_decimal_number} NEGATIVE_DECIMAL_TOKEN(NEGATIVE_DECIMAL_NUMBER)
+{decimal_number} DECIMAL_TOKEN(DECIMAL_NUMBER)
+{negative_number} NEGATIVE_NUMBER_TOKEN(NEGATIVE_NUMBER)
+{number} NUMBER_TOKEN(NUMBER)
  
 %%
 #ifndef PRINT

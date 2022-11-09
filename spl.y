@@ -18,15 +18,15 @@ int yydebug = 1;
 #define NOTHING        -1
 #define INDENTOFFSET    2
 
-  enum ParseTreeNodeType {e_PROGRAM, e_BLOCK, e_DECLARATION_BLOCK, e_IDENTIFIER_LIST, e_REAL, e_STATEMENT_LIST, e_STATEMENT,
+  enum ParseTreeNodeType {e_PROGRAM, e_BLOCK, e_DECLARATION_BLOCK, e_IDENTIFIER_LIST, e_STATEMENT_LIST, e_STATEMENT,
   e_ASSIGNMENT_STATEMENT, e_IF_STATEMENT, e_DO_STATEMENT, e_FOR_STATEMENT, e_WHILE_STATEMENT, e_WRITE_STATEMENT, e_OUTPUT_LIST, e_READ_STATEMENT, e_CONDITIONAL, e_COMPARATOR,
   e_EXPRESSION, e_TERM, e_VALUE, e_CONSTANT, e_NUMBER_CONSTANT, e_TYPE, e_POSITIVE_REAL, e_NEGATIVE_REAL, e_DEFAULT_CONDITIONAL, e_DEFAULT_EXPRESSION, e_EXPRESSION_PLUS, e_EXPRESSION_MINUS,
-  e_DEFAULT_TERM, e_TIMES_TERM, e_DIVIDE_TERM, e_NORMAL_NUMBER, e_NEGATIVE_NUMBER, e_REAL_NUMBER, e_REALTYPE,e_EQUALS,e_SHEVRONS,e_LESSTHAN,e_MORETHAN,e_LESSOREQUAL,e_MOREOREQUAL,e_CHARACTER_CONSTANT,e_NEWLINE_WRITE_STATEMENT,e_INTEGERTYPE,e_CHARACTERTYPE,e_IF_ELSE_STATEMENT,e_NOT_CONDITION,e_AND_CONDITIONAL,e_OR_CONDITIONAL,e_IDENTIFIER_VALUE,e_CONSTANT_VALUE,e_EXPRESSION_VALUE,e_DECLARATION_BLOCK_EXTEND,e_IDENTIFIER_LIST_EXTEND};
+  e_DEFAULT_TERM, e_TIMES_TERM, e_DIVIDE_TERM, e_NORMAL_NUMBER, e_NEGATIVE_NUMBER, e_REAL_NUMBER, e_REALTYPE,e_EQUALS,e_SHEVRONS,e_LESSTHAN,e_MORETHAN,e_LESSOREQUAL,e_MOREOREQUAL,e_CHARACTER_CONSTANT,e_NEWLINE_WRITE_STATEMENT,e_INTEGERTYPE,e_CHARACTERTYPE,e_IF_ELSE_STATEMENT,e_NOT_CONDITION,e_AND_CONDITIONAL,e_OR_CONDITIONAL,e_IDENTIFIER_VALUE,e_CONSTANT_VALUE,e_EXPRESSION_VALUE,e_DECLARATION_BLOCK_EXTEND,e_IDENTIFIER_LIST_EXTEND,e_REAL,e_NEGATIVE_NUMBER_EXPRESSION};
   
-  const char *ParseTreeValues[]={"PROGRAM", "BLOCK", "DECLARATION_BLOCK", "IDENTIFIER_LIST", "REAL", "STATEMENT_LIST", "STATEMENT",
+  const char *ParseTreeValues[]={"PROGRAM", "BLOCK", "DECLARATION_BLOCK", "IDENTIFIER_LIST", "STATEMENT_LIST", "STATEMENT",
   "ASSIGNMENT_STATEMENT", "IF_STATEMENT", "DO_STATEMENT", "FOR_STATEMENT", "WHILE_STATEMENT", "WRITE_STATEMENT", "OUTPUT_LIST", "READ_STATEMENT", "CONDITIONAL", "COMPARATOR",
   "EXPRESSION", "TERM", "VALUE", "CONSTANT", "NUMBER_CONSTANT", "TYPE", "POSITIVE_REAL", "NEGATIVE_REAL", "DEFAULT_CONDITIONAL", "DEFAULT_EXPRESSION", "EXPRESSION_PLUS", "EXPRESSION_MINUS",
-  "DEFAULT_TERM", "TIMES_TERM", "DIVIDE_TERM", "NORMAL_NUMBER", "NEGATIVE_NUMBER", "REAL_NUMBER", "REALTYPE","EQUALS","SHEVRONS","LESSTHAN","MORETHAN","LESSOREQUAL","MOREOREQUAL","CHARACTER_CONSTANT","NEWLINE_WRITE_STATEMENT","INTEGERTYPE","CHARACTERTYPE","IF_ELSE_STATEMENT","NOT_CONDITION","AND_CONDITIONAL","OR_CONDITIONAL","IDENTIFIER_VALUE","CONSTANT_VALUE","EXPRESSION_VALUE","DECLARATION_BLOCK_EXTEND","IDENTIFIER_LIST_EXTEND"};
+  "DEFAULT_TERM", "TIMES_TERM", "DIVIDE_TERM", "NORMAL_NUMBER", "NEGATIVE_NUMBER", "REAL_NUMBER", "REALTYPE","EQUALS","SHEVRONS","LESSTHAN","MORETHAN","LESSOREQUAL","MOREOREQUAL","CHARACTER_CONSTANT","NEWLINE_WRITE_STATEMENT","INTEGERTYPE","CHARACTERTYPE","IF_ELSE_STATEMENT","NOT_CONDITION","AND_CONDITIONAL","OR_CONDITIONAL","IDENTIFIER_VALUE","CONSTANT_VALUE","EXPRESSION_VALUE","DECLARATION_BLOCK_EXTEND","IDENTIFIER_LIST_EXTEND","REAL","NEGATIVE_NUMBER_EXPRESSION"};
 
 #ifndef TRUE
 #define TRUE 1
@@ -60,6 +60,7 @@ TERNARY_TREE create_node(int,int,TERNARY_TREE,TERNARY_TREE,TERNARY_TREE);
 void PrintTree(TERNARY_TREE,int);
 #endif
 void GenerateCode(TERNARY_TREE);
+void GetIdentifier(TERNARY_TREE);
 /* ------------- symbol table definition --------------------------- */
 
 struct symTabNode {
@@ -95,9 +96,9 @@ int currentSymTabSize = 0;
 
 %token<iVal> IDENTIFIER NUMBER CHARACTER_ACTUAL DECIMAL_NUMBER NEGATIVE_DECIMAL_NUMBER NEGATIVE_NUMBER INTEGERTYPE REALTYPE CHARACTERTYPE
 
-%type<tVal> program block declaration_block identifier_list real statement_list statement assignment_statement
+%type<tVal> program block declaration_block identifier_list statement_list statement assignment_statement
 	if_statement do_statement for_statement while_statement write_statement
-	output_list read_statement conditional comparator expression term value constant number_constant type character_constant
+	output_list read_statement conditional comparator expression term value constant type
 %%
 program : IDENTIFIER COLON block ENDPROGRAM IDENTIFIER DOT
 			{
@@ -143,15 +144,6 @@ identifier_list : IDENTIFIER
 				{
 					$$=create_node($3,e_IDENTIFIER_LIST_EXTEND,$1,NULL,NULL);
 				}
-	;
-real : DECIMAL_NUMBER
-		{
-			$$=create_node($1,e_REAL,NULL,NULL,NULL);
-		}
-		| NEGATIVE_DECIMAL_NUMBER
-		{
-			$$=create_node($1,e_REAL,NULL,NULL,NULL);
-		}
 	;
 statement_list : statement
 		{
@@ -288,14 +280,18 @@ expression : term
 		{
 			$$=create_node(e_DEFAULT_EXPRESSION,e_EXPRESSION,$1,NULL,NULL);
 		}
-| term PLUS expression
+| expression PLUS term
 		{
 			$$=create_node(e_EXPRESSION_PLUS,e_EXPRESSION_PLUS,$1,$3,NULL);
 		}
-| term MINUS expression
+| expression MINUS term
 		{
 			$$=create_node(e_EXPRESSION_MINUS,e_EXPRESSION_MINUS,$1,$3,NULL);
 		}
+| expression NEGATIVE_NUMBER
+{
+	$$=create_node($2,e_NEGATIVE_NUMBER_EXPRESSION,$1,NULL,NULL);
+}
 	;
 term : value
 		{
@@ -323,26 +319,26 @@ value : IDENTIFIER
 			$$=create_node(NOTHING,e_EXPRESSION_VALUE,$2,NULL,NULL);
 		}
 	;
-constant : number_constant
+constant : CHARACTER_ACTUAL
 		{
-			$$=create_node(e_NORMAL_NUMBER,e_CONSTANT,$1,NULL,NULL);
+			$$=create_node($1,e_CHARACTER_CONSTANT,NULL,NULL,NULL);
 		}
-| character_constant
-		{
-			$$=create_node(e_CHARACTER_CONSTANT,e_CONSTANT,$1,NULL,NULL);
-		}
-	;
-number_constant : NUMBER
+		|
+		NUMBER
 		{
 			$$=create_node($1,e_NUMBER_CONSTANT,NULL,NULL,NULL);
 		}
-| NEGATIVE_NUMBER
+		| NEGATIVE_NUMBER
 		{
 			$$=create_node($1,e_NUMBER_CONSTANT,NULL,NULL,NULL);
 		}
-| real
+		|DECIMAL_NUMBER
 		{
-			$$=create_node(e_REAL_NUMBER,e_REAL_NUMBER,$1,NULL,NULL);
+			$$=create_node($1,e_REAL,NULL,NULL,NULL);
+		}
+		| NEGATIVE_DECIMAL_NUMBER
+		{
+			$$=create_node($1,e_REAL,NULL,NULL,NULL);
 		}
 	;
 type : CHARACTERTYPE
@@ -357,10 +353,6 @@ type : CHARACTERTYPE
 		{
 			$$=create_node($1,e_REALTYPE,NULL,NULL,NULL);
 		}
-character_constant : CHARACTER_ACTUAL
-{
-	$$=create_node($1,e_CHARACTER_CONSTANT,NULL,NULL,NULL);
-}
 %%
 /* Code for routines for managing the Parse Tree */
 TERNARY_TREE create_node(int ival, int case_identifier, TERNARY_TREE p1,
@@ -429,36 +421,15 @@ void GenerateCode(TERNARY_TREE t)
 			printf(";\n");
 			return;
 		case(e_IDENTIFIER_LIST):
-			if(t->item>=0 && t->item<SYMTABSIZE)
-			{
-				printf("%s", symTab[t->item]->identifier);
-			}
-			else
-			{
-				printf("UnknownIdentifier: %d",t->item);
-			}
+			GetIdentifier(t);
 			return;
 		case(e_IDENTIFIER_LIST_EXTEND):
 			GenerateCode(t->first);
 			printf(",");
-			if(t->item>=0 && t->item<SYMTABSIZE)
-			{
-				printf("%s", symTab[t->item]->identifier);
-			}
-			else
-			{
-				printf("UnknownIdentifier: %d",t->item);
-			}
+			GetIdentifier(t);
 			return;
 		case(e_REAL):
-			if(t->item>=0 && t->item<SYMTABSIZE)
-			{
-				printf("%s", symTab[t->item]->identifier);
-			}
-			else
-			{
-				printf("UnknownIdentifier: %d",t->item);
-			}
+			GetIdentifier(t);
 			return;
 		case(e_STATEMENT_LIST):
 			GenerateCode(t->first);
@@ -468,14 +439,7 @@ void GenerateCode(TERNARY_TREE t)
 			GenerateCode(t->first);
 			return;
 		case(e_ASSIGNMENT_STATEMENT):
-			if(t->item>=0 && t->item<SYMTABSIZE)
-			{
-				printf("%s", symTab[t->item]->identifier);
-			}
-			else
-			{
-				printf("UnknownIdentifier: %d",t->item);
-			}
+			GetIdentifier(t);
 			printf(" = ");
 			GenerateCode(t->first);
 			printf(";\n");
@@ -506,36 +470,15 @@ void GenerateCode(TERNARY_TREE t)
 			return;
 		case(e_FOR_STATEMENT):
 			printf("for (");
-			if(t->item>=0 && t->item<SYMTABSIZE)
-			{
-				printf("%s", symTab[t->item]->identifier);
-			}
-			else
-			{
-				printf("UnknownIdentifier: %d",t->item);
-			}
+			GetIdentifier(t);
 			printf("=");
 			GenerateCode(t->first->first);
 			printf(";");
-			if(t->item>=0 && t->item<SYMTABSIZE)
-			{
-				printf("%s", symTab[t->item]->identifier);
-			}
-			else
-			{
-				printf("UnknownIdentifier: %d",t->item);
-			}
+			GetIdentifier(t);
 			printf("<");
 			GenerateCode(t->first->third);
 			printf(";");
-			if(t->item>=0 && t->item<SYMTABSIZE)
-			{
-				printf("%s", symTab[t->item]->identifier);
-			}
-			else
-			{
-				printf("UnknownIdentifier: %d",t->item);
-			}
+			GetIdentifier(t);
 			printf("+=");
 			GenerateCode(t->first->second);
 			printf(")\n{\n");
@@ -555,7 +498,7 @@ void GenerateCode(TERNARY_TREE t)
 			printf("\");\n");
 			return;
 		case(e_NEWLINE_WRITE_STATEMENT):
-			printf("printf(\"\\n\");\n");
+			printf("\n");
 			return;
 		case(e_OUTPUT_LIST):
 			GenerateCode(t->first);
@@ -563,14 +506,7 @@ void GenerateCode(TERNARY_TREE t)
 			return;
 		case(e_READ_STATEMENT):
 			printf("scanf(\"%%s\",");
-			if(t->item>=0 && t->item<SYMTABSIZE)
-			{
-				printf("%s", symTab[t->item]->identifier);
-			}
-			else
-			{
-				printf("UnknownIdentifier: %d",t->item);
-			}
+			GetIdentifier(t);
 			printf(");\n");
 			return;
 		case(e_CONDITIONAL):
@@ -597,7 +533,7 @@ void GenerateCode(TERNARY_TREE t)
 			printf(" == ");
 			return;
 		case(e_SHEVRONS):
-			printf(" <> ");
+			printf(" != ");
 			return;
 		case(e_LESSTHAN):
 			printf(" < ");
@@ -638,14 +574,7 @@ void GenerateCode(TERNARY_TREE t)
 			GenerateCode(t->second);
 			return;
 		case(e_IDENTIFIER_VALUE):
-			if(t->item>=0 && t->item<SYMTABSIZE)
-			{
-				printf("%s", symTab[t->item]->identifier);
-			}
-			else
-			{
-				printf("UnknownIdentifier: %d",t->item);
-			}
+			GetIdentifier(t);
 			return;
 		case(e_CONSTANT_VALUE):
 			GenerateCode(t->first);
@@ -655,18 +584,14 @@ void GenerateCode(TERNARY_TREE t)
 			GenerateCode(t->first);
 			printf(")");
 			return;
+		case(e_NEGATIVE_NUMBER_EXPRESSION):
+			GenerateCode(t->first);
+			GetIdentifier(t);
 		case(e_CONSTANT):
 			GenerateCode(t->first);
 			return;
 		case(e_NUMBER_CONSTANT):
-			if(t->item>=0 && t->item<SYMTABSIZE)
-			{
-				printf("%s",symTab[t->item]->identifier);
-			}
-			else
-			{
-				printf("UnknownIdentifier: %d",t->item);
-			}
+			GetIdentifier(t);
 			return;
 		case(e_REAL_NUMBER):
 			GenerateCode(t->first);
@@ -694,5 +619,16 @@ void GenerateCode(TERNARY_TREE t)
 	GenerateCode(t->first);
 	GenerateCode(t->second);
 	GenerateCode(t->third);
+}
+void GetIdentifier(TERNARY_TREE t)
+{
+	if(t->item>=0 && t->item<SYMTABSIZE)
+	{
+		printf("%s",symTab[t->item]->identifier);
+	}
+	else
+	{
+		printf("UnknownIdentifier: %d",t->item);
+	}
 }
 #include "lex.yy.c"
