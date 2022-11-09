@@ -288,10 +288,6 @@ expression : term
 		{
 			$$=create_node(e_EXPRESSION_MINUS,e_EXPRESSION_MINUS,$1,$3,NULL);
 		}
-| expression NEGATIVE_NUMBER
-{
-	$$=create_node($2,e_NEGATIVE_NUMBER_EXPRESSION,$1,NULL,NULL);
-}
 	;
 term : value
 		{
@@ -328,17 +324,17 @@ constant : CHARACTER_ACTUAL
 		{
 			$$=create_node($1,e_NUMBER_CONSTANT,NULL,NULL,NULL);
 		}
-		| NEGATIVE_NUMBER
+		| MINUS NUMBER
 		{
-			$$=create_node($1,e_NUMBER_CONSTANT,NULL,NULL,NULL);
+			$$=create_node($2,e_NUMBER_CONSTANT,NULL,NULL,NULL);
 		}
 		|DECIMAL_NUMBER
 		{
 			$$=create_node($1,e_REAL,NULL,NULL,NULL);
 		}
-		| NEGATIVE_DECIMAL_NUMBER
+		| MINUS DECIMAL_NUMBER
 		{
-			$$=create_node($1,e_REAL,NULL,NULL,NULL);
+			$$=create_node($2,e_NEGATIVE_REAL,NULL,NULL,NULL);
 		}
 	;
 type : CHARACTERTYPE
@@ -431,6 +427,9 @@ void GenerateCode(TERNARY_TREE t)
 		case(e_REAL):
 			GetIdentifier(t);
 			return;
+		case(e_NEGATIVE_REAL):
+			printf("-");
+			GetIdentifier(t);
 		case(e_STATEMENT_LIST):
 			GenerateCode(t->first);
 			GenerateCode(t->second);
@@ -594,13 +593,13 @@ void GenerateCode(TERNARY_TREE t)
 			printf(")");
 			return;
 		case(e_NEGATIVE_NUMBER_EXPRESSION):
-			GenerateCode(t->first);
-			GetIdentifier(t);
+			printf("-");
+			printf("%i",t->item);
 		case(e_CONSTANT):
 			GenerateCode(t->first);
 			return;
 		case(e_NUMBER_CONSTANT):
-			GetIdentifier(t);
+			printf("%i",t->item);
 			return;
 		case(e_REAL_NUMBER):
 			GenerateCode(t->first);
@@ -615,14 +614,7 @@ void GenerateCode(TERNARY_TREE t)
 			printf("char");
 			return;
 		case(e_CHARACTER_CONSTANT):
-			if(t->item>=0 && t->item<SYMTABSIZE)
-			{
-				printf("%c",symTab[t->item]->identifier[1]);
-			}
-			else
-			{
-				printf("UnknownIdentifier: %d",t->item);
-			}
+			printf("%c",t->item);
 			return;
 	}
 	GenerateCode(t->first);

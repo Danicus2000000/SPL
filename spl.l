@@ -4,27 +4,20 @@ digit [0-9]
 number {digit}+
 letter [A-Za-z]
 character_actual "'"{letter}"'"
-decimal [.]
 decimal_number {number}"."{number}
-negative_decimal_number "-"{number}"."{number}
-negative_number "-"{number}
 identifier {letter}({letter}|{number})*
 %{
 #ifdef PRINT
 #define TOKEN(t) printf("Token: " #t "\n");
 #define NUMBER_TOKEN(t) printf("Number %d Token: " #t "\n",yytext);
-#define NEGATIVE_NUMBER_TOKEN(t) printf("Negative Number %d Token: " #t "\n",yytext);
 #define DECIMAL_TOKEN(t) printf("decimal %d Token: " #t "\n",yytext);
-#define NEGATIVE_DECIMAL_TOKEN(t) printf("Negative decimal %d Token: " #t "\n",yytext);
 #define CHARACTER_TOKEN(t) printf("Character %c Token: " #t "\n", yytext);
 #define IDENTIFIER_TOKEN(t) printf("Identifier %s Token: " #t "\n", yytext);
 #else
 #define TOKEN(t) return(t);
-#define NUMBER_TOKEN(t) yylval.iVal = installId(yytext); return(t);
-#define NEGATIVE_NUMBER_TOKEN(t) yylval.iVal = installId(yytext); return(t);
+#define NUMBER_TOKEN(t) yylval.iVal = atol(yytext); return(t);
 #define DECIMAL_TOKEN(t) yylval.iVal = installId(yytext); return(t);
-#define NEGATIVE_DECIMAL_TOKEN(t) yylval.iVal = installId(yytext); return(t);
-#define CHARACTER_TOKEN(t) yylval.iVal = installId(yytext); return(t);
+#define CHARACTER_TOKEN(t) yylval.iVal = yytext[1]; return(t);
 #define IDENTIFIER_TOKEN(t) yylval.iVal = installId(yytext); return(t);
 #endif
 #ifndef PRINT
@@ -85,9 +78,7 @@ CHARACTER TOKEN(CHARACTERTYPE)
 INTEGER TOKEN (INTEGERTYPE)
 {identifier} IDENTIFIER_TOKEN(IDENTIFIER)
 {character_actual} CHARACTER_TOKEN(CHARACTER_ACTUAL)
-{negative_decimal_number} NEGATIVE_DECIMAL_TOKEN(NEGATIVE_DECIMAL_NUMBER)
 {decimal_number} DECIMAL_TOKEN(DECIMAL_NUMBER)
-{negative_number} NEGATIVE_NUMBER_TOKEN(NEGATIVE_NUMBER)
 {number} NUMBER_TOKEN(NUMBER)
  
 %%
