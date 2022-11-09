@@ -2424,8 +2424,17 @@ void GenerateCode(TERNARY_TREE t)
 			return;
 		case(e_WRITE_STATEMENT):
 			printf("printf(\"");
-			GenerateCode(t->first);
-			printf("\");\n");
+			if(t->first->first->nodeIdentifier==e_IDENTIFIER_VALUE)
+			{
+				printf("%%s\",");
+				GenerateCode(t->first);
+				printf(");\n");				
+			}
+			else
+			{
+				GenerateCode(t->first);
+				printf("\");\n");
+			}
 			return;
 		case(e_NEWLINE_WRITE_STATEMENT):
 			printf("\n");
