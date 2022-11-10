@@ -285,11 +285,11 @@ expression : term
 		{
 			$$=create_node(e_DEFAULT_EXPRESSION,e_EXPRESSION,$1,NULL,NULL);
 		}
-		| expression PLUS term
+		| term PLUS expression
 		{
 			$$=create_node(e_EXPRESSION_PLUS,e_EXPRESSION_PLUS,$1,$3,NULL);
 		}
-		| expression MINUS term
+		| term MINUS expression
 		{
 			$$=create_node(e_EXPRESSION_MINUS,e_EXPRESSION_MINUS,$1,$3,NULL);
 		}
@@ -402,6 +402,7 @@ void GenerateCode(TERNARY_TREE t)
 			printf("#include <stdio.h>\n");
 			printf("#include <stdlib.h>\n");
 			printf("int main(void) \n{\n");
+			printf("register int _by;\n");
 			GenerateCode(t->first);
 			printf("}");
 			return;
@@ -473,13 +474,16 @@ void GenerateCode(TERNARY_TREE t)
 			printf("=");
 			GenerateCode(t->first->first);
 			printf(";");
-			GetIdentifier(t);
-			printf("<");
-			GenerateCode(t->first->third);
-			printf(";");
-			GetIdentifier(t);
-			printf("+=");
+			printf("_by=");
 			GenerateCode(t->first->second);
+			printf(", (");
+			GetIdentifier(t);
+			printf("-(");
+			GenerateCode(t->first->third);
+			printf(")");
+			printf(")*((_by>0)-(_by<0))<=0; ");
+			GetIdentifier(t);
+			printf(" += _by");
 			printf(")\n{\n");
 			GenerateCode(t->second);
 			printf("}\n");
