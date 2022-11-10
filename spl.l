@@ -9,9 +9,9 @@ identifier {letter}({letter}|{number})*
 %{
 #ifdef PRINT
 #define TOKEN(t) printf("Token: " #t "\n");
-#define NUMBER_TOKEN(t) printf("Number %d Token: " #t "\n",yytext);
-#define DECIMAL_TOKEN(t) printf("decimal %d Token: " #t "\n",yytext);
-#define CHARACTER_TOKEN(t) printf("Character %c Token: " #t "\n", yytext);
+#define NUMBER_TOKEN(t) printf("Number %d Token: " #t "\n",atol(yytext));
+#define DECIMAL_TOKEN(t) printf("decimal %s Token: " #t "\n",yytext);
+#define CHARACTER_TOKEN(t) printf("Character %c Token: " #t "\n", yytext[1]);
 #define IDENTIFIER_TOKEN(t) printf("Identifier %s Token: " #t "\n", yytext);
 #else
 #define TOKEN(t) return(t);

@@ -63,8 +63,10 @@ TERNARY_TREE create_node(int,int,TERNARY_TREE,TERNARY_TREE,TERNARY_TREE);
 #ifdef DEBUG
 void PrintTree(TERNARY_TREE,int);
 #endif
+#ifndef DEBUG
 void GenerateCode(TERNARY_TREE);
 void GetIdentifier(TERNARY_TREE);
+#endif
 /* ------------- symbol table definition --------------------------- */
 
 struct symTabNode {
@@ -114,7 +116,9 @@ program : IDENTIFIER COLON block ENDPROGRAM IDENTIFIER DOT
 				#ifdef DEBUG
 				PrintTree(ParseTree,0);
 				#endif
+				#ifndef DEBUG
 				GenerateCode(ParseTree);
+				#endif
 			}
 			else
 			{
@@ -376,15 +380,23 @@ TERNARY_TREE create_node(int ival, int case_identifier, TERNARY_TREE p1,
 #ifdef DEBUG
 void PrintTree(TERNARY_TREE t,int pIndent)
 {
+	int index;
 	if (t == NULL) return;
-	for(int i=0;i<pIndent; i++)
+	for(index=0; index<pIndent; index++)
 	{
-			printf(" ");
+		printf(" ");
 	}
 	printf("nodeID:%s",ParseTreeValues[t->nodeIdentifier]);
    	if(t->item!=NOTHING)
 	{
-    	printf(" Item_Name:%s", ParseTreeValues[t->item]);
+		if(t->nodeIdentifier==e_CHARACTER_CONSTANT)
+		{
+			printf(" Item_Name:%c",t->item);			
+		}
+		else
+		{
+    		printf(" Item_Name:%s", ParseTreeValues[t->item]);
+		}
    	}
    	printf("\n");
    	pIndent++;
@@ -393,6 +405,7 @@ void PrintTree(TERNARY_TREE t,int pIndent)
    	PrintTree(t->third,pIndent);
 }
 #endif
+#ifndef DEBUG
 void GenerateCode(TERNARY_TREE t)
 {
 	if(t==NULL) return;
@@ -645,4 +658,5 @@ void GetIdentifier(TERNARY_TREE t)
 		printf("UnknownIdentifier: %d",t->item);
 	}
 }
+#endif
 #include "lex.yy.c"
