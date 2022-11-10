@@ -1567,21 +1567,21 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 109 "spl.y"
     {
-				TERNARY_TREE ParseTree;
-				if((yyvsp[(1) - (6)].iVal)==(yyvsp[(5) - (6)].iVal))
-				{
-					ParseTree= create_node((yyvsp[(1) - (6)].iVal),e_PROGRAM,(yyvsp[(3) - (6)].tVal),NULL,NULL);
-					#ifdef DEBUG
-					PrintTree(ParseTree,0);
-					#endif
-					GenerateCode(ParseTree);
-				}
-				else
-				{
-					fprintf(stderr,"Program IDENTIFIER is not called at the start and end of the program!");
-					exit(0);
-				}
-			;}
+			TERNARY_TREE ParseTree;
+			if((yyvsp[(1) - (6)].iVal)==(yyvsp[(5) - (6)].iVal))
+			{
+				ParseTree= create_node((yyvsp[(1) - (6)].iVal),e_PROGRAM,(yyvsp[(3) - (6)].tVal),NULL,NULL);
+				#ifdef DEBUG
+				PrintTree(ParseTree,0);
+				#endif
+				GenerateCode(ParseTree);
+			}
+			else
+			{
+				fprintf(stderr,"Program IDENTIFIER is not called at the start and end of the program!");
+				exit(0);
+			}
+		;}
     break;
 
   case 3:
@@ -1607,8 +1607,8 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 136 "spl.y"
     {
-						(yyval.tVal)=create_node(NOTHING,e_DECLARATION_BLOCK,NULL,(yyvsp[(1) - (5)].tVal),(yyvsp[(4) - (5)].tVal));
-					;}
+			(yyval.tVal)=create_node(NOTHING,e_DECLARATION_BLOCK,NULL,(yyvsp[(1) - (5)].tVal),(yyvsp[(4) - (5)].tVal));
+		;}
     break;
 
   case 6:
@@ -1616,8 +1616,8 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 140 "spl.y"
     {
-						(yyval.tVal)=create_node(NOTHING,e_DECLARATION_BLOCK,(yyvsp[(1) - (6)].tVal),(yyvsp[(2) - (6)].tVal),(yyvsp[(5) - (6)].tVal));
-					;}
+			(yyval.tVal)=create_node(NOTHING,e_DECLARATION_BLOCK,(yyvsp[(1) - (6)].tVal),(yyvsp[(2) - (6)].tVal),(yyvsp[(5) - (6)].tVal));
+		;}
     break;
 
   case 7:
@@ -1625,8 +1625,8 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 145 "spl.y"
     {
-					(yyval.tVal)=create_node((yyvsp[(1) - (1)].iVal),e_IDENTIFIER_LIST,NULL,NULL,NULL);
-				;}
+			(yyval.tVal)=create_node((yyvsp[(1) - (1)].iVal),e_IDENTIFIER_LIST,NULL,NULL,NULL);
+		;}
     break;
 
   case 8:
@@ -1634,8 +1634,8 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 149 "spl.y"
     {
-					(yyval.tVal)=create_node((yyvsp[(3) - (3)].iVal),e_IDENTIFIER_LIST_EXTEND,(yyvsp[(1) - (3)].tVal),NULL,NULL);
-				;}
+			(yyval.tVal)=create_node((yyvsp[(3) - (3)].iVal),e_IDENTIFIER_LIST_EXTEND,(yyvsp[(1) - (3)].tVal),NULL,NULL);
+		;}
     break;
 
   case 9:
@@ -2284,10 +2284,11 @@ TERNARY_TREE create_node(int ival, int case_identifier, TERNARY_TREE p1,
 {
     TERNARY_TREE t;
     t = (TERNARY_TREE)malloc(sizeof(TREE_NODE));
-    if (t == NULL) { 
+    if (t == NULL) 
+	{ 
 	    fprintf(stderr, "create_node:Out of memory: %d %d bytes\n", case_identifier, sizeof(TREE_NODE));
 		return(t); 
-		} 
+	} 
     t->item = ival;
     t->nodeIdentifier = case_identifier;
     t->first = p1;
@@ -2298,20 +2299,21 @@ TERNARY_TREE create_node(int ival, int case_identifier, TERNARY_TREE p1,
 #ifdef DEBUG
 void PrintTree(TERNARY_TREE t,int pIndent)
 {
-   if (t == NULL) return;
-   for(int i=0;i<pIndent; i++)
-   {
-		printf(" ");
-   }
-      printf("nodeID:%s",ParseTreeValues[t->nodeIdentifier]);
-   if(t->item!=NOTHING){
-      printf(" Item_Name:%s", ParseTreeValues[t->item]);
-   }
-   printf("\n");
-   pIndent++;
-   PrintTree(t->first,pIndent);
-   PrintTree(t->second,pIndent);
-   PrintTree(t->third,pIndent);
+	if (t == NULL) return;
+	for(int i=0;i<pIndent; i++)
+	{
+			printf(" ");
+	}
+	printf("nodeID:%s",ParseTreeValues[t->nodeIdentifier]);
+   	if(t->item!=NOTHING)
+	{
+    	printf(" Item_Name:%s", ParseTreeValues[t->item]);
+   	}
+   	printf("\n");
+   	pIndent++;
+   	PrintTree(t->first,pIndent);
+   	PrintTree(t->second,pIndent);
+   	PrintTree(t->third,pIndent);
 }
 #endif
 void GenerateCode(TERNARY_TREE t)
@@ -2334,6 +2336,18 @@ void GenerateCode(TERNARY_TREE t)
 		case(e_DECLARATION_BLOCK):
 			GenerateCode(t->first);
 			GenerateCode(t->third);
+			if(t->third->nodeIdentifier==e_CHARACTERTYPE)
+			{
+
+			}
+			else if(t->third->nodeIdentifier==e_INTEGERTYPE)
+			{
+
+			}
+			else
+			{
+				
+			}
 			printf(" ");
 			GenerateCode(t->second);
 			printf(";\n");
@@ -2370,7 +2384,7 @@ void GenerateCode(TERNARY_TREE t)
 			printf("}\n");
 			return;
 		case(e_DO_STATEMENT):
-			printf("do {\n");
+			printf("do \n{\n");
 			GenerateCode(t->first);
 			printf("} while (");
 			GenerateCode(t->second);
@@ -2408,6 +2422,12 @@ void GenerateCode(TERNARY_TREE t)
 				GenerateCode(t->first);
 				printf(");\n");				
 			}
+			else if(t->first->first->nodeIdentifier==e_EXPRESSION_VALUE)
+			{
+				printf("%%d\",");
+				GenerateCode(t->first);
+				printf(");\n");	
+			}
 			else
 			{
 				GenerateCode(t->first);
@@ -2415,7 +2435,7 @@ void GenerateCode(TERNARY_TREE t)
 			}
 			return;
 		case(e_NEWLINE_WRITE_STATEMENT):
-			printf("printf(\"\\n\");"); 
+			printf("printf(\"\\n\");\n"); 
 			return;
 		case(e_READ_STATEMENT):
 			printf("scanf(\"%%s\",");
@@ -2423,9 +2443,8 @@ void GenerateCode(TERNARY_TREE t)
 			printf(");\n");
 			return;
 		case(e_NOT_CONDITION):
-			printf("!(");
+			printf("!");
 			GenerateCode(t->first);
-			printf(")");
 			return;
 		case(e_AND_CONDITIONAL):
 			GenerateCode(t->first);

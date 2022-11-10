@@ -106,22 +106,22 @@ int currentSymTabSize = 0;
 	output_list read_statement conditional comparator expression term value constant type
 %%
 program : IDENTIFIER COLON block ENDPROGRAM IDENTIFIER DOT
+		{
+			TERNARY_TREE ParseTree;
+			if($1==$5)
 			{
-				TERNARY_TREE ParseTree;
-				if($1==$5)
-				{
-					ParseTree= create_node($1,e_PROGRAM,$3,NULL,NULL);
-					#ifdef DEBUG
-					PrintTree(ParseTree,0);
-					#endif
-					GenerateCode(ParseTree);
-				}
-				else
-				{
-					fprintf(stderr,"Program IDENTIFIER is not called at the start and end of the program!");
-					exit(0);
-				}
+				ParseTree= create_node($1,e_PROGRAM,$3,NULL,NULL);
+				#ifdef DEBUG
+				PrintTree(ParseTree,0);
+				#endif
+				GenerateCode(ParseTree);
 			}
+			else
+			{
+				fprintf(stderr,"Program IDENTIFIER is not called at the start and end of the program!");
+				exit(0);
+			}
+		}
 	;
 block : DECLARATIONS declaration_block CODE statement_list
 		{
@@ -133,28 +133,28 @@ block : DECLARATIONS declaration_block CODE statement_list
 		}
 	;
 declaration_block : identifier_list OF TYPEVAR type SEMICOLON
-					{
-						$$=create_node(NOTHING,e_DECLARATION_BLOCK,NULL,$1,$4);
-					}
-					| declaration_block identifier_list OF TYPEVAR type SEMICOLON
-					{
-						$$=create_node(NOTHING,e_DECLARATION_BLOCK,$1,$2,$5);
-					}
+		{
+			$$=create_node(NOTHING,e_DECLARATION_BLOCK,NULL,$1,$4);
+		}
+		| declaration_block identifier_list OF TYPEVAR type SEMICOLON
+		{
+			$$=create_node(NOTHING,e_DECLARATION_BLOCK,$1,$2,$5);
+		}
 	;
 identifier_list : IDENTIFIER
-				{
-					$$=create_node($1,e_IDENTIFIER_LIST,NULL,NULL,NULL);
-				}
-				| identifier_list COMMA IDENTIFIER
-				{
-					$$=create_node($3,e_IDENTIFIER_LIST_EXTEND,$1,NULL,NULL);
-				}
+		{
+			$$=create_node($1,e_IDENTIFIER_LIST,NULL,NULL,NULL);
+		}
+		| identifier_list COMMA IDENTIFIER
+		{
+			$$=create_node($3,e_IDENTIFIER_LIST_EXTEND,$1,NULL,NULL);
+		}
 	;
 statement_list : statement
 		{
 			$$=create_node(NOTHING,e_STATEMENT_LIST,$1,NULL,NULL);
 		}
-| statement_list SEMICOLON statement
+		| statement_list SEMICOLON statement
 		{
 			$$=create_node(NOTHING,e_STATEMENT_LIST,$1,$3,NULL);
 		}
@@ -163,27 +163,27 @@ statement : assignment_statement
 		{
 			$$=create_node(e_ASSIGNMENT_STATEMENT,e_STATEMENT,$1,NULL,NULL);
 		}
-| if_statement
+		| if_statement
 		{
 			$$=create_node(e_IF_STATEMENT,e_STATEMENT,$1,NULL,NULL);
 		}
-| do_statement
+		| do_statement
 		{
 			$$=create_node(e_DO_STATEMENT,e_STATEMENT,$1,NULL,NULL);
 		}
-| while_statement
+		| while_statement
 		{
 			$$=create_node(e_WHILE_STATEMENT,e_STATEMENT,$1,NULL,NULL);
 		}
-| for_statement
+		| for_statement
 		{
 			$$=create_node(e_FOR_STATEMENT,e_STATEMENT,$1,NULL,NULL);
 		}
-| write_statement
+		| write_statement
 		{
 			$$=create_node(e_WRITE_STATEMENT,e_STATEMENT,$1,NULL,NULL);
 		}
-| read_statement
+		| read_statement
 		{
 			$$=create_node(e_READ_STATEMENT,e_STATEMENT,$1,NULL,NULL);
 		}
@@ -197,7 +197,7 @@ if_statement : IF conditional THEN statement_list ENDIF
 		{
 			$$=create_node(NOTHING,e_IF_STATEMENT,$2,$4,NULL);
 		}
-| IF conditional THEN statement_list ELSE statement_list ENDIF
+		| IF conditional THEN statement_list ELSE statement_list ENDIF
 		{
 			$$=create_node(NOTHING,e_IF_ELSE_STATEMENT,$2,$4,$6);
 		}
@@ -221,7 +221,7 @@ write_statement : WRITE BRA output_list KET
 		{
 			$$=create_node(NOTHING,e_WRITE_STATEMENT,$3,NULL,NULL);
 		}
-| NEWLINE
+		| NEWLINE
 		{
 			$$=create_node(NOTHING,e_NEWLINE_WRITE_STATEMENT,NULL,NULL,NULL);
 		}
@@ -230,7 +230,7 @@ output_list : value
 		{
 			$$=create_node(NOTHING,e_OUTPUT_LIST,$1,NULL,NULL);
 		}
-| output_list COMMA value
+		| output_list COMMA value
 		{
 			$$=create_node(NOTHING,e_OUTPUT_LIST,$1,$3,NULL);
 		}
@@ -244,15 +244,15 @@ conditional : expression comparator expression
 		{
 			$$=create_node(e_CONDITIONAL,e_CONDITIONAL,$1,$2,$3);
 		}
-| NOT conditional
+		| NOT conditional
 		{
 			$$=create_node(e_NOT_CONDITION,e_NOT_CONDITION,$2,NULL,NULL);
 		}
-| expression comparator expression AND conditional
+		| expression comparator expression AND conditional
 		{
 			$$=create_node(e_AND_CONDITIONAL,e_AND_CONDITIONAL,create_node(e_AND_CONDITIONAL,e_CONDITIONAL,$1,$2,$3),$5,NULL);
 		}
-| expression comparator expression OR conditional
+		| expression comparator expression OR conditional
 		{
 			$$=create_node(e_OR_CONDITIONAL,e_OR_CONDITIONAL,create_node(e_OR_CONDITIONAL,e_CONDITIONAL,$1,$2,$3),$5,NULL);
 		}
@@ -261,23 +261,23 @@ comparator : EQUALS
 		{
 			$$=create_node(e_EQUALS,e_EQUALS,NULL,NULL,NULL);
 		}
-| SHEVRONS
+		| SHEVRONS
 		{
 			$$=create_node(e_SHEVRONS,e_SHEVRONS,NULL,NULL,NULL);
 		}
-| LESSTHAN
+		| LESSTHAN
 		{
 			$$=create_node(e_LESSTHAN,e_LESSTHAN,NULL,NULL,NULL);
 		}
-| MORETHAN
+		| MORETHAN
 		{
 			$$=create_node(e_MORETHAN,e_MORETHAN,NULL,NULL,NULL);
 		}
-| LESSOREQUAL
+		| LESSOREQUAL
 		{
 			$$=create_node(e_LESSOREQUAL,e_LESSOREQUAL,NULL,NULL,NULL);
 		}
-| MOREOREQUAL
+		| MOREOREQUAL
 		{
 			$$=create_node(e_MOREOREQUAL,e_MOREOREQUAL,NULL,NULL,NULL);
 		}
@@ -285,11 +285,11 @@ expression : term
 		{
 			$$=create_node(e_DEFAULT_EXPRESSION,e_EXPRESSION,$1,NULL,NULL);
 		}
-| expression PLUS term
+		| expression PLUS term
 		{
 			$$=create_node(e_EXPRESSION_PLUS,e_EXPRESSION_PLUS,$1,$3,NULL);
 		}
-| expression MINUS term
+		| expression MINUS term
 		{
 			$$=create_node(e_EXPRESSION_MINUS,e_EXPRESSION_MINUS,$1,$3,NULL);
 		}
@@ -298,11 +298,11 @@ term : value
 		{
 			$$=create_node(e_TERM,e_TERM,$1,NULL,NULL);
 		}
-| value TIMES term
+		| value TIMES term
 		{
 			$$=create_node(e_TIMES_TERM,e_TIMES_TERM,$1,$3,NULL);
 		}
-| value DIVIDE term
+		| value DIVIDE term
 		{
 			$$=create_node(e_DIVIDE_TERM,e_DIVIDE_TERM,$1,$3,NULL);
 		}
@@ -311,11 +311,11 @@ value : IDENTIFIER
 		{
 			$$=create_node($1,e_IDENTIFIER_VALUE,NULL,NULL,NULL);
 		}
-| constant
+		| constant
 		{
 			$$=create_node(NOTHING,e_CONSTANT_VALUE,$1,NULL,NULL);
 		}
-| BRA expression KET
+		| BRA expression KET
 		{
 			$$=create_node(NOTHING,e_EXPRESSION_VALUE,$2,NULL,NULL);
 		}
@@ -346,11 +346,11 @@ type : CHARACTERTYPE
 		{
 			$$=create_node($1,e_CHARACTERTYPE,NULL,NULL,NULL);
 		}
-| INTEGERTYPE
+		| INTEGERTYPE
 		{
 			$$=create_node($1,e_INTEGERTYPE,NULL,NULL,NULL);
 		}
-| REALTYPE
+		| REALTYPE
 		{
 			$$=create_node($1,e_REALTYPE,NULL,NULL,NULL);
 		}
@@ -361,10 +361,11 @@ TERNARY_TREE create_node(int ival, int case_identifier, TERNARY_TREE p1,
 {
     TERNARY_TREE t;
     t = (TERNARY_TREE)malloc(sizeof(TREE_NODE));
-    if (t == NULL) { 
+    if (t == NULL) 
+	{ 
 	    fprintf(stderr, "create_node:Out of memory: %d %d bytes\n", case_identifier, sizeof(TREE_NODE));
 		return(t); 
-		} 
+	} 
     t->item = ival;
     t->nodeIdentifier = case_identifier;
     t->first = p1;
@@ -375,20 +376,21 @@ TERNARY_TREE create_node(int ival, int case_identifier, TERNARY_TREE p1,
 #ifdef DEBUG
 void PrintTree(TERNARY_TREE t,int pIndent)
 {
-   if (t == NULL) return;
-   for(int i=0;i<pIndent; i++)
-   {
-		printf(" ");
-   }
-      printf("nodeID:%s",ParseTreeValues[t->nodeIdentifier]);
-   if(t->item!=NOTHING){
-      printf(" Item_Name:%s", ParseTreeValues[t->item]);
-   }
-   printf("\n");
-   pIndent++;
-   PrintTree(t->first,pIndent);
-   PrintTree(t->second,pIndent);
-   PrintTree(t->third,pIndent);
+	if (t == NULL) return;
+	for(int i=0;i<pIndent; i++)
+	{
+			printf(" ");
+	}
+	printf("nodeID:%s",ParseTreeValues[t->nodeIdentifier]);
+   	if(t->item!=NOTHING)
+	{
+    	printf(" Item_Name:%s", ParseTreeValues[t->item]);
+   	}
+   	printf("\n");
+   	pIndent++;
+   	PrintTree(t->first,pIndent);
+   	PrintTree(t->second,pIndent);
+   	PrintTree(t->third,pIndent);
 }
 #endif
 void GenerateCode(TERNARY_TREE t)
@@ -459,7 +461,7 @@ void GenerateCode(TERNARY_TREE t)
 			printf("}\n");
 			return;
 		case(e_DO_STATEMENT):
-			printf("do {\n");
+			printf("do \n{\n");
 			GenerateCode(t->first);
 			printf("} while (");
 			GenerateCode(t->second);
@@ -497,6 +499,12 @@ void GenerateCode(TERNARY_TREE t)
 				GenerateCode(t->first);
 				printf(");\n");				
 			}
+			else if(t->first->first->nodeIdentifier==e_EXPRESSION_VALUE)
+			{
+				printf("%%d\",");
+				GenerateCode(t->first);
+				printf(");\n");	
+			}
 			else
 			{
 				GenerateCode(t->first);
@@ -504,7 +512,7 @@ void GenerateCode(TERNARY_TREE t)
 			}
 			return;
 		case(e_NEWLINE_WRITE_STATEMENT):
-			printf("printf(\"\\n\");"); 
+			printf("printf(\"\\n\");\n"); 
 			return;
 		case(e_READ_STATEMENT):
 			printf("scanf(\"%%s\",");
@@ -512,9 +520,8 @@ void GenerateCode(TERNARY_TREE t)
 			printf(");\n");
 			return;
 		case(e_NOT_CONDITION):
-			printf("!(");
+			printf("!");
 			GenerateCode(t->first);
-			printf(")");
 			return;
 		case(e_AND_CONDITIONAL):
 			GenerateCode(t->first);

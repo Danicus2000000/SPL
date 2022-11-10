@@ -27,9 +27,7 @@ extern int currentSymTabSize;
 int installId(char*);
 #endif
 %}
-
 %%
-
 {ws} ;
 ":"  TOKEN(COLON)
 "."  TOKEN(DOT)
@@ -80,21 +78,16 @@ INTEGER TOKEN (INTEGERTYPE)
 {character_actual} CHARACTER_TOKEN(CHARACTER_ACTUAL)
 {decimal_number} DECIMAL_TOKEN(DECIMAL_NUMBER)
 {number} NUMBER_TOKEN(NUMBER)
- 
 %%
 #ifndef PRINT
 /* Here is the code for the library of symbol table routines */
-
 /* code for a simple symbol table, which is an array of pointers to
    structs, each of which contains an identifier.
 */
-
-
 SYMTABNODEPTR newSymTabNode()
 {
     return ((SYMTABNODEPTR)malloc(sizeof(SYMTABNODE)));
 }
-
 int lookup(char *s)
 {
     extern SYMTABNODEPTR symTab[SYMTABSIZE];
@@ -110,12 +103,10 @@ int lookup(char *s)
     }
     return (-1);    
 }
-
 /* Look up an identifier in the symbol table, if its there return
    its index.  If its not there, put it in the end position,
    as long as the table isn't full, and return its index.
 */
-
 int installId(char *id) 
 {
     extern SYMTABNODEPTR symTab[SYMTABSIZE]; 
