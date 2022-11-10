@@ -2338,15 +2338,30 @@ void GenerateCode(TERNARY_TREE t)
 			GenerateCode(t->third);
 			if(t->third->nodeIdentifier==e_CHARACTERTYPE)
 			{
-
+				symTab[t->third->item]->variableType=e_CHARACTERTYPE;
 			}
 			else if(t->third->nodeIdentifier==e_INTEGERTYPE)
 			{
-
+				symTab[t->third->item]->variableType=e_INTEGERTYPE;
 			}
-			else
+			else if(t->third->nodeIdentifier==e_REALTYPE)
 			{
-				
+				symTab[t->third->item]->variableType=e_REALTYPE;
+			}
+			if(t->first!=NULL)
+			{
+				if(t->second->nodeIdentifier==e_CHARACTERTYPE)
+				{
+					symTab[t->second->item]->variableType=e_CHARACTERTYPE;
+				}
+				else if(t->second->nodeIdentifier==e_INTEGERTYPE)
+				{
+					symTab[t->second->item]->variableType=e_INTEGERTYPE;
+				}
+				else if(t->second->nodeIdentifier==e_REALTYPE)
+				{
+					symTab[t->second->item]->variableType=e_REALTYPE;
+				}
 			}
 			printf(" ");
 			GenerateCode(t->second);
@@ -2437,8 +2452,30 @@ void GenerateCode(TERNARY_TREE t)
 		case(e_NEWLINE_WRITE_STATEMENT):
 			printf("printf(\"\\n\");\n"); 
 			return;
+		case(e_CONDITIONAL):
+			printf("(");
+			GenerateCode(t->first);
+			GenerateCode(t->second);
+			GenerateCode(t->third);
+			printf(")");
+			return;
 		case(e_READ_STATEMENT):
-			printf("scanf(\"%%s\",");
+			if(symTab[t->item]->variableType==e_INTEGERTYPE)
+			{
+				printf("scanf(\"%%d\",");
+			}
+			else if(symTab[t->item]->variableType==e_REALTYPE)
+			{
+				printf("scanf(\"%%f\",");
+			}
+			else if(symTab[t->item]->variableType==e_CHARACTERTYPE)
+			{
+				printf("scanf(\"%%c\",");
+			}
+			else
+			{
+				printf("scanf(\"%%s\",");
+			}
 			GetIdentifier(t);
 			printf(");\n");
 			return;
