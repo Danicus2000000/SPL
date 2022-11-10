@@ -2323,7 +2323,6 @@ void GenerateCode(TERNARY_TREE t)
 			printf("#include <stdio.h>\n");
 			printf("#include <stdlib.h>\n");
 			printf("int main(void) \n{\n");
-			printf("register int _by;\n");
 			GenerateCode(t->first);
 			printf("}");
 			return;
@@ -2395,38 +2394,22 @@ void GenerateCode(TERNARY_TREE t)
 			printf("=");
 			GenerateCode(t->first->first);
 			printf(";");
-			printf("_by=");
-			GenerateCode(t->first->second);
-			printf(", (");
+			printf("(");
 			GetIdentifier(t);
 			printf("-(");
 			GenerateCode(t->first->third);
 			printf(")");
-			printf(")*((_by>0)-(_by<0))<=0; ");
+			printf(")*((");
+			GenerateCode(t->first->second);
+			printf(">0)-(");
+			GenerateCode(t->first->second);
+			printf("<0))<=0; ");
 			GetIdentifier(t);
-			printf(" += _by");
-			printf(")\n{\n");
-			GenerateCode(t->second);
-			printf("}\n");
-			/*if(t->first->third->first->first->first!=NULL)
-			{
-				if(t->first->third->first->first->first->nodeIdentifier==e_NEGATIVE_NUMBER_CONSTANT)
-				{
-					printf(">=");
-				}
-			}
-			else
-			{
-				printf("<=");
-			}
-			GenerateCode(t->first->third);
-			printf(";");
-			GetIdentifier(t);
-			printf("+=");
+			printf(" += ");
 			GenerateCode(t->first->second);
 			printf(")\n{\n");
 			GenerateCode(t->second);
-			printf("}\n");*/
+			printf("}\n");
 			return;
 		case(e_WHILE_STATEMENT):
 			printf("while (");
