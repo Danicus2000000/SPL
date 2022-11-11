@@ -64,8 +64,9 @@ TERNARY_TREE create_node(int,int,TERNARY_TREE,TERNARY_TREE,TERNARY_TREE);
 void PrintTree(TERNARY_TREE,int);
 #endif
 #ifndef DEBUG
-void GenerateCode(TERNARY_TREE);
+void GenerateCode(TERNARY_TREE,int);
 void GetIdentifier(TERNARY_TREE);
+void createIndent(int);
 #endif
 /* ------------- symbol table definition --------------------------- */
 
@@ -117,7 +118,7 @@ program : IDENTIFIER COLON block ENDPROGRAM IDENTIFIER DOT
 				PrintTree(ParseTree,0);
 				#endif
 				#ifndef DEBUG
-				GenerateCode(ParseTree);
+				GenerateCode(ParseTree,0);
 				#endif
 			}
 			else
@@ -406,7 +407,7 @@ void PrintTree(TERNARY_TREE t,int pIndent)
 }
 #endif
 #ifndef DEBUG
-void GenerateCode(TERNARY_TREE t)
+void GenerateCode(TERNARY_TREE t,int indent)
 {
 	if(t==NULL) return;
 	switch(t->nodeIdentifier)
@@ -415,17 +416,21 @@ void GenerateCode(TERNARY_TREE t)
 			printf("#include <stdio.h>\n");
 			printf("#include <stdlib.h>\n");
 			printf("int main(void) \n{\n");
-			GenerateCode(t->first);
+			indent++;
+			createIndent(indent);
+			printf("register int _by;\n");
+			GenerateCode(t->first,indent);
+			indent--;
 			printf("}");
 			return;
 		case(e_BLOCK):
-			GenerateCode(t->first);
+			GenerateCode(t->first,indent);
 			printf("\n");
-			GenerateCode(t->second);
+			GenerateCode(t->second,indent);
 			return;
 		case(e_DECLARATION_BLOCK):
-			GenerateCode(t->first);
-			GenerateCode(t->third);
+			GenerateCode(t->first,indent);
+			GenerateCode(t->third,indent);
 			if(t->third->nodeIdentifier==e_CHARACTERTYPE)
 			{
 				symTab[t->third->item]->variableType=e_CHARACTERTYPE;
@@ -439,108 +444,153 @@ void GenerateCode(TERNARY_TREE t)
 				symTab[t->third->item]->variableType=e_REALTYPE;
 			}
 			printf(" ");
-			GenerateCode(t->second);
+			GenerateCode(t->second,indent);
 			printf(";\n");
 			return;
 		case(e_IDENTIFIER_LIST):
 			GetIdentifier(t);
 			return;
 		case(e_IDENTIFIER_LIST_EXTEND):
-			GenerateCode(t->first);
+			GenerateCode(t->first,indent);
 			printf(",");
 			GetIdentifier(t);
 			return;
 		case(e_ASSIGNMENT_STATEMENT):
+			createIndent(indent);
 			GetIdentifier(t);
 			printf(" = ");
-			GenerateCode(t->first);
+			GenerateCode(t->first,indent);
 			printf(";\n");
 			return;
 		case(e_IF_STATEMENT):
+			createIndent(indent);
 			printf("if (");
-			GenerateCode(t->first);
-			printf(") \n{\n");
-			GenerateCode(t->second);
+			GenerateCode(t->first,indent);
+			printf(") \n");
+			createIndent(indent);
+			printf("{\n");
+			indent++;
+			GenerateCode(t->second,indent);
+			indent--;
+			createIndent(indent);
 			printf("}\n");
 			return;
 		case(e_IF_ELSE_STATEMENT):
+			createIndent(indent);
 			printf("if (");
-			GenerateCode(t->first);
-			printf(") \n{\n");
-			GenerateCode(t->second);
+			GenerateCode(t->first,indent);
+			printf(") \n");
+			createIndent(indent);
+			printf("{\n");
+			indent++;
+			GenerateCode(t->second,indent);
+			indent--;
+			createIndent(indent);
 			printf("}\n");
-			printf("else\n{\n");
-			GenerateCode(t->third);
+			createIndent(indent);
+			printf("else\n");
+			createIndent(indent);
+			printf("{\n");
+			indent++;
+			GenerateCode(t->third,indent);
+			indent--;
+			createIndent(indent);
 			printf("}\n");
 			return;
 		case(e_DO_STATEMENT):
-			printf("do \n{\n");
-			GenerateCode(t->first);
+			createIndent(indent);
+			printf("do \n");
+			createIndent(indent);
+			printf("{\n");
+			indent++;
+			GenerateCode(t->first,indent);
+			indent--;
+			createIndent(indent);
 			printf("} while (");
-			GenerateCode(t->second);
+			GenerateCode(t->second,indent);
 			printf(");\n");
 			return;
 		case(e_FOR_STATEMENT):
-			printf("for (");
+			createIndent(indent);
+			printf("for(");
 			GetIdentifier(t);
 			printf("=");
-			GenerateCode(t->first->first);
-			printf(";");
+			GenerateCode(t->first->first,indent);
+			printf("; ");
+			printf("_by=");
+			GenerateCode(t->first->second,indent);
+			printf(", (");
 			printf("(");
 			GetIdentifier(t);
 			printf("-(");
-			GenerateCode(t->first->third);
+			GenerateCode(t->first->third,indent);
 			printf(")");
+			printf(")*((_by>0)-(_by<0))<=0; ");
 			printf(")*((");
-			GenerateCode(t->first->second);
+			GenerateCode(t->first->second,indent);
 			printf(">0)-(");
-			GenerateCode(t->first->second);
+			GenerateCode(t->first->second,indent);
 			printf("<0))<=0; ");
 			GetIdentifier(t);
+			printf(" += _by");
 			printf(" += ");
-			GenerateCode(t->first->second);
-			printf(")\n{\n");
-			GenerateCode(t->second);
+			GenerateCode(t->first->second,indent);
+			printf(")\n");
+			createIndent(indent);
+			printf("{\n");
+			indent++;
+			GenerateCode(t->second,indent);
+			indent--;
+			createIndent(indent);
 			printf("}\n");
 			return;
 		case(e_WHILE_STATEMENT):
+			createIndent(indent);
 			printf("while (");
-			GenerateCode(t->first);
-			printf(") \n{\n");
-			GenerateCode(t->second);
+			GenerateCode(t->first,indent);
+			printf(") \n");
+			createIndent(indent);
+			printf("{\n");
+			indent++;
+			GenerateCode(t->second,indent);
+			indent--;
+			createIndent(indent);
 			printf("}\n");
 			return;
 		case(e_WRITE_STATEMENT):
+			createIndent(indent);
 			printf("printf(\"");
 			if(t->first->first->nodeIdentifier==e_IDENTIFIER_VALUE)
 			{
 				printf("%%s\",");
-				GenerateCode(t->first);
+				GenerateCode(t->first,indent);
 				printf(");\n");				
 			}
 			else if(t->first->first->nodeIdentifier==e_EXPRESSION_VALUE)
 			{
 				printf("%%d\",");
-				GenerateCode(t->first);
+				GenerateCode(t->first,indent);
 				printf(");\n");	
 			}
 			else
 			{
-				GenerateCode(t->first);
+				GenerateCode(t->first,indent);
 				printf("\");\n");
 			}
 			return;
 		case(e_NEWLINE_WRITE_STATEMENT):
+			createIndent(indent);
 			printf("printf(\"\\n\");\n"); 
 			return;
 		case(e_CONDITIONAL):
 			printf("(");
-			GenerateCode(t->first);
-			GenerateCode(t->second);
-			GenerateCode(t->third);
+			GenerateCode(t->first,indent);
+			GenerateCode(t->second,indent);
+			GenerateCode(t->third,indent);
 			printf(")");
 			return;
 		case(e_READ_STATEMENT):
+			createIndent(indent);
 			if(symTab[t->item]->variableType==e_INTEGERTYPE)
 			{
 				printf("scanf(\"%%d\",");
@@ -562,17 +612,17 @@ void GenerateCode(TERNARY_TREE t)
 			return;
 		case(e_NOT_CONDITION):
 			printf("!");
-			GenerateCode(t->first);
+			GenerateCode(t->first,indent);
 			return;
 		case(e_AND_CONDITIONAL):
-			GenerateCode(t->first);
+			GenerateCode(t->first,indent);
 			printf(" && ");
-			GenerateCode(t->second);
+			GenerateCode(t->second,indent);
 			return;
 		case(e_OR_CONDITIONAL):
-			GenerateCode(t->first);
+			GenerateCode(t->first,indent);
 			printf(" || ");
-			GenerateCode(t->second);
+			GenerateCode(t->second,indent);
 			return;
 		case(e_EQUALS):
 			printf(" == ");
@@ -593,31 +643,31 @@ void GenerateCode(TERNARY_TREE t)
 			printf(" >= ");
 			return;
 		case(e_EXPRESSION_PLUS):
-			GenerateCode(t->first);
+			GenerateCode(t->first,indent);
 			printf("+");
-			GenerateCode(t->second);
+			GenerateCode(t->second,indent);
 			return;
 		case(e_EXPRESSION_MINUS):
-			GenerateCode(t->first);
+			GenerateCode(t->first,indent);
 			printf("-");
-			GenerateCode(t->second);
+			GenerateCode(t->second,indent);
 			return;
 		case(e_TIMES_TERM):
-			GenerateCode(t->first);
+			GenerateCode(t->first,indent);
 			printf("*");
-			GenerateCode(t->second);
+			GenerateCode(t->second,indent);
 			return;
 		case(e_DIVIDE_TERM):
-			GenerateCode(t->first);
+			GenerateCode(t->first,indent);
 			printf("/");
-			GenerateCode(t->second);
+			GenerateCode(t->second,indent);
 			return;
 		case(e_IDENTIFIER_VALUE):
 			GetIdentifier(t);
 			return;
 		case(e_EXPRESSION_VALUE):
 			printf("(");
-			GenerateCode(t->first);
+			GenerateCode(t->first,indent);
 			printf(")");
 			return;
 		case(e_CHARACTER_CONSTANT):
@@ -634,18 +684,21 @@ void GenerateCode(TERNARY_TREE t)
 			GetIdentifier(t);
 			return;
 		case(e_CHARACTERTYPE):
+			createIndent(indent);
 			printf("char");
 			return;
 		case(e_INTEGERTYPE):
+			createIndent(indent);
 			printf("int");
 			return;
 		case (e_REALTYPE):
+			createIndent(indent);
 			printf("double");
 			return;
 	}
-	GenerateCode(t->first);
-	GenerateCode(t->second);
-	GenerateCode(t->third);
+	GenerateCode(t->first,indent);
+	GenerateCode(t->second,indent);
+	GenerateCode(t->third,indent);
 }
 void GetIdentifier(TERNARY_TREE t)
 {
@@ -656,6 +709,14 @@ void GetIdentifier(TERNARY_TREE t)
 	else
 	{
 		printf("UnknownIdentifier: %d",t->item);
+	}
+}
+void createIndent(int indent)
+{
+	int index;
+	for(index=0;index<indent;index++)
+	{
+		printf("    ");
 	}
 }
 #endif
