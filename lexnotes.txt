@@ -1,17 +1,17 @@
 Lexical Analyser Test:
 flex spl.l
-gcc -o spl.exe -DPRINT lex.yy.c -lfl
+gcc -o spl.exe -DPRINT lex.yy.c -lfl -ansi
 spl.exe < (spl_example_file)
 
 Parse Tree Test:
 bison spl.y --debug
-gcc -o spl.exe spl.c spl.tab.c -lfl -DDEBUG
+gcc -o spl.exe spl.c spl.tab.c -lfl -DDEBUG -ansi
 spl.exe < (spl_example_file)
 
 Full Compile:
 flex spl.l
 bison spl.y
-gcc -o spl.exe spl.c spl.tab.c -lfl 
+gcc -o spl.exe spl.c spl.tab.c -lfl -ansi
 spl.exe < (spl_example_file) > (spl_output_name).c
 gcc -o (program_name).exe (spl_output_name).c -lfl
 

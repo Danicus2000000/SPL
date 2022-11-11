@@ -138,6 +138,7 @@ void PrintTree(TERNARY_TREE,int);
 void GenerateCode(TERNARY_TREE,int);
 void GetIdentifier(TERNARY_TREE);
 void createIndent(int);
+void loopIdentifier(TERNARY_TREE,int);
 #endif
 /* ------------- symbol table definition --------------------------- */
 
@@ -156,7 +157,7 @@ int currentSymTabSize = 0;
 
 
 /* Line 189 of yacc.c  */
-#line 160 "spl.tab.c"
+#line 161 "spl.tab.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -244,7 +245,7 @@ typedef union YYSTYPE
 {
 
 /* Line 214 of yacc.c  */
-#line 97 "spl.y"
+#line 98 "spl.y"
 
     int iVal;
     TERNARY_TREE tVal;
@@ -252,7 +253,7 @@ typedef union YYSTYPE
 
 
 /* Line 214 of yacc.c  */
-#line 256 "spl.tab.c"
+#line 257 "spl.tab.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -264,7 +265,7 @@ typedef union YYSTYPE
 
 
 /* Line 264 of yacc.c  */
-#line 268 "spl.tab.c"
+#line 269 "spl.tab.c"
 
 #ifdef short
 # undef short
@@ -574,12 +575,12 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   111,   111,   131,   135,   140,   144,   149,   153,   158,
-     162,   167,   171,   175,   179,   183,   187,   191,   196,   201,
-     205,   210,   215,   220,   225,   229,   234,   238,   243,   248,
-     252,   256,   260,   265,   269,   273,   277,   281,   285,   289,
-     293,   297,   302,   306,   310,   315,   319,   323,   328,   333,
-     337,   341,   345,   350,   354,   358
+       0,   112,   112,   132,   136,   141,   145,   150,   154,   159,
+     163,   168,   172,   176,   180,   184,   188,   192,   197,   202,
+     206,   211,   216,   221,   226,   230,   235,   239,   244,   249,
+     253,   257,   261,   266,   270,   274,   278,   282,   286,   290,
+     294,   298,   303,   307,   311,   316,   320,   324,   329,   334,
+     338,   342,   346,   351,   355,   359
 };
 #endif
 
@@ -1566,7 +1567,7 @@ yyreduce:
         case 2:
 
 /* Line 1455 of yacc.c  */
-#line 112 "spl.y"
+#line 113 "spl.y"
     {
 			TERNARY_TREE ParseTree;
 			if((yyvsp[(1) - (6)].iVal)==(yyvsp[(5) - (6)].iVal))
@@ -1590,7 +1591,7 @@ yyreduce:
   case 3:
 
 /* Line 1455 of yacc.c  */
-#line 132 "spl.y"
+#line 133 "spl.y"
     {
 			(yyval.tVal)=create_node(NOTHING,e_BLOCK,(yyvsp[(2) - (4)].tVal),(yyvsp[(4) - (4)].tVal),NULL);
 		;}
@@ -1599,7 +1600,7 @@ yyreduce:
   case 4:
 
 /* Line 1455 of yacc.c  */
-#line 136 "spl.y"
+#line 137 "spl.y"
     {
 			(yyval.tVal)=create_node(NOTHING,e_BLOCK,(yyvsp[(2) - (2)].tVal),NULL,NULL);
 		;}
@@ -1608,7 +1609,7 @@ yyreduce:
   case 5:
 
 /* Line 1455 of yacc.c  */
-#line 141 "spl.y"
+#line 142 "spl.y"
     {
 			(yyval.tVal)=create_node(NOTHING,e_DECLARATION_BLOCK,NULL,(yyvsp[(1) - (5)].tVal),(yyvsp[(4) - (5)].tVal));
 		;}
@@ -1617,7 +1618,7 @@ yyreduce:
   case 6:
 
 /* Line 1455 of yacc.c  */
-#line 145 "spl.y"
+#line 146 "spl.y"
     {
 			(yyval.tVal)=create_node(NOTHING,e_DECLARATION_BLOCK,(yyvsp[(1) - (6)].tVal),(yyvsp[(2) - (6)].tVal),(yyvsp[(5) - (6)].tVal));
 		;}
@@ -1626,7 +1627,7 @@ yyreduce:
   case 7:
 
 /* Line 1455 of yacc.c  */
-#line 150 "spl.y"
+#line 151 "spl.y"
     {
 			(yyval.tVal)=create_node((yyvsp[(1) - (1)].iVal),e_IDENTIFIER_LIST,NULL,NULL,NULL);
 		;}
@@ -1635,7 +1636,7 @@ yyreduce:
   case 8:
 
 /* Line 1455 of yacc.c  */
-#line 154 "spl.y"
+#line 155 "spl.y"
     {
 			(yyval.tVal)=create_node((yyvsp[(3) - (3)].iVal),e_IDENTIFIER_LIST_EXTEND,(yyvsp[(1) - (3)].tVal),NULL,NULL);
 		;}
@@ -1644,7 +1645,7 @@ yyreduce:
   case 9:
 
 /* Line 1455 of yacc.c  */
-#line 159 "spl.y"
+#line 160 "spl.y"
     {
 			(yyval.tVal)=create_node(NOTHING,e_STATEMENT_LIST,(yyvsp[(1) - (1)].tVal),NULL,NULL);
 		;}
@@ -1653,7 +1654,7 @@ yyreduce:
   case 10:
 
 /* Line 1455 of yacc.c  */
-#line 163 "spl.y"
+#line 164 "spl.y"
     {
 			(yyval.tVal)=create_node(NOTHING,e_STATEMENT_LIST,(yyvsp[(1) - (3)].tVal),(yyvsp[(3) - (3)].tVal),NULL);
 		;}
@@ -1662,7 +1663,7 @@ yyreduce:
   case 11:
 
 /* Line 1455 of yacc.c  */
-#line 168 "spl.y"
+#line 169 "spl.y"
     {
 			(yyval.tVal)=create_node(e_ASSIGNMENT_STATEMENT,e_STATEMENT,(yyvsp[(1) - (1)].tVal),NULL,NULL);
 		;}
@@ -1671,7 +1672,7 @@ yyreduce:
   case 12:
 
 /* Line 1455 of yacc.c  */
-#line 172 "spl.y"
+#line 173 "spl.y"
     {
 			(yyval.tVal)=create_node(e_IF_STATEMENT,e_STATEMENT,(yyvsp[(1) - (1)].tVal),NULL,NULL);
 		;}
@@ -1680,7 +1681,7 @@ yyreduce:
   case 13:
 
 /* Line 1455 of yacc.c  */
-#line 176 "spl.y"
+#line 177 "spl.y"
     {
 			(yyval.tVal)=create_node(e_DO_STATEMENT,e_STATEMENT,(yyvsp[(1) - (1)].tVal),NULL,NULL);
 		;}
@@ -1689,7 +1690,7 @@ yyreduce:
   case 14:
 
 /* Line 1455 of yacc.c  */
-#line 180 "spl.y"
+#line 181 "spl.y"
     {
 			(yyval.tVal)=create_node(e_WHILE_STATEMENT,e_STATEMENT,(yyvsp[(1) - (1)].tVal),NULL,NULL);
 		;}
@@ -1698,7 +1699,7 @@ yyreduce:
   case 15:
 
 /* Line 1455 of yacc.c  */
-#line 184 "spl.y"
+#line 185 "spl.y"
     {
 			(yyval.tVal)=create_node(e_FOR_STATEMENT,e_STATEMENT,(yyvsp[(1) - (1)].tVal),NULL,NULL);
 		;}
@@ -1707,7 +1708,7 @@ yyreduce:
   case 16:
 
 /* Line 1455 of yacc.c  */
-#line 188 "spl.y"
+#line 189 "spl.y"
     {
 			(yyval.tVal)=create_node(e_WRITE_STATEMENT,e_STATEMENT,(yyvsp[(1) - (1)].tVal),NULL,NULL);
 		;}
@@ -1716,7 +1717,7 @@ yyreduce:
   case 17:
 
 /* Line 1455 of yacc.c  */
-#line 192 "spl.y"
+#line 193 "spl.y"
     {
 			(yyval.tVal)=create_node(e_READ_STATEMENT,e_STATEMENT,(yyvsp[(1) - (1)].tVal),NULL,NULL);
 		;}
@@ -1725,7 +1726,7 @@ yyreduce:
   case 18:
 
 /* Line 1455 of yacc.c  */
-#line 197 "spl.y"
+#line 198 "spl.y"
     {
 			(yyval.tVal)=create_node((yyvsp[(3) - (3)].iVal),e_ASSIGNMENT_STATEMENT,(yyvsp[(1) - (3)].tVal),NULL,NULL);
 		;}
@@ -1734,7 +1735,7 @@ yyreduce:
   case 19:
 
 /* Line 1455 of yacc.c  */
-#line 202 "spl.y"
+#line 203 "spl.y"
     {
 			(yyval.tVal)=create_node(NOTHING,e_IF_STATEMENT,(yyvsp[(2) - (5)].tVal),(yyvsp[(4) - (5)].tVal),NULL);
 		;}
@@ -1743,7 +1744,7 @@ yyreduce:
   case 20:
 
 /* Line 1455 of yacc.c  */
-#line 206 "spl.y"
+#line 207 "spl.y"
     {
 			(yyval.tVal)=create_node(NOTHING,e_IF_ELSE_STATEMENT,(yyvsp[(2) - (7)].tVal),(yyvsp[(4) - (7)].tVal),(yyvsp[(6) - (7)].tVal));
 		;}
@@ -1752,7 +1753,7 @@ yyreduce:
   case 21:
 
 /* Line 1455 of yacc.c  */
-#line 211 "spl.y"
+#line 212 "spl.y"
     {
 			(yyval.tVal)=create_node(NOTHING,e_DO_STATEMENT,(yyvsp[(2) - (5)].tVal),(yyvsp[(4) - (5)].tVal),NULL);
 		;}
@@ -1761,7 +1762,7 @@ yyreduce:
   case 22:
 
 /* Line 1455 of yacc.c  */
-#line 216 "spl.y"
+#line 217 "spl.y"
     {
 			(yyval.tVal)=create_node((yyvsp[(2) - (11)].iVal),e_FOR_STATEMENT,create_node(NOTHING,e_FOR_STATEMENT,(yyvsp[(4) - (11)].tVal),(yyvsp[(6) - (11)].tVal),(yyvsp[(8) - (11)].tVal)),(yyvsp[(10) - (11)].tVal),NULL);
 		;}
@@ -1770,7 +1771,7 @@ yyreduce:
   case 23:
 
 /* Line 1455 of yacc.c  */
-#line 221 "spl.y"
+#line 222 "spl.y"
     {
 			(yyval.tVal)=create_node(NOTHING,e_WHILE_STATEMENT,(yyvsp[(2) - (5)].tVal),(yyvsp[(4) - (5)].tVal),NULL);
 		;}
@@ -1779,7 +1780,7 @@ yyreduce:
   case 24:
 
 /* Line 1455 of yacc.c  */
-#line 226 "spl.y"
+#line 227 "spl.y"
     {
 			(yyval.tVal)=create_node(NOTHING,e_WRITE_STATEMENT,(yyvsp[(3) - (4)].tVal),NULL,NULL);
 		;}
@@ -1788,7 +1789,7 @@ yyreduce:
   case 25:
 
 /* Line 1455 of yacc.c  */
-#line 230 "spl.y"
+#line 231 "spl.y"
     {
 			(yyval.tVal)=create_node(NOTHING,e_NEWLINE_WRITE_STATEMENT,NULL,NULL,NULL);
 		;}
@@ -1797,7 +1798,7 @@ yyreduce:
   case 26:
 
 /* Line 1455 of yacc.c  */
-#line 235 "spl.y"
+#line 236 "spl.y"
     {
 			(yyval.tVal)=create_node(NOTHING,e_OUTPUT_LIST,(yyvsp[(1) - (1)].tVal),NULL,NULL);
 		;}
@@ -1806,7 +1807,7 @@ yyreduce:
   case 27:
 
 /* Line 1455 of yacc.c  */
-#line 239 "spl.y"
+#line 240 "spl.y"
     {
 			(yyval.tVal)=create_node(NOTHING,e_OUTPUT_LIST,(yyvsp[(1) - (3)].tVal),(yyvsp[(3) - (3)].tVal),NULL);
 		;}
@@ -1815,7 +1816,7 @@ yyreduce:
   case 28:
 
 /* Line 1455 of yacc.c  */
-#line 244 "spl.y"
+#line 245 "spl.y"
     {
 			(yyval.tVal)=create_node((yyvsp[(3) - (4)].iVal),e_READ_STATEMENT,NULL,NULL,NULL);
 		;}
@@ -1824,7 +1825,7 @@ yyreduce:
   case 29:
 
 /* Line 1455 of yacc.c  */
-#line 249 "spl.y"
+#line 250 "spl.y"
     {
 			(yyval.tVal)=create_node(e_CONDITIONAL,e_CONDITIONAL,(yyvsp[(1) - (3)].tVal),(yyvsp[(2) - (3)].tVal),(yyvsp[(3) - (3)].tVal));
 		;}
@@ -1833,7 +1834,7 @@ yyreduce:
   case 30:
 
 /* Line 1455 of yacc.c  */
-#line 253 "spl.y"
+#line 254 "spl.y"
     {
 			(yyval.tVal)=create_node(e_NOT_CONDITION,e_NOT_CONDITION,(yyvsp[(2) - (2)].tVal),NULL,NULL);
 		;}
@@ -1842,7 +1843,7 @@ yyreduce:
   case 31:
 
 /* Line 1455 of yacc.c  */
-#line 257 "spl.y"
+#line 258 "spl.y"
     {
 			(yyval.tVal)=create_node(e_AND_CONDITIONAL,e_AND_CONDITIONAL,create_node(e_AND_CONDITIONAL,e_CONDITIONAL,(yyvsp[(1) - (5)].tVal),(yyvsp[(2) - (5)].tVal),(yyvsp[(3) - (5)].tVal)),(yyvsp[(5) - (5)].tVal),NULL);
 		;}
@@ -1851,7 +1852,7 @@ yyreduce:
   case 32:
 
 /* Line 1455 of yacc.c  */
-#line 261 "spl.y"
+#line 262 "spl.y"
     {
 			(yyval.tVal)=create_node(e_OR_CONDITIONAL,e_OR_CONDITIONAL,create_node(e_OR_CONDITIONAL,e_CONDITIONAL,(yyvsp[(1) - (5)].tVal),(yyvsp[(2) - (5)].tVal),(yyvsp[(3) - (5)].tVal)),(yyvsp[(5) - (5)].tVal),NULL);
 		;}
@@ -1860,7 +1861,7 @@ yyreduce:
   case 33:
 
 /* Line 1455 of yacc.c  */
-#line 266 "spl.y"
+#line 267 "spl.y"
     {
 			(yyval.tVal)=create_node(e_EQUALS,e_EQUALS,NULL,NULL,NULL);
 		;}
@@ -1869,7 +1870,7 @@ yyreduce:
   case 34:
 
 /* Line 1455 of yacc.c  */
-#line 270 "spl.y"
+#line 271 "spl.y"
     {
 			(yyval.tVal)=create_node(e_SHEVRONS,e_SHEVRONS,NULL,NULL,NULL);
 		;}
@@ -1878,7 +1879,7 @@ yyreduce:
   case 35:
 
 /* Line 1455 of yacc.c  */
-#line 274 "spl.y"
+#line 275 "spl.y"
     {
 			(yyval.tVal)=create_node(e_LESSTHAN,e_LESSTHAN,NULL,NULL,NULL);
 		;}
@@ -1887,7 +1888,7 @@ yyreduce:
   case 36:
 
 /* Line 1455 of yacc.c  */
-#line 278 "spl.y"
+#line 279 "spl.y"
     {
 			(yyval.tVal)=create_node(e_MORETHAN,e_MORETHAN,NULL,NULL,NULL);
 		;}
@@ -1896,7 +1897,7 @@ yyreduce:
   case 37:
 
 /* Line 1455 of yacc.c  */
-#line 282 "spl.y"
+#line 283 "spl.y"
     {
 			(yyval.tVal)=create_node(e_LESSOREQUAL,e_LESSOREQUAL,NULL,NULL,NULL);
 		;}
@@ -1905,7 +1906,7 @@ yyreduce:
   case 38:
 
 /* Line 1455 of yacc.c  */
-#line 286 "spl.y"
+#line 287 "spl.y"
     {
 			(yyval.tVal)=create_node(e_MOREOREQUAL,e_MOREOREQUAL,NULL,NULL,NULL);
 		;}
@@ -1914,7 +1915,7 @@ yyreduce:
   case 39:
 
 /* Line 1455 of yacc.c  */
-#line 290 "spl.y"
+#line 291 "spl.y"
     {
 			(yyval.tVal)=create_node(e_DEFAULT_EXPRESSION,e_EXPRESSION,(yyvsp[(1) - (1)].tVal),NULL,NULL);
 		;}
@@ -1923,7 +1924,7 @@ yyreduce:
   case 40:
 
 /* Line 1455 of yacc.c  */
-#line 294 "spl.y"
+#line 295 "spl.y"
     {
 			(yyval.tVal)=create_node(e_EXPRESSION_PLUS,e_EXPRESSION_PLUS,(yyvsp[(1) - (3)].tVal),(yyvsp[(3) - (3)].tVal),NULL);
 		;}
@@ -1932,7 +1933,7 @@ yyreduce:
   case 41:
 
 /* Line 1455 of yacc.c  */
-#line 298 "spl.y"
+#line 299 "spl.y"
     {
 			(yyval.tVal)=create_node(e_EXPRESSION_MINUS,e_EXPRESSION_MINUS,(yyvsp[(1) - (3)].tVal),(yyvsp[(3) - (3)].tVal),NULL);
 		;}
@@ -1941,7 +1942,7 @@ yyreduce:
   case 42:
 
 /* Line 1455 of yacc.c  */
-#line 303 "spl.y"
+#line 304 "spl.y"
     {
 			(yyval.tVal)=create_node(e_TERM,e_TERM,(yyvsp[(1) - (1)].tVal),NULL,NULL);
 		;}
@@ -1950,7 +1951,7 @@ yyreduce:
   case 43:
 
 /* Line 1455 of yacc.c  */
-#line 307 "spl.y"
+#line 308 "spl.y"
     {
 			(yyval.tVal)=create_node(e_TIMES_TERM,e_TIMES_TERM,(yyvsp[(1) - (3)].tVal),(yyvsp[(3) - (3)].tVal),NULL);
 		;}
@@ -1959,7 +1960,7 @@ yyreduce:
   case 44:
 
 /* Line 1455 of yacc.c  */
-#line 311 "spl.y"
+#line 312 "spl.y"
     {
 			(yyval.tVal)=create_node(e_DIVIDE_TERM,e_DIVIDE_TERM,(yyvsp[(1) - (3)].tVal),(yyvsp[(3) - (3)].tVal),NULL);
 		;}
@@ -1968,7 +1969,7 @@ yyreduce:
   case 45:
 
 /* Line 1455 of yacc.c  */
-#line 316 "spl.y"
+#line 317 "spl.y"
     {
 			(yyval.tVal)=create_node((yyvsp[(1) - (1)].iVal),e_IDENTIFIER_VALUE,NULL,NULL,NULL);
 		;}
@@ -1977,7 +1978,7 @@ yyreduce:
   case 46:
 
 /* Line 1455 of yacc.c  */
-#line 320 "spl.y"
+#line 321 "spl.y"
     {
 			(yyval.tVal)=create_node(NOTHING,e_CONSTANT_VALUE,(yyvsp[(1) - (1)].tVal),NULL,NULL);
 		;}
@@ -1986,7 +1987,7 @@ yyreduce:
   case 47:
 
 /* Line 1455 of yacc.c  */
-#line 324 "spl.y"
+#line 325 "spl.y"
     {
 			(yyval.tVal)=create_node(NOTHING,e_EXPRESSION_VALUE,(yyvsp[(2) - (3)].tVal),NULL,NULL);
 		;}
@@ -1995,7 +1996,7 @@ yyreduce:
   case 48:
 
 /* Line 1455 of yacc.c  */
-#line 329 "spl.y"
+#line 330 "spl.y"
     {
 			(yyval.tVal)=create_node((yyvsp[(1) - (1)].iVal),e_CHARACTER_CONSTANT,NULL,NULL,NULL);
 		;}
@@ -2004,7 +2005,7 @@ yyreduce:
   case 49:
 
 /* Line 1455 of yacc.c  */
-#line 334 "spl.y"
+#line 335 "spl.y"
     {
 			(yyval.tVal)=create_node((yyvsp[(1) - (1)].iVal),e_NUMBER_CONSTANT,NULL,NULL,NULL);
 		;}
@@ -2013,7 +2014,7 @@ yyreduce:
   case 50:
 
 /* Line 1455 of yacc.c  */
-#line 338 "spl.y"
+#line 339 "spl.y"
     {
 			(yyval.tVal)=create_node((yyvsp[(2) - (2)].iVal),e_NEGATIVE_NUMBER_CONSTANT,NULL,NULL,NULL);
 		;}
@@ -2022,7 +2023,7 @@ yyreduce:
   case 51:
 
 /* Line 1455 of yacc.c  */
-#line 342 "spl.y"
+#line 343 "spl.y"
     {
 			(yyval.tVal)=create_node((yyvsp[(1) - (1)].iVal),e_REAL,NULL,NULL,NULL);
 		;}
@@ -2031,7 +2032,7 @@ yyreduce:
   case 52:
 
 /* Line 1455 of yacc.c  */
-#line 346 "spl.y"
+#line 347 "spl.y"
     {
 			(yyval.tVal)=create_node((yyvsp[(2) - (2)].iVal),e_NEGATIVE_REAL,NULL,NULL,NULL);
 		;}
@@ -2040,7 +2041,7 @@ yyreduce:
   case 53:
 
 /* Line 1455 of yacc.c  */
-#line 351 "spl.y"
+#line 352 "spl.y"
     {
 			(yyval.tVal)=create_node((yyvsp[(1) - (1)].iVal),e_CHARACTERTYPE,NULL,NULL,NULL);
 		;}
@@ -2049,7 +2050,7 @@ yyreduce:
   case 54:
 
 /* Line 1455 of yacc.c  */
-#line 355 "spl.y"
+#line 356 "spl.y"
     {
 			(yyval.tVal)=create_node((yyvsp[(1) - (1)].iVal),e_INTEGERTYPE,NULL,NULL,NULL);
 		;}
@@ -2058,7 +2059,7 @@ yyreduce:
   case 55:
 
 /* Line 1455 of yacc.c  */
-#line 359 "spl.y"
+#line 360 "spl.y"
     {
 			(yyval.tVal)=create_node((yyvsp[(1) - (1)].iVal),e_REALTYPE,NULL,NULL,NULL);
 		;}
@@ -2067,7 +2068,7 @@ yyreduce:
 
 
 /* Line 1455 of yacc.c  */
-#line 2071 "spl.tab.c"
+#line 2072 "spl.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2279,7 +2280,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 362 "spl.y"
+#line 363 "spl.y"
 
 /* Code for routines for managing the Parse Tree */
 TERNARY_TREE create_node(int ival, int case_identifier, TERNARY_TREE p1,
@@ -2339,7 +2340,6 @@ void GenerateCode(TERNARY_TREE t,int indent)
 			printf("int main(void) \n{\n");
 			indent++;
 			createIndent(indent);
-			printf("register int _by;\n");
 			GenerateCode(t->first,indent);
 			indent--;
 			printf("}");
@@ -2352,17 +2352,29 @@ void GenerateCode(TERNARY_TREE t,int indent)
 		case(e_DECLARATION_BLOCK):
 			GenerateCode(t->first,indent);
 			GenerateCode(t->third,indent);
-			if(t->third->nodeIdentifier==e_CHARACTERTYPE)
-			{
-				symTab[t->third->item]->variableType=e_CHARACTERTYPE;
-			}
-			else if(t->third->nodeIdentifier==e_INTEGERTYPE)
+			if(t->third->nodeIdentifier==e_INTEGERTYPE)
 			{
 				symTab[t->third->item]->variableType=e_INTEGERTYPE;
+				if(t->second->first!=NULL)
+				{
+					loopIdentifier(t->second,0);
+				}
+			}
+			else if(t->third->nodeIdentifier==e_CHARACTERTYPE)
+			{
+				symTab[t->third->item]->variableType=e_CHARACTERTYPE;
+				if(t->second->first!=NULL)
+				{
+					loopIdentifier(t->second,1);
+				}
 			}
 			else if(t->third->nodeIdentifier==e_REALTYPE)
 			{
 				symTab[t->third->item]->variableType=e_REALTYPE;
+				if(t->second->first!=NULL)
+				{
+					loopIdentifier(t->second,2);
+				}
 			}
 			printf(" ");
 			GenerateCode(t->second,indent);
@@ -2433,38 +2445,33 @@ void GenerateCode(TERNARY_TREE t,int indent)
 			return;
 		case(e_FOR_STATEMENT):
 			createIndent(indent);
-			printf("for(");
-			GetIdentifier(t);
-			printf("=");
-			GenerateCode(t->first->first,indent);
-			printf("; ");
-			printf("_by=");
-			GenerateCode(t->first->second,indent);
-			printf(", (");
-			printf("(");
-			GetIdentifier(t);
-			printf("-(");
-			GenerateCode(t->first->third,indent);
-			printf(")");
-			printf(")*((_by>0)-(_by<0))<=0; ");
-			printf(")*((");
-			GenerateCode(t->first->second,indent);
-			printf(">0)-(");
-			GenerateCode(t->first->second,indent);
-			printf("<0))<=0; ");
-			GetIdentifier(t);
-			printf(" += _by");
-			printf(" += ");
-			GenerateCode(t->first->second,indent);
-			printf(")\n");
-			createIndent(indent);
-			printf("{\n");
-			indent++;
-			GenerateCode(t->second,indent);
-			indent--;
-			createIndent(indent);
-			printf("}\n");
-			return;
+            printf("for (");
+            GetIdentifier(t);
+            printf("=");
+            GenerateCode(t->first->first, indent);
+            printf(";");
+            printf("(");
+            GetIdentifier(t);
+            printf("-(");
+            GenerateCode(t->first->third, indent);
+            printf(")");
+            printf(")*((");
+            GenerateCode(t->first->second, indent);
+            printf(">0)-(");
+            GenerateCode(t->first->second, indent);
+            printf("<0))<=0; ");
+            GetIdentifier(t);
+            printf(" += ");
+            GenerateCode(t->first->second, indent);
+            printf(")\n");
+            createIndent(indent);
+            printf("{\n");
+            indent++;
+            GenerateCode(t->second, indent);
+            indent--;
+            createIndent(indent);
+            printf("}\n");
+            return;
 		case(e_WHILE_STATEMENT):
 			createIndent(indent);
 			printf("while (");
@@ -2639,6 +2646,26 @@ void createIndent(int indent)
 	{
 		printf("    ");
 	}
+}
+void loopIdentifier(TERNARY_TREE t,int identifier)
+{
+	if (t->first==NULL) return;
+	else
+	{
+		if(identifier==0)
+		{
+			symTab[t->first->item]->variableType=e_INTEGERTYPE;
+		}
+		else if(identifier==1)
+		{
+			symTab[t->first->item]->variableType=e_CHARACTERTYPE;
+		}
+		else if(identifier==2)
+		{
+			symTab[t->first->item]->variableType=e_REALTYPE;
+		}
+		loopIdentifier(t->first,identifier);
+	}	
 }
 #endif
 #include "lex.yy.c"

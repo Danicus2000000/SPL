@@ -67,6 +67,7 @@ void PrintTree(TERNARY_TREE,int);
 void GenerateCode(TERNARY_TREE,int);
 void GetIdentifier(TERNARY_TREE);
 void createIndent(int);
+void loopIdentifier(TERNARY_TREE,int);
 #endif
 /* ------------- symbol table definition --------------------------- */
 
@@ -418,7 +419,6 @@ void GenerateCode(TERNARY_TREE t,int indent)
 			printf("int main(void) \n{\n");
 			indent++;
 			createIndent(indent);
-			printf("register int _by;\n");
 			GenerateCode(t->first,indent);
 			indent--;
 			printf("}");
@@ -431,17 +431,29 @@ void GenerateCode(TERNARY_TREE t,int indent)
 		case(e_DECLARATION_BLOCK):
 			GenerateCode(t->first,indent);
 			GenerateCode(t->third,indent);
-			if(t->third->nodeIdentifier==e_CHARACTERTYPE)
-			{
-				symTab[t->third->item]->variableType=e_CHARACTERTYPE;
-			}
-			else if(t->third->nodeIdentifier==e_INTEGERTYPE)
+			if(t->third->nodeIdentifier==e_INTEGERTYPE)
 			{
 				symTab[t->third->item]->variableType=e_INTEGERTYPE;
+				if(t->second->first!=NULL)
+				{
+					loopIdentifier(t->second,0);
+				}
+			}
+			else if(t->third->nodeIdentifier==e_CHARACTERTYPE)
+			{
+				symTab[t->third->item]->variableType=e_CHARACTERTYPE;
+				if(t->second->first!=NULL)
+				{
+					loopIdentifier(t->second,1);
+				}
 			}
 			else if(t->third->nodeIdentifier==e_REALTYPE)
 			{
 				symTab[t->third->item]->variableType=e_REALTYPE;
+				if(t->second->first!=NULL)
+				{
+					loopIdentifier(t->second,2);
+				}
 			}
 			printf(" ");
 			GenerateCode(t->second,indent);
@@ -512,38 +524,33 @@ void GenerateCode(TERNARY_TREE t,int indent)
 			return;
 		case(e_FOR_STATEMENT):
 			createIndent(indent);
-			printf("for(");
-			GetIdentifier(t);
-			printf("=");
-			GenerateCode(t->first->first,indent);
-			printf("; ");
-			printf("_by=");
-			GenerateCode(t->first->second,indent);
-			printf(", (");
-			printf("(");
-			GetIdentifier(t);
-			printf("-(");
-			GenerateCode(t->first->third,indent);
-			printf(")");
-			printf(")*((_by>0)-(_by<0))<=0; ");
-			printf(")*((");
-			GenerateCode(t->first->second,indent);
-			printf(">0)-(");
-			GenerateCode(t->first->second,indent);
-			printf("<0))<=0; ");
-			GetIdentifier(t);
-			printf(" += _by");
-			printf(" += ");
-			GenerateCode(t->first->second,indent);
-			printf(")\n");
-			createIndent(indent);
-			printf("{\n");
-			indent++;
-			GenerateCode(t->second,indent);
-			indent--;
-			createIndent(indent);
-			printf("}\n");
-			return;
+            printf("for (");
+            GetIdentifier(t);
+            printf("=");
+            GenerateCode(t->first->first, indent);
+            printf(";");
+            printf("(");
+            GetIdentifier(t);
+            printf("-(");
+            GenerateCode(t->first->third, indent);
+            printf(")");
+            printf(")*((");
+            GenerateCode(t->first->second, indent);
+            printf(">0)-(");
+            GenerateCode(t->first->second, indent);
+            printf("<0))<=0; ");
+            GetIdentifier(t);
+            printf(" += ");
+            GenerateCode(t->first->second, indent);
+            printf(")\n");
+            createIndent(indent);
+            printf("{\n");
+            indent++;
+            GenerateCode(t->second, indent);
+            indent--;
+            createIndent(indent);
+            printf("}\n");
+            return;
 		case(e_WHILE_STATEMENT):
 			createIndent(indent);
 			printf("while (");
@@ -593,19 +600,19 @@ void GenerateCode(TERNARY_TREE t,int indent)
 			createIndent(indent);
 			if(symTab[t->item]->variableType==e_INTEGERTYPE)
 			{
-				printf("scanf(\"%%d\",");
+				printf("scanf(\"%%d\",&");
 			}
 			else if(symTab[t->item]->variableType==e_REALTYPE)
 			{
-				printf("scanf(\"%%f\",");
+				printf("scanf(\"%%f\",&");
 			}
 			else if(symTab[t->item]->variableType==e_CHARACTERTYPE)
 			{
-				printf("scanf(\"%%c\",");
+				printf("scanf(\"%%c\",&");
 			}
 			else
 			{
-				printf("scanf(\"%%s\",");
+				printf("scanf(\"%%s\",&");
 			}
 			GetIdentifier(t);
 			printf(");\n");
@@ -718,6 +725,26 @@ void createIndent(int indent)
 	{
 		printf("    ");
 	}
+}
+void loopIdentifier(TERNARY_TREE t,int identifier)
+{
+	if (t->first==NULL) return;
+	else
+	{
+		if(identifier==0)
+		{
+			symTab[t->first->item]->variableType=e_INTEGERTYPE;
+		}
+		else if(identifier==1)
+		{
+			symTab[t->first->item]->variableType=e_CHARACTERTYPE;
+		}
+		else if(identifier==2)
+		{
+			symTab[t->first->item]->variableType=e_REALTYPE;
+		}
+		loopIdentifier(t->first,identifier);
+	}	
 }
 #endif
 #include "lex.yy.c"
