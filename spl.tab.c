@@ -95,7 +95,7 @@ int yydebug = 1;
   e_TIMES_TERM, e_DIVIDE_TERM, e_REALTYPE,e_EQUALS,e_SHEVRONS,e_LESSTHAN,e_MORETHAN,e_LESSOREQUAL,e_MOREOREQUAL,e_CHARACTER_CONSTANT,e_NEWLINE_WRITE_STATEMENT,
   e_INTEGERTYPE,e_CHARACTERTYPE,e_IF_ELSE_STATEMENT,e_NOT_CONDITION,e_AND_CONDITIONAL,e_OR_CONDITIONAL,e_IDENTIFIER_VALUE,e_CONSTANT_VALUE,e_EXPRESSION_VALUE,
   e_DECLARATION_BLOCK_EXTEND,e_IDENTIFIER_LIST_EXTEND,e_REAL,e_NEGATIVE_NUMBER_CONSTANT};
-  
+
   const char *ParseTreeValues[]={"PROGRAM", "BLOCK", "DECLARATION_BLOCK", "IDENTIFIER_LIST", "STATEMENT_LIST", "STATEMENT",
   "ASSIGNMENT_STATEMENT", "IF_STATEMENT", "DO_STATEMENT", "FOR_STATEMENT", "WHILE_STATEMENT", "WRITE_STATEMENT", "OUTPUT_LIST", "READ_STATEMENT", "CONDITIONAL",
   "EXPRESSION", "TERM", "NUMBER_CONSTANT", "NEGATIVE_REAL", "DEFAULT_EXPRESSION", "EXPRESSION_PLUS", "EXPRESSION_MINUS",
@@ -480,7 +480,7 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  4
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   122
+#define YYLAST   123
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  54
@@ -560,8 +560,8 @@ static const yytype_int8 yyrhs[] =
       59,    29,    59,    28,    -1,    30,    59,    31,    69,    32,
       -1,    33,    45,    34,    71,    35,    71,    36,    71,    30,
       59,    37,    -1,    31,    69,    30,    59,    38,    -1,    39,
-      12,    67,    13,    -1,    40,    -1,    73,    -1,    67,    10,
-      73,    -1,    41,    12,    45,    13,    -1,    71,    70,    71,
+      12,    67,    13,    -1,    40,    -1,    73,    -1,    73,    10,
+      67,    -1,    41,    12,    45,    13,    -1,    71,    70,    71,
       -1,    42,    69,    -1,    71,    70,    71,    43,    69,    -1,
       71,    70,    71,    44,    69,    -1,    20,    -1,    16,    -1,
        5,    -1,     6,    -1,    14,    -1,    15,    -1,    72,    -1,
@@ -656,7 +656,7 @@ static const yytype_uint8 yydefact[] =
        3,     0,     8,     0,    47,    30,     0,    35,    36,    37,
       38,    34,    33,     0,     0,     0,     0,     0,    26,     0,
       10,    18,    40,    41,    43,    44,     2,     0,    54,    55,
-      53,     0,     0,    29,     0,     0,     0,     0,    24,    28,
+      53,     0,     0,    29,     0,     0,     0,    24,     0,    28,
        0,     5,    19,     0,     0,     0,    21,    23,     0,    27,
        6,     0,    31,    32,     0,    20,     0,     0,     0,     0,
       22
@@ -675,16 +675,16 @@ static const yytype_int8 yydefgoto[] =
 #define YYPACT_NINF -50
 static const yytype_int8 yypact[] =
 {
-     -38,    52,    20,    56,   -50,   -35,     6,    38,   -50,   -19,
-      32,    28,    65,    23,     6,    23,    30,    74,   -50,    75,
-     -50,   -50,   -50,   -50,    79,   -50,   -50,   -50,   -50,   -50,
-     -50,   -50,   -50,    78,    17,    62,   -50,    45,     6,    48,
-      46,    70,   -50,   -50,    86,    23,    73,     7,    10,    71,
-      68,    65,    58,     6,    60,    65,    65,    65,    65,   102,
-      79,    82,   -50,   -36,   -50,   -50,     6,   -50,   -50,   -50,
-     -50,   -50,   -50,    65,    23,     6,    65,    50,   -50,    95,
+     -38,    27,    20,    37,   -50,   -35,     6,    29,   -50,   -19,
+      32,    30,    65,    23,     6,    23,     3,    51,   -50,    73,
+     -50,   -50,   -50,   -50,    77,   -50,   -50,   -50,   -50,   -50,
+     -50,   -50,   -50,    76,    17,    61,   -50,    43,     6,    48,
+      44,    66,   -50,   -50,    82,    23,    63,     7,    10,    69,
+      67,    65,    55,     6,    57,    65,    65,    65,    65,    99,
+      77,    80,   -50,   -36,   -50,   -50,     6,   -50,   -50,   -50,
+     -50,   -50,   -50,    65,    23,     6,    65,    93,    97,    95,
      -50,   -50,   -50,   -50,   -50,   -50,   -50,   -36,   -50,   -50,
-     -50,   105,    21,    39,    83,     2,    81,    65,   -50,   -50,
+     -50,   105,    46,    38,    83,     2,    81,   -50,    65,   -50,
      108,   -50,   -50,     6,    23,    23,   -50,   -50,    65,   -50,
      -50,     0,   -50,   -50,    84,   -50,    65,    88,     6,    -3,
      -50
@@ -693,9 +693,9 @@ static const yytype_int8 yypact[] =
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -50,   -50,   -50,   -50,   110,    -9,    69,   -50,   -50,   -50,
-     -50,   -50,   -50,   -50,   -50,    -7,   -50,   -12,    27,   -49,
-     -50,    34
+     -50,   -50,   -50,   -50,   110,    -9,    68,   -50,   -50,   -50,
+     -50,   -50,   -50,    24,   -50,    -7,   -50,   -12,    26,   -49,
+     -50,    36
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
@@ -708,16 +708,16 @@ static const yytype_uint8 yytable[] =
       44,    47,    78,    47,    38,    48,    53,     1,    49,    53,
        8,    53,    67,    68,    11,    88,    89,    90,    12,    53,
        4,    69,    70,    71,    55,    56,     8,    72,   115,    60,
-      53,    11,    13,    47,   120,    12,    14,    15,    65,    16,
-     107,    74,    40,    82,    83,    17,    18,    19,   109,   102,
-     103,    20,    21,    22,    23,     3,    41,    92,    40,    37,
-      97,    93,    47,    98,    96,    45,    95,    94,    20,    21,
-      22,    23,    61,    11,    42,    50,    43,    12,     5,     6,
-      57,    58,   104,   105,    84,    85,    51,    52,    53,    54,
-      59,    62,    47,    47,   111,    63,   114,   112,   113,    64,
-      66,    75,    76,    79,   117,    81,    86,    87,    99,   119,
+       3,    11,    13,    47,   120,    12,    14,    15,    65,    16,
+     107,    74,    40,    82,    83,    17,    18,    19,    50,    78,
+      37,    20,    21,    22,    23,    53,    41,    92,    40,     5,
+       6,    93,    47,    51,    96,    45,    95,    94,    20,    21,
+      22,    23,    61,    11,   102,   103,    42,    12,    43,    57,
+      58,   104,   105,    84,    85,    52,    53,    54,    59,    62,
+      66,    63,    47,    47,   111,    64,   114,   112,   113,    75,
+      79,    76,    81,    86,   117,    87,    97,    98,    99,   119,
       20,    21,    22,    23,   101,   106,   108,   110,   118,    39,
-     116,   100,    80
+     116,    80,   109,   100
 };
 
 static const yytype_uint8 yycheck[] =
@@ -725,16 +725,16 @@ static const yytype_uint8 yycheck[] =
       12,    13,    51,    15,    23,    14,     9,    45,    15,     9,
       45,     9,     5,     6,     8,    51,    52,    53,    12,     9,
        0,    14,    15,    16,     7,     8,    45,    20,    28,    38,
-       9,     8,    26,    45,    37,    12,    30,    31,    45,    33,
-      38,    31,    10,    55,    56,    39,    40,    41,    97,    28,
-      29,    45,    46,    47,    48,     3,    24,    66,    10,    21,
-      10,    73,    74,    13,    76,    42,    75,    74,    45,    46,
-      47,    48,    24,     8,    46,    45,    48,    12,    22,    23,
-      18,    19,    43,    44,    57,    58,    12,    12,     9,    11,
-      45,    45,   104,   105,   103,    25,   108,   104,   105,    13,
-      27,    30,    34,    45,   116,    45,     4,    25,    13,   118,
+       3,     8,    26,    45,    37,    12,    30,    31,    45,    33,
+      38,    31,    10,    55,    56,    39,    40,    41,    45,    98,
+      21,    45,    46,    47,    48,     9,    24,    66,    10,    22,
+      23,    73,    74,    12,    76,    42,    75,    74,    45,    46,
+      47,    48,    24,     8,    28,    29,    46,    12,    48,    18,
+      19,    43,    44,    57,    58,    12,     9,    11,    45,    45,
+      27,    25,   104,   105,   103,    13,   108,   104,   105,    30,
+      45,    34,    45,     4,   116,    25,    13,    10,    13,   118,
       45,    46,    47,    48,     9,    32,    35,     9,    30,     9,
-      36,    87,    53
+      36,    53,    98,    87
 };
 
 /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
@@ -750,8 +750,8 @@ static const yytype_uint8 yystos[] =
       59,    24,    45,    25,    13,    69,    27,     5,     6,    14,
       15,    16,    20,    70,    31,    30,    34,    67,    73,    45,
       60,    45,    71,    71,    72,    72,     4,    25,    51,    52,
-      53,    75,    59,    71,    69,    59,    71,    10,    13,    13,
-      75,     9,    28,    29,    43,    44,    32,    38,    35,    73,
+      53,    75,    59,    71,    69,    59,    71,    13,    10,    13,
+      75,     9,    28,    29,    43,    44,    32,    38,    35,    67,
        9,    59,    69,    69,    71,    28,    36,    71,    30,    59,
       37
 };
@@ -1971,7 +1971,7 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 317 "spl.y"
     {
-			(yyval.tVal)=create_node((yyvsp[(1) - (1)].iVal),e_IDENTIFIER_VALUE,NULL,NULL,NULL);
+			(yyval.tVal)=create_node((yyvsp[(1) - (1)].iVal),e_CONSTANT_VALUE,NULL,NULL,NULL);
 		;}
     break;
 
@@ -2357,7 +2357,7 @@ void GenerateCode(TERNARY_TREE t,int indent)
 				symTab[t->third->item]->variableType=e_INTEGERTYPE;
 				if(t->second->first!=NULL)
 				{
-					loopIdentifier(t->second,0);
+					loopIdentifier(t->second,e_INTEGERTYPE);
 				}
 			}
 			else if(t->third->nodeIdentifier==e_CHARACTERTYPE)
@@ -2365,7 +2365,7 @@ void GenerateCode(TERNARY_TREE t,int indent)
 				symTab[t->third->item]->variableType=e_CHARACTERTYPE;
 				if(t->second->first!=NULL)
 				{
-					loopIdentifier(t->second,1);
+					loopIdentifier(t->second,e_CHARACTERTYPE);
 				}
 			}
 			else if(t->third->nodeIdentifier==e_REALTYPE)
@@ -2373,7 +2373,7 @@ void GenerateCode(TERNARY_TREE t,int indent)
 				symTab[t->third->item]->variableType=e_REALTYPE;
 				if(t->second->first!=NULL)
 				{
-					loopIdentifier(t->second,2);
+					loopIdentifier(t->second,e_REALTYPE);
 				}
 			}
 			printf(" ");
@@ -2488,23 +2488,61 @@ void GenerateCode(TERNARY_TREE t,int indent)
 		case(e_WRITE_STATEMENT):
 			createIndent(indent);
 			printf("printf(\"");
-			if(t->first->first->nodeIdentifier==e_IDENTIFIER_VALUE)
-			{
-				printf("%%s\",");
-				GenerateCode(t->first,indent);
-				printf(");\n");				
-			}
-			else if(t->first->first->nodeIdentifier==e_EXPRESSION_VALUE)
+			
+			if(t->first->first->nodeIdentifier==e_EXPRESSION_VALUE)
 			{
 				printf("%%d\",");
 				GenerateCode(t->first,indent);
 				printf(");\n");	
 			}
-			else
-			{
-				GenerateCode(t->first,indent);
-				printf("\");\n");
-			}
+
+			else if(t->first->first->nodeIdentifier == e_CONSTANT_VALUE && t->first->first->first == NULL)
+            {
+                if(t->first->first->item != NOTHING)
+                {
+                    if(symTab[t->first->first->item]->variableType == e_INTEGERTYPE)
+                    {
+                        printf("%%d\",");
+                        GenerateCode(t->first, indent);
+                        printf(");");
+                        printf("\n");
+                    }
+                    else if(symTab[t->first->first->item]->variableType == e_CHARACTERTYPE)
+                    {
+                        printf("%%c\",");
+                        GenerateCode(t->first, indent);
+                        printf(");");
+                        printf("\n");
+                    }
+                    else if(symTab[t->first->first->item]->variableType == e_REALTYPE)
+                    {
+                        printf("%%f\",");
+                        GenerateCode(t->first, indent);
+                        printf(");");
+                        printf("\n");
+                    }
+                    else
+                    {
+                        printf("%%s\",");
+                        GenerateCode(t->first, indent);
+                        printf(");");
+                        printf("\n");
+                    }
+                }
+                else
+                {
+                    printf("%%s\",");
+                    GenerateCode(t->first, indent);
+                    printf(");");
+                    printf("\n");
+                }
+            }
+            else
+            {
+                GenerateCode(t->first, indent);
+                printf("\");");
+                printf("\n");
+            }
 			return;
 		case(e_NEWLINE_WRITE_STATEMENT):
 			createIndent(indent);
@@ -2521,19 +2559,19 @@ void GenerateCode(TERNARY_TREE t,int indent)
 			createIndent(indent);
 			if(symTab[t->item]->variableType==e_INTEGERTYPE)
 			{
-				printf("scanf(\"%%d\",");
+				printf("scanf(\"%%d\",&");
 			}
 			else if(symTab[t->item]->variableType==e_REALTYPE)
 			{
-				printf("scanf(\"%%f\",");
+				printf("scanf(\"%%f\",&");
 			}
 			else if(symTab[t->item]->variableType==e_CHARACTERTYPE)
 			{
-				printf("scanf(\"%%c\",");
+				printf("scanf(\"%%c\",&");
 			}
 			else
 			{
-				printf("scanf(\"%%s\",");
+				printf("scanf(\"%%s\",&");
 			}
 			GetIdentifier(t);
 			printf(");\n");
@@ -2590,8 +2628,15 @@ void GenerateCode(TERNARY_TREE t,int indent)
 			printf("/");
 			GenerateCode(t->second,indent);
 			return;
-		case(e_IDENTIFIER_VALUE):
-			GetIdentifier(t);
+		case(e_CONSTANT_VALUE):
+			if(t->first==NULL)
+			{
+				GetIdentifier(t);
+			}
+			else
+			{
+				GenerateCode(t->first,indent);
+			}
 			return;
 		case(e_EXPRESSION_VALUE):
 			printf("(");
@@ -2652,15 +2697,15 @@ void loopIdentifier(TERNARY_TREE t,int identifier)
 	if (t->first==NULL) return;
 	else
 	{
-		if(identifier==0)
+		if(identifier==e_INTEGERTYPE)
 		{
 			symTab[t->first->item]->variableType=e_INTEGERTYPE;
 		}
-		else if(identifier==1)
+		else if(identifier==e_CHARACTERTYPE)
 		{
 			symTab[t->first->item]->variableType=e_CHARACTERTYPE;
 		}
-		else if(identifier==2)
+		else if(identifier==e_REALTYPE)
 		{
 			symTab[t->first->item]->variableType=e_REALTYPE;
 		}

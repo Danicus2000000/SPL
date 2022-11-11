@@ -24,7 +24,7 @@ int yydebug = 1;
   e_TIMES_TERM, e_DIVIDE_TERM, e_REALTYPE,e_EQUALS,e_SHEVRONS,e_LESSTHAN,e_MORETHAN,e_LESSOREQUAL,e_MOREOREQUAL,e_CHARACTER_CONSTANT,e_NEWLINE_WRITE_STATEMENT,
   e_INTEGERTYPE,e_CHARACTERTYPE,e_IF_ELSE_STATEMENT,e_NOT_CONDITION,e_AND_CONDITIONAL,e_OR_CONDITIONAL,e_IDENTIFIER_VALUE,e_CONSTANT_VALUE,e_EXPRESSION_VALUE,
   e_DECLARATION_BLOCK_EXTEND,e_IDENTIFIER_LIST_EXTEND,e_REAL,e_NEGATIVE_NUMBER_CONSTANT};
-  
+
   const char *ParseTreeValues[]={"PROGRAM", "BLOCK", "DECLARATION_BLOCK", "IDENTIFIER_LIST", "STATEMENT_LIST", "STATEMENT",
   "ASSIGNMENT_STATEMENT", "IF_STATEMENT", "DO_STATEMENT", "FOR_STATEMENT", "WHILE_STATEMENT", "WRITE_STATEMENT", "OUTPUT_LIST", "READ_STATEMENT", "CONDITIONAL",
   "EXPRESSION", "TERM", "NUMBER_CONSTANT", "NEGATIVE_REAL", "DEFAULT_EXPRESSION", "EXPRESSION_PLUS", "EXPRESSION_MINUS",
@@ -236,7 +236,7 @@ output_list : value
 		{
 			$$=create_node(NOTHING,e_OUTPUT_LIST,$1,NULL,NULL);
 		}
-		| output_list COMMA value
+		| value COMMA output_list
 		{
 			$$=create_node(NOTHING,e_OUTPUT_LIST,$1,$3,NULL);
 		}
@@ -315,7 +315,7 @@ term : value
 	;
 value : IDENTIFIER
 		{
-			$$=create_node($1,e_IDENTIFIER_VALUE,NULL,NULL,NULL);
+			$$=create_node($1,e_CONSTANT_VALUE,NULL,NULL,NULL);
 		}
 		| constant
 		{
@@ -436,7 +436,7 @@ void GenerateCode(TERNARY_TREE t,int indent)
 				symTab[t->third->item]->variableType=e_INTEGERTYPE;
 				if(t->second->first!=NULL)
 				{
-					loopIdentifier(t->second,0);
+					loopIdentifier(t->second,e_INTEGERTYPE);
 				}
 			}
 			else if(t->third->nodeIdentifier==e_CHARACTERTYPE)
@@ -444,7 +444,7 @@ void GenerateCode(TERNARY_TREE t,int indent)
 				symTab[t->third->item]->variableType=e_CHARACTERTYPE;
 				if(t->second->first!=NULL)
 				{
-					loopIdentifier(t->second,1);
+					loopIdentifier(t->second,e_CHARACTERTYPE);
 				}
 			}
 			else if(t->third->nodeIdentifier==e_REALTYPE)
@@ -452,7 +452,7 @@ void GenerateCode(TERNARY_TREE t,int indent)
 				symTab[t->third->item]->variableType=e_REALTYPE;
 				if(t->second->first!=NULL)
 				{
-					loopIdentifier(t->second,2);
+					loopIdentifier(t->second,e_REALTYPE);
 				}
 			}
 			printf(" ");
@@ -567,23 +567,60 @@ void GenerateCode(TERNARY_TREE t,int indent)
 		case(e_WRITE_STATEMENT):
 			createIndent(indent);
 			printf("printf(\"");
-			if(t->first->first->nodeIdentifier==e_IDENTIFIER_VALUE)
-			{
-				printf("%%s\",");
-				GenerateCode(t->first,indent);
-				printf(");\n");				
-			}
-			else if(t->first->first->nodeIdentifier==e_EXPRESSION_VALUE)
+			
+			if(t->first->first->nodeIdentifier==e_EXPRESSION_VALUE)
 			{
 				printf("%%d\",");
 				GenerateCode(t->first,indent);
 				printf(");\n");	
 			}
-			else
-			{
-				GenerateCode(t->first,indent);
-				printf("\");\n");
-			}
+			else if(t->first->first->nodeIdentifier == e_CONSTANT_VALUE && t->first->first->first == NULL)
+            {
+                if(t->first->first->item != NOTHING)
+                {
+                    if(symTab[t->first->first->item]->variableType == e_INTEGERTYPE)
+                    {
+                        printf("%%d\",");
+                        GenerateCode(t->first, indent);
+                        printf(");");
+                        printf("\n");
+                    }
+                    else if(symTab[t->first->first->item]->variableType == e_CHARACTERTYPE)
+                    {
+                        printf("%%c\",");
+                        GenerateCode(t->first, indent);
+                        printf(");");
+                        printf("\n");
+                    }
+                    else if(symTab[t->first->first->item]->variableType == e_REALTYPE)
+                    {
+                        printf("%%f\",");
+                        GenerateCode(t->first, indent);
+                        printf(");");
+                        printf("\n");
+                    }
+                    else
+                    {
+                        printf("%%s\",");
+                        GenerateCode(t->first, indent);
+                        printf(");");
+                        printf("\n");
+                    }
+                }
+                else
+                {
+                    printf("%%s\",");
+                    GenerateCode(t->first, indent);
+                    printf(");");
+                    printf("\n");
+                }
+            }
+            else
+            {
+                GenerateCode(t->first, indent);
+                printf("\");");
+                printf("\n");
+            }
 			return;
 		case(e_NEWLINE_WRITE_STATEMENT):
 			createIndent(indent);
@@ -669,8 +706,15 @@ void GenerateCode(TERNARY_TREE t,int indent)
 			printf("/");
 			GenerateCode(t->second,indent);
 			return;
-		case(e_IDENTIFIER_VALUE):
-			GetIdentifier(t);
+		case(e_CONSTANT_VALUE):
+			if(t->first==NULL)
+			{
+				GetIdentifier(t);
+			}
+			else
+			{
+				GenerateCode(t->first,indent);
+			}
 			return;
 		case(e_EXPRESSION_VALUE):
 			printf("(");
@@ -731,15 +775,15 @@ void loopIdentifier(TERNARY_TREE t,int identifier)
 	if (t->first==NULL) return;
 	else
 	{
-		if(identifier==0)
+		if(identifier==e_INTEGERTYPE)
 		{
 			symTab[t->first->item]->variableType=e_INTEGERTYPE;
 		}
-		else if(identifier==1)
+		else if(identifier==e_CHARACTERTYPE)
 		{
 			symTab[t->first->item]->variableType=e_CHARACTERTYPE;
 		}
-		else if(identifier==2)
+		else if(identifier==e_REALTYPE)
 		{
 			symTab[t->first->item]->variableType=e_REALTYPE;
 		}
