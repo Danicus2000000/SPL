@@ -418,7 +418,6 @@ void GenerateCode(TERNARY_TREE t,int indent)
 			printf("#include <stdlib.h>\n");
 			printf("int main(void) \n{\n");
 			indent++;
-			createIndent(indent);
 			GenerateCode(t->first,indent);
 			indent--;
 			printf("}");
@@ -594,7 +593,7 @@ void GenerateCode(TERNARY_TREE t,int indent)
                     }
                     else if(symTab[t->first->first->item]->variableType == e_REALTYPE)
                     {
-                        printf("%%f\",");
+                        printf("%%.2f\",");
                         GenerateCode(t->first, indent);
                         printf(");");
                         printf("\n");
@@ -744,7 +743,7 @@ void GenerateCode(TERNARY_TREE t,int indent)
 			return;
 		case (e_REALTYPE):
 			createIndent(indent);
-			printf("double");
+			printf("float");
 			return;
 	}
 	GenerateCode(t->first,indent);
