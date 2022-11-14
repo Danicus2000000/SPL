@@ -644,7 +644,7 @@ void GenerateCode(TERNARY_TREE t,int indent)
 			}
 			else if(symTab[t->item]->variableType==e_CHARACTERTYPE)
 			{
-				printf("scanf(\"%%c\",&");
+				printf("scanf(\" %%c\",&");
 			}
 			else
 			{
