@@ -99,15 +99,17 @@ int currentSymTabSize = 0;
     int iVal;
     TERNARY_TREE tVal;
 }
+/*create tokens needed for program operation*/
 %token COLON DOT LESSTHAN MORETHAN PLUS MINUS SEMICOLON COMMA POINTER BRA KET LESSOREQUAL MOREOREQUAL
 	SHEVRONS APOSTROPHE TIMES DIVIDE EQUALS ENDPROGRAM DECLARATIONS CODE OF TYPEVAR IF THEN ENDIF ELSE DO WHILE ENDDO
 	FOR IS BY TO ENDFOR ENDWHILE WRITE NEWLINE READ NOT AND OR
 
-%token<iVal> IDENTIFIER NUMBER CHARACTER_ACTUAL DECIMAL_NUMBER NEGATIVE_DECIMAL_NUMBER NEGATIVE_NUMBER INTEGERTYPE REALTYPE CHARACTERTYPE
+%token<iVal> IDENTIFIER NUMBER CHARACTER_ACTUAL DECIMAL_NUMBER INTEGERTYPE REALTYPE CHARACTERTYPE
 
 %type<tVal> program block declaration_block identifier_list statement_list statement assignment_statement
 	if_statement do_statement for_statement while_statement write_statement
 	output_list read_statement conditional comparator expression term value constant type
+/*create conditions and nodes of tree for each command that can be entered*/
 %%
 program : IDENTIFIER COLON block ENDPROGRAM IDENTIFIER DOT
 		{
