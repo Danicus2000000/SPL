@@ -2388,7 +2388,16 @@ void GenerateCode(TERNARY_TREE t,int indent)
 			createIndent(indent);
 			GetIdentifier(t);
 			printf(" = ");
-			GenerateCode(t->first,indent);
+			if(symTab[t->item]->variableType==e_CHARACTERTYPE)
+			{
+				printf("'");
+				GenerateCode(t->first,indent);
+				printf("'");
+			}
+			else
+			{
+				GenerateCode(t->first,indent);
+			}
 			printf(";\n");
 			return;
 		case(e_IF_STATEMENT):
