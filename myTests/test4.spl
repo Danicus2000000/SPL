@@ -1,0 +1,15 @@
+ProgTest4:
+
+DECLARATIONS
+
+a, b, c OF TYPE INTEGER;
+
+CODE
+
+    5 -> a;
+    10 -> b;
+    a * b * b * b / b + a -> c;
+    WRITE(c);
+    NEWLINE
+
+ENDP ProgTest4.

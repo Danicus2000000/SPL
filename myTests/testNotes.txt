@@ -1,0 +1,5 @@
+Each test serves a specific function below are the tests and an explanation of what they do:
+test1: Test for character assignment
+test2: Test Assigning, writing and reading all variable types
+test3: Mismatching identifiers should cause program error
+test4: complex variable equation evaluation

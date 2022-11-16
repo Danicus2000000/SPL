@@ -56,6 +56,7 @@ void GenerateCode(TERNARY_TREE,int);
 void GetIdentifier(TERNARY_TREE);
 void createIndent(int);
 void loopIdentifier(TERNARY_TREE,int);
+void handleError(char*);
 #endif
 /* ------------- symbol table definition --------------------------- */
 struct symTabNode {
@@ -108,8 +109,7 @@ program : IDENTIFIER COLON block ENDPROGRAM IDENTIFIER DOT
 			}
 			else
 			{
-				fprintf(stderr,"Program IDENTIFIER is not called at the start and end of the program!");
-				exit(0);
+				handleError("Program IDENTIFIER is not called at the start and end of the program!");
 			}
 		}
 	;
@@ -410,7 +410,6 @@ void GenerateCode(TERNARY_TREE t,int indent)
 			return;
 		case(e_BLOCK):/*Recursively Builds the nessassary blocks of code*/
 			GenerateCode(t->first,indent);
-			printf("\n");
 			GenerateCode(t->second,indent);
 			return;
 		case(e_DECLARATION_BLOCK):/*Recursively generates all forward declarations and adds types to each variable as the types are viewable at this stage*/
@@ -517,6 +516,10 @@ void GenerateCode(TERNARY_TREE t,int indent)
 			printf(");\n");
 			return;
 		case(e_FOR_STATEMENT):/*generates a for loop that evaluates its condition to decide whether to use a < or > symbol*/
+			if(symTab[t->item]->variableType==e_CHARACTERTYPE)
+			{
+				handleError("Character cannot be used as loop iterator must be int!");
+			}
 			createIndent(indent);
             printf("for (");
             GetIdentifier(t);
@@ -682,22 +685,22 @@ void GenerateCode(TERNARY_TREE t,int indent)
 			return;
 		case(e_EXPRESSION_PLUS):/*Generates an addition expression*/
 			GenerateCode(t->first,indent);
-			printf("+");
+			printf(" + ");
 			GenerateCode(t->second,indent);
 			return;
 		case(e_EXPRESSION_MINUS):/*Generates a minus expression condition*/
 			GenerateCode(t->first,indent);
-			printf("-");
+			printf(" - ");
 			GenerateCode(t->second,indent);
 			return;
 		case(e_TIMES_TERM):/*Generates a times expression*/
 			GenerateCode(t->first,indent);
-			printf("*");
+			printf(" * ");
 			GenerateCode(t->second,indent);
 			return;
 		case(e_DIVIDE_TERM):/*Generates a divide expression*/
 			GenerateCode(t->first,indent);
-			printf("/");
+			printf(" / ");
 			GenerateCode(t->second,indent);
 			return;
 		case(e_CONSTANT_VALUE):/*Generates a constant value based on its first child*/
@@ -785,6 +788,11 @@ void loopIdentifier(TERNARY_TREE t,int identifier)
 		}
 		loopIdentifier(t->first,identifier);
 	}	
+}
+void handleError(char *errorMessage)
+{
+	fprintf(stderr,"\nError Occured: %s",errorMessage);
+	exit(0);
 }
 #endif
 #include "lex.yy.c"

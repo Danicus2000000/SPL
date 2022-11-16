@@ -1,0 +1,8 @@
+ProgTest1:
+DECLARATIONS
+    a OF TYPE CHARACTER;
+CODE
+    'N' -> a;
+     WRITE(a);
+     NEWLINE
+ENDP ProgTest1.

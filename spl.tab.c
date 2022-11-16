@@ -127,6 +127,7 @@ void GenerateCode(TERNARY_TREE,int);
 void GetIdentifier(TERNARY_TREE);
 void createIndent(int);
 void loopIdentifier(TERNARY_TREE,int);
+void handleError(char*);
 #endif
 /* ------------- symbol table definition --------------------------- */
 struct symTabNode {
@@ -141,7 +142,7 @@ int currentSymTabSize = 0;
 
 
 /* Line 189 of yacc.c  */
-#line 145 "spl.tab.c"
+#line 146 "spl.tab.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -227,7 +228,7 @@ typedef union YYSTYPE
 {
 
 /* Line 214 of yacc.c  */
-#line 78 "spl.y"
+#line 79 "spl.y"
 
     int iVal;
     TERNARY_TREE tVal;
@@ -235,7 +236,7 @@ typedef union YYSTYPE
 
 
 /* Line 214 of yacc.c  */
-#line 239 "spl.tab.c"
+#line 240 "spl.tab.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -247,7 +248,7 @@ typedef union YYSTYPE
 
 
 /* Line 264 of yacc.c  */
-#line 251 "spl.tab.c"
+#line 252 "spl.tab.c"
 
 #ifdef short
 # undef short
@@ -557,7 +558,7 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    94,    94,   116,   120,   125,   129,   134,   138,   143,
+       0,    95,    95,   116,   120,   125,   129,   134,   138,   143,
      147,   152,   156,   160,   164,   168,   172,   176,   181,   186,
      190,   195,   200,   205,   210,   214,   219,   223,   228,   233,
      237,   241,   245,   250,   254,   258,   262,   266,   270,   274,
@@ -1548,7 +1549,7 @@ yyreduce:
         case 2:
 
 /* Line 1455 of yacc.c  */
-#line 95 "spl.y"
+#line 96 "spl.y"
     {
 			/*Begins the parse tree and if in debug mode prints the tree if not generates code ensures identifiers are connsistent*/
 			/*Each definition after this defines a node that is added to this tree*/
@@ -1565,8 +1566,7 @@ yyreduce:
 			}
 			else
 			{
-				fprintf(stderr,"Program IDENTIFIER is not called at the start and end of the program!");
-				exit(0);
+				handleError("Program IDENTIFIER is not called at the start and end of the program!");
 			}
 		;}
     break;
@@ -2330,7 +2330,6 @@ void GenerateCode(TERNARY_TREE t,int indent)
 			return;
 		case(e_BLOCK):/*Recursively Builds the nessassary blocks of code*/
 			GenerateCode(t->first,indent);
-			printf("\n");
 			GenerateCode(t->second,indent);
 			return;
 		case(e_DECLARATION_BLOCK):/*Recursively generates all forward declarations and adds types to each variable as the types are viewable at this stage*/
@@ -2437,6 +2436,10 @@ void GenerateCode(TERNARY_TREE t,int indent)
 			printf(");\n");
 			return;
 		case(e_FOR_STATEMENT):/*generates a for loop that evaluates its condition to decide whether to use a < or > symbol*/
+			if(symTab[t->item]->variableType==e_CHARACTERTYPE)
+			{
+				handleError("Character cannot be used as loop iterator must be int!");
+			}
 			createIndent(indent);
             printf("for (");
             GetIdentifier(t);
@@ -2602,22 +2605,22 @@ void GenerateCode(TERNARY_TREE t,int indent)
 			return;
 		case(e_EXPRESSION_PLUS):/*Generates an addition expression*/
 			GenerateCode(t->first,indent);
-			printf("+");
+			printf(" + ");
 			GenerateCode(t->second,indent);
 			return;
 		case(e_EXPRESSION_MINUS):/*Generates a minus expression condition*/
 			GenerateCode(t->first,indent);
-			printf("-");
+			printf(" - ");
 			GenerateCode(t->second,indent);
 			return;
 		case(e_TIMES_TERM):/*Generates a times expression*/
 			GenerateCode(t->first,indent);
-			printf("*");
+			printf(" * ");
 			GenerateCode(t->second,indent);
 			return;
 		case(e_DIVIDE_TERM):/*Generates a divide expression*/
 			GenerateCode(t->first,indent);
-			printf("/");
+			printf(" / ");
 			GenerateCode(t->second,indent);
 			return;
 		case(e_CONSTANT_VALUE):/*Generates a constant value based on its first child*/
@@ -2705,6 +2708,11 @@ void loopIdentifier(TERNARY_TREE t,int identifier)
 		}
 		loopIdentifier(t->first,identifier);
 	}	
+}
+void handleError(char *errorMessage)
+{
+	fprintf(stderr,"\nError Occured: %s",errorMessage);
+	exit(0);
 }
 #endif
 #include "lex.yy.c"

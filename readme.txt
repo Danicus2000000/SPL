@@ -7,7 +7,7 @@ SPL BNF.bnf (A .bnf version of the file mentioned above)
 a,b,c,d and e.spl (The suppplied test files)
 Lexnotes.txt (A file containing my notes on command line commands needed to run some of the builds)
 compile.bat (A batch file I created which can auto build the compiler and a provided .spl file into c)
-
+/myTests (A folder containing some SPL that i created in order to test certain features of the program notes on each tests function can be found in the testNotes.txt file located in the folder)
 
 The Following command line commands are used to generate the lex.yy.c & spl.tab.c files (These are always assumed to have been run unless otherwise specified):
 flex spl.l
