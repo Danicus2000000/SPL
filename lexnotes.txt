@@ -14,4 +14,3 @@ bison spl.y
 gcc -o spl.exe spl.c spl.tab.c -lfl -ansi
 spl.exe < (spl_example_file) > (spl_output_name).c
 gcc -o (program_name).exe (spl_output_name).c -lfl
-

@@ -1,7 +1,6 @@
 %{
 /* declare some standard headers to be used to import declarations
    and libraries into the parser. */
-
 #include <stdio.h>
 #include <stdlib.h>
 /* make forward declarations to avoid compiler warnings */
@@ -11,41 +10,33 @@ int yydebug = 1;
 /* 
    Some constants.
 */
-
   /* These constants are used later in the code */
 #define SYMTABSIZE     50
 #define IDLENGTH       15
 #define NOTHING        -1
 #define INDENTOFFSET    2
-
   enum ParseTreeNodeType {e_PROGRAM, e_BLOCK, e_DECLARATION_BLOCK, e_IDENTIFIER_LIST, e_STATEMENT_LIST, e_STATEMENT,
   e_ASSIGNMENT_STATEMENT, e_IF_STATEMENT, e_DO_STATEMENT, e_FOR_STATEMENT, e_WHILE_STATEMENT, e_WRITE_STATEMENT, e_OUTPUT_LIST, e_READ_STATEMENT, e_CONDITIONAL,
   e_EXPRESSION, e_TERM, e_NUMBER_CONSTANT, e_NEGATIVE_REAL, e_DEFAULT_EXPRESSION, e_EXPRESSION_PLUS, e_EXPRESSION_MINUS,
   e_TIMES_TERM, e_DIVIDE_TERM, e_REALTYPE,e_EQUALS,e_SHEVRONS,e_LESSTHAN,e_MORETHAN,e_LESSOREQUAL,e_MOREOREQUAL,e_CHARACTER_CONSTANT,e_NEWLINE_WRITE_STATEMENT,
   e_INTEGERTYPE,e_CHARACTERTYPE,e_IF_ELSE_STATEMENT,e_NOT_CONDITION,e_AND_CONDITIONAL,e_OR_CONDITIONAL,e_IDENTIFIER_VALUE,e_CONSTANT_VALUE,e_EXPRESSION_VALUE,
   e_DECLARATION_BLOCK_EXTEND,e_IDENTIFIER_LIST_EXTEND,e_REAL,e_NEGATIVE_NUMBER_CONSTANT};
-
   const char *ParseTreeValues[]={"PROGRAM", "BLOCK", "DECLARATION_BLOCK", "IDENTIFIER_LIST", "STATEMENT_LIST", "STATEMENT",
   "ASSIGNMENT_STATEMENT", "IF_STATEMENT", "DO_STATEMENT", "FOR_STATEMENT", "WHILE_STATEMENT", "WRITE_STATEMENT", "OUTPUT_LIST", "READ_STATEMENT", "CONDITIONAL",
   "EXPRESSION", "TERM", "NUMBER_CONSTANT", "NEGATIVE_REAL", "DEFAULT_EXPRESSION", "EXPRESSION_PLUS", "EXPRESSION_MINUS",
   "TIMES_TERM", "DIVIDE_TERM", "REALTYPE","EQUALS","SHEVRONS","LESSTHAN","MORETHAN","LESSOREQUAL","MOREOREQUAL","CHARACTER_CONSTANT","NEWLINE_WRITE_STATEMENT",
   "INTEGERTYPE","CHARACTERTYPE","IF_ELSE_STATEMENT","NOT_CONDITION","AND_CONDITIONAL","OR_CONDITIONAL","IDENTIFIER_VALUE","CONSTANT_VALUE","EXPRESSION_VALUE",
   "DECLARATION_BLOCK_EXTEND","IDENTIFIER_LIST_EXTEND","REAL","NEGATIVE_NUMBER_CONSTANT"};
-
 #ifndef TRUE
 #define TRUE 1
 #endif
-
 #ifndef FALSE
 #define FALSE 0
 #endif
-
 #ifndef NULL
 #define NULL 0
 #endif
-
 /* ------------- parse tree definition --------------------------- */
-
 struct treeNode {
     int  item;
     int  nodeIdentifier;
@@ -53,12 +44,9 @@ struct treeNode {
     struct treeNode *second;
 	struct treeNode *third;
   };
-
 typedef  struct treeNode TREE_NODE;
 typedef  TREE_NODE        *TERNARY_TREE;
-
 /* ------------- forward declarations --------------------------- */
-
 TERNARY_TREE create_node(int,int,TERNARY_TREE,TERNARY_TREE,TERNARY_TREE);
 #ifdef DEBUG
 void PrintTree(TERNARY_TREE,int);
@@ -70,31 +58,23 @@ void createIndent(int);
 void loopIdentifier(TERNARY_TREE,int);
 #endif
 /* ------------- symbol table definition --------------------------- */
-
 struct symTabNode {
     char identifier[IDLENGTH];
 	int variableType;
 };
-
 typedef  struct symTabNode SYMTABNODE;
 typedef  SYMTABNODE        *SYMTABNODEPTR;
-
 SYMTABNODEPTR  symTab[SYMTABSIZE]; 
-
 int currentSymTabSize = 0;
 /* Initialise Debug on Debug flag */
 %}
-
 /****************/
 /* Start symbol */
 /****************/
-
 %start  program
-
 /**********************/
 /* Action value types */
 /**********************/
-
 %union {
     int iVal;
     TERNARY_TREE tVal;
@@ -113,6 +93,8 @@ int currentSymTabSize = 0;
 %%
 program : IDENTIFIER COLON block ENDPROGRAM IDENTIFIER DOT
 		{
+			/*Begins the parse tree and if in debug mode prints the tree if not generates code ensures identifiers are connsistent*/
+			/*Each definition after this defines a node that is added to this tree*/
 			TERNARY_TREE ParseTree;
 			if($1==$5)
 			{
@@ -381,6 +363,7 @@ TERNARY_TREE create_node(int ival, int case_identifier, TERNARY_TREE p1,
     t->third = p3;
     return (t);
 }
+/*Code Routine for printing the parse tree if the debug flag is used*/
 #ifdef DEBUG
 void PrintTree(TERNARY_TREE t,int pIndent)
 {
@@ -409,13 +392,14 @@ void PrintTree(TERNARY_TREE t,int pIndent)
    	PrintTree(t->third,pIndent);
 }
 #endif
+/*code routine to generate the C code translation of the SPL file*/
 #ifndef DEBUG
 void GenerateCode(TERNARY_TREE t,int indent)
 {
 	if(t==NULL) return;
 	switch(t->nodeIdentifier)
 	{
-		case(e_PROGRAM):
+		case(e_PROGRAM):/*Generates Basic Program shell that is later filled with commands*/
 			printf("#include <stdio.h>\n");
 			printf("#include <stdlib.h>\n");
 			printf("int main(void) \n{\n");
@@ -424,12 +408,12 @@ void GenerateCode(TERNARY_TREE t,int indent)
 			indent--;
 			printf("}");
 			return;
-		case(e_BLOCK):
+		case(e_BLOCK):/*Recursively Builds the nessassary blocks of code*/
 			GenerateCode(t->first,indent);
 			printf("\n");
 			GenerateCode(t->second,indent);
 			return;
-		case(e_DECLARATION_BLOCK):
+		case(e_DECLARATION_BLOCK):/*Recursively generates all forward declarations and adds types to each variable as the types are viewable at this stage*/
 			GenerateCode(t->first,indent);
 			GenerateCode(t->third,indent);
 			if(t->third->nodeIdentifier==e_INTEGERTYPE)
@@ -460,15 +444,15 @@ void GenerateCode(TERNARY_TREE t,int indent)
 			GenerateCode(t->second,indent);
 			printf(";\n");
 			return;
-		case(e_IDENTIFIER_LIST):
+		case(e_IDENTIFIER_LIST):/*Retrieves idnentifier*/
 			GetIdentifier(t);
 			return;
-		case(e_IDENTIFIER_LIST_EXTEND):
+		case(e_IDENTIFIER_LIST_EXTEND):/*Recurses to retrieve further identifier and current identifier*/
 			GenerateCode(t->first,indent);
 			printf(",");
 			GetIdentifier(t);
 			return;
-		case(e_ASSIGNMENT_STATEMENT):
+		case(e_ASSIGNMENT_STATEMENT):/*generates an assignmet statment as well as adding in '' around the value if it is a character*/
 			createIndent(indent);
 			GetIdentifier(t);
 			printf(" = ");
@@ -484,7 +468,7 @@ void GenerateCode(TERNARY_TREE t,int indent)
 			}
 			printf(";\n");
 			return;
-		case(e_IF_STATEMENT):
+		case(e_IF_STATEMENT):/*generates a simple if statment*/
 			createIndent(indent);
 			printf("if (");
 			GenerateCode(t->first,indent);
@@ -497,7 +481,7 @@ void GenerateCode(TERNARY_TREE t,int indent)
 			createIndent(indent);
 			printf("}\n");
 			return;
-		case(e_IF_ELSE_STATEMENT):
+		case(e_IF_ELSE_STATEMENT):/*generates an if statment with an else clause*/
 			createIndent(indent);
 			printf("if (");
 			GenerateCode(t->first,indent);
@@ -519,7 +503,7 @@ void GenerateCode(TERNARY_TREE t,int indent)
 			createIndent(indent);
 			printf("}\n");
 			return;
-		case(e_DO_STATEMENT):
+		case(e_DO_STATEMENT):/*generates a do statment*/
 			createIndent(indent);
 			printf("do \n");
 			createIndent(indent);
@@ -532,7 +516,7 @@ void GenerateCode(TERNARY_TREE t,int indent)
 			GenerateCode(t->second,indent);
 			printf(");\n");
 			return;
-		case(e_FOR_STATEMENT):
+		case(e_FOR_STATEMENT):/*generates a for loop that evaluates its condition to decide whether to use a < or > symbol*/
 			createIndent(indent);
             printf("for (");
             GetIdentifier(t);
@@ -561,7 +545,7 @@ void GenerateCode(TERNARY_TREE t,int indent)
             createIndent(indent);
             printf("}\n");
             return;
-		case(e_WHILE_STATEMENT):
+		case(e_WHILE_STATEMENT):/*Generates a while loop*/
 			createIndent(indent);
 			printf("while (");
 			GenerateCode(t->first,indent);
@@ -574,7 +558,7 @@ void GenerateCode(TERNARY_TREE t,int indent)
 			createIndent(indent);
 			printf("}\n");
 			return;
-		case(e_WRITE_STATEMENT):
+		case(e_WRITE_STATEMENT):/*Generates a write statment that dynamically changes its % value*/
 			createIndent(indent);
 			printf("printf(\"");
 			
@@ -632,18 +616,18 @@ void GenerateCode(TERNARY_TREE t,int indent)
                 printf("\n");
             }
 			return;
-		case(e_NEWLINE_WRITE_STATEMENT):
+		case(e_NEWLINE_WRITE_STATEMENT):/*Generates a newline write statment*/
 			createIndent(indent);
 			printf("printf(\"\\n\");\n"); 
 			return;
-		case(e_CONDITIONAL):
+		case(e_CONDITIONAL):/*Generates a conditional statment*/
 			printf("(");
 			GenerateCode(t->first,indent);
 			GenerateCode(t->second,indent);
 			GenerateCode(t->third,indent);
 			printf(")");
 			return;
-		case(e_READ_STATEMENT):
+		case(e_READ_STATEMENT):/*generates a read statment that dynamically changes its type*/
 			createIndent(indent);
 			if(symTab[t->item]->variableType==e_INTEGERTYPE)
 			{
@@ -664,59 +648,59 @@ void GenerateCode(TERNARY_TREE t,int indent)
 			GetIdentifier(t);
 			printf(");\n");
 			return;
-		case(e_NOT_CONDITION):
+		case(e_NOT_CONDITION):/*Generates a Not Condition*/
 			printf("!");
 			GenerateCode(t->first,indent);
 			return;
-		case(e_AND_CONDITIONAL):
+		case(e_AND_CONDITIONAL):/*Generates an and condition*/
 			GenerateCode(t->first,indent);
 			printf(" && ");
 			GenerateCode(t->second,indent);
 			return;
-		case(e_OR_CONDITIONAL):
+		case(e_OR_CONDITIONAL):/*Generates an or condition*/
 			GenerateCode(t->first,indent);
 			printf(" || ");
 			GenerateCode(t->second,indent);
 			return;
-		case(e_EQUALS):
+		case(e_EQUALS):/*Generates an equal to condition*/
 			printf(" == ");
 			return;
-		case(e_SHEVRONS):
+		case(e_SHEVRONS):/*Generates a not equal condition*/
 			printf(" != ");
 			return;
-		case(e_LESSTHAN):
+		case(e_LESSTHAN):/*Generates a less than condition*/
 			printf(" < ");
 			return;
-		case(e_MORETHAN):
+		case(e_MORETHAN):/*Generates a more than condition*/
 			printf(" > ");
 			return;
-		case(e_LESSOREQUAL):
+		case(e_LESSOREQUAL):/*Generates a less than or equal to condition*/
 			printf(" <= ");
 			return;
-		case(e_MOREOREQUAL):
+		case(e_MOREOREQUAL):/*Generates a more than or equal to condition*/
 			printf(" >= ");
 			return;
-		case(e_EXPRESSION_PLUS):
+		case(e_EXPRESSION_PLUS):/*Generates an addition expression*/
 			GenerateCode(t->first,indent);
 			printf("+");
 			GenerateCode(t->second,indent);
 			return;
-		case(e_EXPRESSION_MINUS):
+		case(e_EXPRESSION_MINUS):/*Generates a minus expression condition*/
 			GenerateCode(t->first,indent);
 			printf("-");
 			GenerateCode(t->second,indent);
 			return;
-		case(e_TIMES_TERM):
+		case(e_TIMES_TERM):/*Generates a times expression*/
 			GenerateCode(t->first,indent);
 			printf("*");
 			GenerateCode(t->second,indent);
 			return;
-		case(e_DIVIDE_TERM):
+		case(e_DIVIDE_TERM):/*Generates a divide expression*/
 			GenerateCode(t->first,indent);
 			printf("/");
 			GenerateCode(t->second,indent);
 			return;
-		case(e_CONSTANT_VALUE):
+		case(e_CONSTANT_VALUE):/*Generates a constant value based on its first child*/
 			if(t->first==NULL)
 			{
 				GetIdentifier(t);
@@ -726,41 +710,42 @@ void GenerateCode(TERNARY_TREE t,int indent)
 				GenerateCode(t->first,indent);
 			}
 			return;
-		case(e_EXPRESSION_VALUE):
+		case(e_EXPRESSION_VALUE):/*generates an expression*/
 			printf("(");
 			GenerateCode(t->first,indent);
 			printf(")");
 			return;
-		case(e_CHARACTER_CONSTANT):
+		case(e_CHARACTER_CONSTANT):/*Generates a character constant*/
 			printf("%c",t->item);
 			return;
-		case(e_NEGATIVE_NUMBER_CONSTANT):
+		case(e_NEGATIVE_NUMBER_CONSTANT):/*Generates a negative number constant*/
 			printf("-");
-		case(e_NUMBER_CONSTANT):
+		case(e_NUMBER_CONSTANT):/*Generates a number constant*/
 			printf("%d",t->item);
 			return;
-		case(e_NEGATIVE_REAL):
+		case(e_NEGATIVE_REAL):/*Generates a negative decimal*/
 			printf("-");
-		case(e_REAL):
+		case(e_REAL):/*Generates a decimal*/
 			GetIdentifier(t);
 			return;
-		case(e_CHARACTERTYPE):
+		case(e_CHARACTERTYPE):/*Generates a character type*/
 			createIndent(indent);
 			printf("char");
 			return;
-		case(e_INTEGERTYPE):
+		case(e_INTEGERTYPE):/*Generates a integer type*/
 			createIndent(indent);
 			printf("int");
 			return;
-		case (e_REALTYPE):
+		case (e_REALTYPE):/*Generates a decimal type*/
 			createIndent(indent);
 			printf("float");
 			return;
 	}
-	GenerateCode(t->first,indent);
+	GenerateCode(t->first,indent);/*if any statments only generate children they are handled here rather than having their own case to save writting unnessasary lines of code*/
 	GenerateCode(t->second,indent);
 	GenerateCode(t->third,indent);
 }
+/*Gets the identifier from the symbol table*/
 void GetIdentifier(TERNARY_TREE t)
 {
 	if(t->item>=0 && t->item<SYMTABSIZE)
@@ -772,6 +757,7 @@ void GetIdentifier(TERNARY_TREE t)
 		printf("UnknownIdentifier: %d",t->item);
 	}
 }
+/*Creates the indentation of the code as it is needed*/
 void createIndent(int indent)
 {
 	int index;
@@ -779,7 +765,7 @@ void createIndent(int indent)
 	{
 		printf("    ");
 	}
-}
+}/*Loops through the identifier list to apply types to each identifier*/
 void loopIdentifier(TERNARY_TREE t,int identifier)
 {
 	if (t->first==NULL) return;
