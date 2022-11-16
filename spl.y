@@ -48,6 +48,7 @@ typedef  struct treeNode TREE_NODE;
 typedef  TREE_NODE        *TERNARY_TREE;
 /* ------------- forward declarations --------------------------- */
 TERNARY_TREE create_node(int,int,TERNARY_TREE,TERNARY_TREE,TERNARY_TREE);
+void handleError(char*);
 #ifdef DEBUG
 void PrintTree(TERNARY_TREE,int);
 #endif
@@ -56,7 +57,6 @@ void GenerateCode(TERNARY_TREE,int);
 void GetIdentifier(TERNARY_TREE);
 void createIndent(int);
 void loopIdentifier(TERNARY_TREE,int);
-void handleError(char*);
 #endif
 /* ------------- symbol table definition --------------------------- */
 struct symTabNode {
@@ -789,10 +789,10 @@ void loopIdentifier(TERNARY_TREE t,int identifier)
 		loopIdentifier(t->first,identifier);
 	}	
 }
+#endif
 void handleError(char *errorMessage)
 {
 	fprintf(stderr,"\nError Occured: %s",errorMessage);
 	exit(0);
 }
-#endif
 #include "lex.yy.c"
